@@ -1,0 +1,140 @@
+# English translations for expense tracker
+# Copyright (C) 2025
+# This file is distributed under the same license as the expense tracker package.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-02 12:00+0700\n"
+"PO-Revision-Date: 2025-01-02 12:00+0700\n"
+"Last-Translator: AI Assistant\n"
+"Language: en\n"
+"Language-Team: English\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Main app titles
+msgid "Expense Tracker"
+msgstr "Expense Tracker"
+
+msgid "AI Assistant"
+msgstr "AI Assistant"
+
+# Transaction types
+msgid "Chi Tiêu"
+msgstr "Expense"
+
+msgid "Tiết Kiệm"
+msgstr "Saving"
+
+msgid "Đầu Tư"
+msgstr "Investment"
+
+msgid "Tổng Tháng"
+msgstr "Monthly Total"
+
+# Time periods
+msgid "Tháng này"
+msgstr "This month"
+
+msgid "Hôm Nay"
+msgstr "Today"
+
+msgid "Số dư ròng"
+msgstr "Net amount"
+
+# Actions and buttons
+msgid "Gửi"
+msgstr "Send"
+
+msgid "Tất cả"
+msgstr "All"
+
+msgid "Thao Tác Nhanh"
+msgstr "Quick Actions"
+
+msgid "Future Me Simulator"
+msgstr "Future Me Simulator"
+
+msgid "Tạo Meme"
+msgstr "Generate Meme"
+
+msgid "Thống Kê"
+msgstr "Statistics"
+
+# Calendar and interface
+msgid "Lịch Tài Chính"
+msgstr "Financial Calendar"
+
+msgid "Quản lý tài chính thông minh"
+msgstr "Smart financial management"
+
+msgid "Lịch sẽ được triển khai ở Phase 4"
+msgstr "Calendar will be implemented in Phase 4"
+
+msgid "Calendar tương tác với hiển thị giao dịch theo ngày"
+msgstr "Interactive calendar with daily transaction display"
+
+# Chat interface
+msgid "Online"
+msgstr "Online"
+
+msgid "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
+msgstr "Hello! Tell me about your transaction. e.g: \"lunch 50k\""
+
+msgid "VD: coffee 25k, tiết kiệm 200k..."
+msgstr "e.g: coffee 25k, saving 200k..."
+
+msgid "Ăn trưa"
+msgstr "Lunch"
+
+msgid "Tổng hôm nay:"
+msgstr "Today total:"
+
+# Languages
+msgid "Tiếng Việt"
+msgstr "Vietnamese"
+
+msgid "English"
+msgstr "English"
+
+# Categories
+msgid "🍜 Ăn uống"
+msgstr "🍜 Food & Drink"
+
+msgid "☕ Coffee"
+msgstr "☕ Coffee"
+
+msgid "🚗 Di chuyển"
+msgstr "🚗 Transport"
+
+msgid "🛒 Mua sắm"
+msgstr "🛒 Shopping"
+
+msgid "🎬 Giải trí"
+msgstr "🎬 Entertainment"
+
+msgid "🏥 Sức khỏe"
+msgstr "🏥 Healthcare"
+
+msgid "📚 Giáo dục"
+msgstr "📚 Education"
+
+msgid "⚡ Tiện ích"
+msgstr "⚡ Utilities"
+
+msgid "📦 Khác"
+msgstr "📦 Other"
+
+# Transaction status
+msgid "🔴 Chi tiêu"
+msgstr "🔴 Expense"
+
+msgid "🟢 Tiết kiệm"
+msgstr "🟢 Saving"
+
+msgid "🔵 Đầu tư"
+msgstr "🔵 Investment" 

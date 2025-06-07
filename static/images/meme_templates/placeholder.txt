@@ -1,0 +1,16 @@
+# Meme Template Images Needed
+
+This directory should contain the following meme template images:
+
+1. drake_pointing.jpg - Drake pointing/rejecting meme template
+2. success_kid.jpg - Success Kid meme template  
+3. this_is_fine.jpg - This is Fine dog meme template
+4. expanding_brain.jpg - Expanding Brain meme template
+
+For now, we'll use CSS-based placeholders until actual images are added.
+
+These images should be:
+- Format: JPG/PNG
+- Size: 400x400px recommended
+- High quality for meme text overlay
+- Copyright-free or properly licensed 

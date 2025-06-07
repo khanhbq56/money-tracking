@@ -21,4 +21,9 @@ urlpatterns = [
     
     # i18n translation endpoint
     path('translations/<str:language>/', views.get_translations, name='translations'),
+    
+    # Phase 9: Meme Generator endpoints
+    path('meme/weekly/', views.generate_weekly_meme, name='generate_weekly_meme'),
+    path('meme/analysis/', views.get_meme_analysis, name='get_meme_analysis'),
+    path('meme/share/', views.share_meme, name='share_meme'),
 ] 

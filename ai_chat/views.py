@@ -625,6 +625,15 @@ def get_translations(request, language):
             'no_transactions': _('No transactions for this day'),
             'transaction_added': _('Transaction added successfully'),
             'ai_processing': _('AI is processing your message...'),
+            
+            # Meme related (Phase 9)
+            'weekly_meme': _('Weekly Meme'),
+            'generate_meme': _('Generate Meme'),
+            'generate_new': _('Generate New'),
+            'share': _('Share'),
+            'ai_analysis': _('AI Analysis'),
+            'analyzing_spending': _('Analyzing your spending...'),
+            'try_again': _('Please try again later!'),
         }
         
         return Response({
@@ -634,4 +643,89 @@ def get_translations(request, language):
         
     except Exception as e:
         logger.error(f"Error getting translations: {e}")
-        return Response({'error': str(e)}, status=500) 
+        return Response({'error': str(e)}, status=500)
+
+# =====================
+# PHASE 9: MEME GENERATOR API ENDPOINTS
+# =====================
+
+@api_view(['GET'])
+def generate_weekly_meme(request):
+    """Generate a weekly meme based on user's spending patterns"""
+    try:
+        from .meme_generator import MemeGenerator
+        from django.utils.translation import get_language
+        
+        # Get current language
+        language = get_language() or 'vi'
+        
+        # Initialize meme generator
+        meme_gen = MemeGenerator(language=language)
+        
+        # Generate meme data
+        meme_data = meme_gen.generate_weekly_meme()
+        
+        logger.info(f"Generated meme with personality: {meme_data['personality']}")
+        
+        return Response(meme_data)
+        
+    except Exception as e:
+        logger.error(f"Error generating weekly meme: {e}")
+        return Response({
+            'error': 'Failed to generate meme',
+            'details': str(e)
+        }, status=500)
+
+@api_view(['GET'])
+def get_meme_analysis(request):
+    """Get detailed spending analysis for meme generation"""
+    try:
+        from .meme_generator import MemeGenerator
+        from django.utils.translation import get_language
+        
+        # Get current language
+        language = get_language() or 'vi'
+        
+        # Initialize meme generator
+        meme_gen = MemeGenerator(language=language)
+        
+        # Get analysis data
+        analysis_data = meme_gen.get_spending_analysis()
+        
+        return Response(analysis_data)
+        
+    except Exception as e:
+        logger.error(f"Error getting meme analysis: {e}")
+        return Response({
+            'error': 'Failed to get analysis',
+            'details': str(e)
+        }, status=500)
+
+@api_view(['POST'])
+def share_meme(request):
+    """Handle meme sharing functionality"""
+    try:
+        meme_data = request.data.get('meme_data')
+        timestamp = request.data.get('timestamp')
+        
+        if not meme_data:
+            return Response({'error': 'No meme data provided'}, status=400)
+        
+        # Log the share action (could be enhanced to save to database)
+        logger.info(f"Meme shared - Personality: {meme_data.get('personality')}, Timestamp: {timestamp}")
+        
+        # Here you could add analytics tracking, social media integration, etc.
+        
+        return Response({
+            'success': True,
+            'message': 'Meme shared successfully',
+            'share_url': request.build_absolute_uri('/'),
+            'shareable_text': meme_data.get('shareable_text', 'Check out my expense tracker meme!')
+        })
+        
+    except Exception as e:
+        logger.error(f"Error sharing meme: {e}")
+        return Response({
+            'error': 'Failed to share meme',
+            'details': str(e)
+        }, status=500) 

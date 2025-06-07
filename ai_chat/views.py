@@ -8,6 +8,9 @@ from django.utils import timezone
 from datetime import datetime, date
 import json
 import re
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .models import ChatMessage
 from .serializers import (
@@ -39,47 +42,80 @@ class ChatMessageViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 def process_chat_message(request):
     """
-    Process user chat message with AI analysis (stub implementation).
-    
-    This is a stub for Phase 2. Full AI integration will be implemented in Phase 5.
+    Process user chat message with AI analysis using Gemini.
     """
     serializer = ChatProcessRequestSerializer(data=request.data)
     if not serializer.is_valid():
+        logger.warning(f"Invalid request data: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     user_message = serializer.validated_data['message']
     has_voice = serializer.validated_data['has_voice']
     language = serializer.validated_data['language']
     
-    # Stub AI processing - simple pattern matching
-    ai_result = _simple_categorization(user_message, language)
+    logger.info(f"Processing chat message: '{user_message[:50]}...' (voice: {has_voice}, lang: {language})")
     
-    # Add voice and date information
-    ai_result['has_voice'] = has_voice
-    ai_result['parsed_date'] = date.today().isoformat()  # Stub: always today
+    # Import and use Gemini service
+    from .gemini_service import GeminiService
     
-    # Save chat message
-    chat_message = ChatMessage.objects.create(
-        user_message=user_message,
-        ai_response=json.dumps(ai_result),
-        has_voice_input=has_voice,
-        voice_transcript=user_message if has_voice else '',
-        parsed_date=date.today(),  # Stub: always today
-        language=language
-    )
-    
-    # Generate response text based on language
-    response_text = _generate_response_text(ai_result, language)
-    
-    response_serializer = ChatProcessResponseSerializer({
-        'chat_id': chat_message.id,
-        'ai_result': ai_result,
-        'suggested_text': response_text,
-        'parsed_date': ai_result['parsed_date'],
-        'confidence': ai_result['confidence']
-    })
-    
-    return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+    try:
+        # Use Gemini service for AI processing
+        gemini = GeminiService(language)
+        ai_result = gemini.categorize_transaction(user_message, has_voice)
+        
+        # Save chat message
+        chat_message = ChatMessage.objects.create(
+            user_message=user_message,
+            ai_response=json.dumps(ai_result),
+            has_voice_input=has_voice,
+            voice_transcript=user_message if has_voice else '',
+            parsed_date=datetime.strptime(ai_result['parsed_date'], '%Y-%m-%d').date(),
+            language=language
+        )
+        
+        # Generate response text based on language
+        response_text = _generate_response_text(ai_result, language)
+        
+        logger.info(f"Chat message processed successfully: ID {chat_message.id}")
+        
+        response_serializer = ChatProcessResponseSerializer({
+            'chat_id': chat_message.id,
+            'ai_result': ai_result,
+            'suggested_text': response_text,
+            'parsed_date': ai_result['parsed_date'],
+            'confidence': ai_result['confidence']
+        })
+        
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        
+    except Exception as e:
+        logger.error(f"Error processing chat message: {str(e)}", exc_info=True)
+        
+        # Fallback to simple categorization on any error
+        ai_result = _simple_categorization(user_message, language)
+        ai_result['has_voice'] = has_voice
+        ai_result['parsed_date'] = date.today().isoformat()
+        
+        chat_message = ChatMessage.objects.create(
+            user_message=user_message,
+            ai_response=json.dumps(ai_result),
+            has_voice_input=has_voice,
+            voice_transcript=user_message if has_voice else '',
+            parsed_date=date.today(),
+            language=language
+        )
+        
+        response_text = _generate_response_text(ai_result, language)
+        
+        response_serializer = ChatProcessResponseSerializer({
+            'chat_id': chat_message.id,
+            'ai_result': ai_result,
+            'suggested_text': response_text,
+            'parsed_date': ai_result['parsed_date'],
+            'confidence': ai_result['confidence']
+        })
+        
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

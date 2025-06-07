@@ -14,9 +14,16 @@ urlpatterns = i18n_patterns(
     prefix_default_language=False,
 )
 
+# Basic views for Railway deployment
+from django.http import HttpResponse
+
+def basic_health(request):
+    return HttpResponse("OK", content_type="text/plain")
+
 # Add non-i18n patterns
 urlpatterns += [
-    # Health check for deployment
+    # Basic health check
+    path('', basic_health, name='basic_health'),
     path('health/', health_check, name='health_check'),
     
     # Admin

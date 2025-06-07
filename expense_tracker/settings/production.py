@@ -72,6 +72,13 @@ CONN_MAX_AGE = 60  # Keep database connections alive for 60 seconds
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 
+# Email configuration for production (use Railway's SMTP if needed)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Disable email SSL settings that might cause issues
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = False
+
 # Logging configuration for production
 LOGGING = {
     'version': 1,

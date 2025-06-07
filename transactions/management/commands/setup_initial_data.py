@@ -119,7 +119,8 @@ class Command(BaseCommand):
             transaction_type='investment'
         ).aggregate(total=Sum('amount'))['total'] or 0
         
-        net_total = saving_total + investment_total - expense_total
+        # Calculate total money spent (all categories as positive)
+        net_total = expense_total + saving_total + investment_total
         
         MonthlyTotal.objects.update_or_create(
             year=today.year,

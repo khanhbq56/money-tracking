@@ -22,11 +22,8 @@ class ExpenseCalendar {
             ]
         };
         
-        // Day headers in Vietnamese and English
-        this.dayHeaders = {
-            vi: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
-            en: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        };
+        // Day headers using i18n keys
+        this.dayHeaderKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         
         // Transaction type configurations
         this.transactionConfig = {
@@ -220,16 +217,15 @@ class ExpenseCalendar {
     }
     
     /**
-     * Update day headers based on current language
+     * Update day headers based on current language using i18n
      */
     updateDayHeaders() {
-        const language = window.i18n?.currentLang || 'vi';
-        const headers = this.dayHeaders[language];
         const headerElements = document.querySelectorAll('.calendar-day-header');
         
         headerElements.forEach((element, index) => {
-            if (headers[index]) {
-                element.textContent = headers[index];
+            const i18nKey = this.dayHeaderKeys[index];
+            if (i18nKey && window.i18n) {
+                element.textContent = window.i18n.t(i18nKey);
             }
         });
     }

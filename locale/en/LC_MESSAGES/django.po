@@ -140,23 +140,27 @@ msgid "🔵 Đầu tư"
 msgstr "🔵 Investment"
 
 # Day names for calendar
-msgid "Thứ 2"
+msgid "monday"
 msgstr "Mon"
 
-msgid "Thứ 3"
+msgid "tuesday"
 msgstr "Tue"
 
-msgid "Thứ 4"
+msgid "wednesday"
 msgstr "Wed"
 
-msgid "Thứ 5"
+msgid "thursday"
 msgstr "Thu"
 
-msgid "Thứ 6"
+msgid "friday"
 msgstr "Fri"
 
-msgid "Thứ 7"
+msgid "saturday"
 msgstr "Sat"
 
-msgid "CN"
-msgstr "Sun" 
+msgid "sunday"
+msgstr "Sun"
+
+# Monthly total description
+msgid "net_amount"
+msgstr "Total spent" 

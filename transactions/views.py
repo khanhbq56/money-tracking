@@ -121,13 +121,16 @@ class TransactionViewSet(viewsets.ModelViewSet):
             'expense_category').annotate(
             total=Sum('amount'), count=Count('id')).order_by('-total')
         
+        # Calculate total money spent (all categories as positive)
+        net_total = total_expense + total_saving + total_investment
+        
         return Response({
             'total_transactions': total_transactions,
             'totals': {
-                'expense': f"-{total_expense:,.0f}₫",
-                'saving': f"+{total_saving:,.0f}₫",
-                'investment': f"+{total_investment:,.0f}₫",
-                'net': f"{'+' if (total_saving + total_investment - total_expense) >= 0 else ''}{(total_saving + total_investment - total_expense):,.0f}₫"
+                'expense': f"{total_expense:,.0f}₫",
+                'saving': f"{total_saving:,.0f}₫",
+                'investment': f"{total_investment:,.0f}₫",
+                'net': f"{net_total:,.0f}₫"
             },
             'expense_categories': expense_categories
         })

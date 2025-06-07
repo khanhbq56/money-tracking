@@ -40,8 +40,8 @@ class MonthlyTotalService:
             transaction_type='investment'
         ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
         
-        # Calculate net total (saving + investment - expense)
-        net_total = saving_total + investment_total - expense_total
+        # Calculate total money spent (all categories as positive)
+        net_total = abs(expense_total) + saving_total + investment_total
         
         # Update or create monthly total
         monthly_total, created = MonthlyTotal.objects.update_or_create(

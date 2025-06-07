@@ -113,6 +113,13 @@
     border-left: 2px solid #3b82f6;
 }
 
+.day-event.more {
+    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+    color: #6b7280;
+    border-left: 2px solid #9ca3af;
+    font-style: italic;
+}
+
 .day-total {
     position: absolute;
     top: 4px;

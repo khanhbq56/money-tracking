@@ -137,4 +137,26 @@ msgid "🟢 Tiết kiệm"
 msgstr "🟢 Tiết kiệm"
 
 msgid "🔵 Đầu tư"
-msgstr "🔵 Đầu tư" 
+msgstr "🔵 Đầu tư"
+
+# Day names for calendar
+msgid "Thứ 2"
+msgstr "Thứ 2"
+
+msgid "Thứ 3"
+msgstr "Thứ 3"
+
+msgid "Thứ 4"
+msgstr "Thứ 4"
+
+msgid "Thứ 5"
+msgstr "Thứ 5"
+
+msgid "Thứ 6"
+msgstr "Thứ 6"
+
+msgid "Thứ 7"
+msgstr "Thứ 7"
+
+msgid "CN"
+msgstr "CN" 

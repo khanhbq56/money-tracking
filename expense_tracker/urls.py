@@ -7,21 +7,21 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 
-urlpatterns = [
+# Main app views (template rendering) - MUST come first
+urlpatterns = i18n_patterns(
+    path('', include('transactions.urls')),
+    prefix_default_language=False,
+)
+
+# Add non-i18n patterns
+urlpatterns += [
     # Admin
     path('admin/', admin.site.urls),
     
-    # API endpoints
-    path('api/', include('transactions.urls')),
+    # API endpoints (outside i18n patterns)
+    path('api/', include('transactions.api_urls')),
     path('api/', include('ai_chat.urls')),
 ]
-
-# Add i18n patterns for main app
-urlpatterns += i18n_patterns(
-    # Main app views will be added later
-    path('', include('transactions.urls', namespace='main')),
-    prefix_default_language=False,
-)
 
 # Serve static and media files during development
 if settings.DEBUG:

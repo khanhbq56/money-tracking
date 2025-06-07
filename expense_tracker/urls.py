@@ -6,6 +6,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
+from .health import health_check
 
 # Main app views (template rendering) - MUST come first
 urlpatterns = i18n_patterns(
@@ -15,6 +16,9 @@ urlpatterns = i18n_patterns(
 
 # Add non-i18n patterns
 urlpatterns += [
+    # Health check for deployment
+    path('health/', health_check, name='health_check'),
+    
     # Admin
     path('admin/', admin.site.urls),
     

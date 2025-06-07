@@ -1,0 +1,12 @@
+[build]
+command = "uv sync --frozen && uv run python manage.py collectstatic --noinput && uv run python manage.py migrate && uv run python manage.py compilemessages"
+
+[deploy]
+command = "uv run gunicorn expense_tracker.wsgi:application --bind 0.0.0.0:$PORT"
+healthcheckPath = "/health/"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[env]
+DJANGO_SETTINGS_MODULE = "expense_tracker.settings.production"
+PYTHONPATH = "." 

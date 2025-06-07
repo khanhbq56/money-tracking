@@ -6,6 +6,9 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Allow testserver for development and testing
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+
 # Database for development - using SQLite
 DATABASES = {
     'default': {

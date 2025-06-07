@@ -17,6 +17,7 @@ from .serializers import (
     MonthlyTotalSerializer, CalendarDataSerializer
 )
 from .monthly_service import MonthlyTotalService, update_monthly_totals_on_transaction_change
+from .future_calculator import FutureProjectionCalculator
 
 
 def index(request):
@@ -329,4 +330,89 @@ def today_summary(request):
             'daily_total': f"{'+' if daily_total >= 0 else ''}{daily_total:,.0f}₫"
         },
         'transaction_count': transactions.count()
-    }) 
+    })
+
+
+@api_view(['GET'])
+def future_projection(request):
+    """
+    Get future financial projections with scenario analysis.
+    Query params: months (required, 1-60)
+    """
+    try:
+        months = int(request.GET.get('months', 12))
+    except (ValueError, TypeError):
+        return Response(
+            {'error': _('Invalid months parameter')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if not (1 <= months <= 60):
+        return Response(
+            {'error': _('Months must be between 1 and 60')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        # Initialize calculator
+        calculator = FutureProjectionCalculator()
+        
+        # Calculate projection
+        projection_data = calculator.calculate_projection(months)
+        
+        return Response({
+            'success': True,
+            'data': projection_data
+        })
+        
+    except Exception as e:
+        return Response(
+            {'error': _(f'Error calculating projection: {str(e)}')},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['GET'])
+def monthly_analysis(request):
+    """
+    Get detailed analysis for a specific month.
+    Query params: year (required), month (required)
+    """
+    try:
+        year = int(request.GET.get('year'))
+        month = int(request.GET.get('month'))
+    except (ValueError, TypeError):
+        return Response(
+            {'error': _('Year and month parameters are required')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if not (1 <= month <= 12):
+        return Response(
+            {'error': _('Month must be between 1 and 12')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    if not (2000 <= year <= 2100):
+        return Response(
+            {'error': _('Year must be between 2000 and 2100')},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    
+    try:
+        # Initialize calculator
+        calculator = FutureProjectionCalculator()
+        
+        # Get monthly analysis
+        analysis_data = calculator.get_monthly_analysis(year, month)
+        
+        return Response({
+            'success': True,
+            'data': analysis_data
+        })
+        
+    except Exception as e:
+        return Response(
+            {'error': _(f'Error analyzing month: {str(e)}')},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        ) 

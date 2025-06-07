@@ -22,4 +22,8 @@ urlpatterns = [
     
     # Today summary
     path('today-summary/', views.today_summary, name='today-summary'),
+    
+    # Future projection endpoints (Phase 8)
+    path('future-projection/', views.future_projection, name='future-projection'),
+    path('monthly-analysis/', views.monthly_analysis, name='monthly-analysis'),
 ] 

@@ -13,9 +13,12 @@ urlpatterns = [
     path('', include(router.urls)),
     
     # Chat processing endpoints
-    path('chat/process/', views.process_chat_message, name='process-chat'),
-    path('chat/confirm/', views.confirm_transaction, name='confirm-transaction'),
+    path('chat/', views.process_chat_message, name='process_chat'),
+    path('confirm/', views.confirm_transaction, name='confirm_transaction'),
+    path('calendar/<int:year>/<int:month>/', views.get_calendar_data, name='calendar_data'),
+    path('monthly-totals/', views.get_monthly_totals, name='monthly_totals'),
+    path('daily-summary/<str:date>/', views.get_daily_summary, name='daily_summary'),
     
     # i18n translation endpoint
-    path('translations/<str:language_code>/', views.get_translations, name='translations'),
+    path('translations/<str:language>/', views.get_translations, name='translations'),
 ] 

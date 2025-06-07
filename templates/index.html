@@ -172,6 +172,14 @@
                                 onkeypress="handleChatKeyPress(event)"
                             >
                             <button 
+                                id="voice-btn"
+                                onclick="toggleVoiceInput()" 
+                                class="px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm font-medium"
+                                title="{% trans 'Voice Input (Ctrl+Shift+V)' %}"
+                            >
+                                🎤
+                            </button>
+                            <button 
                                 onclick="sendMessage()" 
                                 class="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition text-sm font-medium"
                                 data-i18n="send"

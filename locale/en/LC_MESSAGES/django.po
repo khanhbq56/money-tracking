@@ -163,4 +163,57 @@ msgstr "Sun"
 
 # Monthly total description
 msgid "net_amount"
-msgstr "Total spent" 
+msgstr "Net amount"
+
+# Voice input features
+msgid "Voice Input (Ctrl+Shift+V)"
+msgstr "Voice Input (Ctrl+Shift+V)"
+
+msgid "Đang nghe..."
+msgstr "Listening..."
+
+msgid "Listening..."
+msgstr "Listening..."
+
+msgid "Voice recognition started"
+msgstr "Voice recognition started"
+
+msgid "Voice recognition ended"
+msgstr "Voice recognition ended"
+
+msgid "No speech detected. Please try again."
+msgstr "No speech detected. Please try again."
+
+msgid "Cannot access microphone. Check permissions."
+msgstr "Cannot access microphone. Check permissions."
+
+msgid "Microphone access denied."
+msgstr "Microphone access denied."
+
+msgid "Network error. Check internet connection."
+msgstr "Network error. Check internet connection."
+
+msgid "Voice recognition error. Please try again."
+msgstr "Voice recognition error. Please try again."
+
+msgid "Browser does not support voice input. Please use Chrome or Edge."
+msgstr "Browser does not support voice input. Please use Chrome or Edge."
+
+# Date parsing descriptions
+msgid "hôm nay"
+msgstr "today"
+
+msgid "hôm qua"
+msgstr "yesterday"
+
+msgid "hôm kia"
+msgstr "day before yesterday"
+
+msgid "today"
+msgstr "today"
+
+msgid "yesterday"
+msgstr "yesterday"
+
+msgid "day before yesterday"
+msgstr "day before yesterday" 

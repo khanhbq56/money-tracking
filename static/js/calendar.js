@@ -25,6 +25,10 @@ class ExpenseCalendar {
         // Day headers using i18n keys
         this.dayHeaderKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         
+        // Vietnamese day names as default
+        this.dayNamesVi = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'];
+        this.dayNamesEn = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        
         // Transaction type configurations
         this.transactionConfig = {
             expense: {
@@ -124,7 +128,7 @@ class ExpenseCalendar {
         
         try {
             const response = await fetch(
-                `/api/calendar-data/?month=${this.currentMonth + 1}&year=${this.currentYear}&filter=${this.currentFilter}`
+                `/api/ai_chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`
             );
             
             if (!response.ok) {
@@ -132,7 +136,7 @@ class ExpenseCalendar {
             }
             
             const data = await response.json();
-            this.transactions = this.processTransactionData(data.calendar_data || []);
+            this.transactions = this.processNewTransactionData(data.daily_data || {});
             
             console.log('📊 Loaded calendar data:', this.transactions);
             
@@ -162,6 +166,28 @@ class ExpenseCalendar {
                     expense: dayData.expense_count || 0,
                     saving: dayData.saving_count || 0,
                     investment: dayData.investment_count || 0
+                }
+            };
+        });
+        
+        return processed;
+    }
+
+    /**
+     * Process new transaction data format from Phase 7 API
+     */
+    processNewTransactionData(dailyData) {
+        const processed = {};
+        
+        Object.keys(dailyData).forEach(dateKey => {
+            const dayData = dailyData[dateKey];
+            processed[dateKey] = {
+                transactions: dayData.transactions || [],
+                total: dayData.totals.net || 0,
+                counts: {
+                    expense: dayData.transactions.filter(t => t.type === 'expense').length,
+                    saving: dayData.transactions.filter(t => t.type === 'saving').length,
+                    investment: dayData.transactions.filter(t => t.type === 'investment').length
                 }
             };
         });
@@ -221,11 +247,12 @@ class ExpenseCalendar {
      */
     updateDayHeaders() {
         const headerElements = document.querySelectorAll('.calendar-day-header');
+        const currentLang = window.i18n?.currentLang || 'vi';
+        const dayNames = currentLang === 'vi' ? this.dayNamesVi : this.dayNamesEn;
         
         headerElements.forEach((element, index) => {
-            const i18nKey = this.dayHeaderKeys[index];
-            if (i18nKey && window.i18n) {
-                element.textContent = window.i18n.t(i18nKey);
+            if (index < dayNames.length) {
+                element.textContent = dayNames[index];
             }
         });
     }
@@ -489,14 +516,32 @@ class ExpenseCalendar {
     /**
      * Handle day click
      */
-    onDayClick(date, dayData) {
+    async onDayClick(date, dayData) {
         console.log('Day clicked:', date, dayData);
+        const dateStr = date.toISOString().split('T')[0];
         
-        // Show day details or add transaction dialog
-        if (dayData.transactions.length > 0) {
-            this.showDayDetails(date, dayData);
-        } else {
-            this.showAddTransactionDialog(date);
+        try {
+            // Load detailed day data from API
+            const response = await fetch(`/api/ai_chat/daily-summary/${dateStr}/`);
+            if (response.ok) {
+                const detailedData = await response.json();
+                this.showDayDetails(date, detailedData);
+            } else {
+                // Fallback to existing data or add transaction dialog
+                if (dayData && dayData.transactions.length > 0) {
+                    this.showDayDetails(date, dayData);
+                } else {
+                    this.showAddTransactionDialog(date);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading day details:', error);
+            // Fallback to existing behavior
+            if (dayData && dayData.transactions.length > 0) {
+                this.showDayDetails(date, dayData);
+            } else {
+                this.showAddTransactionDialog(date);
+            }
         }
     }
     

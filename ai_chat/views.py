@@ -18,6 +18,7 @@ from .serializers import (
     TransactionConfirmRequestSerializer, TransactionConfirmResponseSerializer,
     TranslationResponseSerializer, AIResultSerializer
 )
+from .voice_processor import VoiceProcessor
 from transactions.models import Transaction
 from transactions.monthly_service import update_monthly_totals_on_transaction_change
 
@@ -55,13 +56,18 @@ def process_chat_message(request):
     
     logger.info(f"Processing chat message: '{user_message[:50]}...' (voice: {has_voice}, lang: {language})")
     
-    # Import and use Gemini service
+    # Import services
     from .gemini_service import GeminiService
     
     try:
-        # Use Gemini service for AI processing
-        gemini = GeminiService(language)
-        ai_result = gemini.categorize_transaction(user_message, has_voice)
+        # Use enhanced voice processing if voice input
+        if has_voice:
+            voice_processor = VoiceProcessor(language)
+            ai_result = voice_processor.process_voice_input(user_message, language)
+        else:
+            # Use regular Gemini service for text input
+            gemini = GeminiService(language)
+            ai_result = gemini.categorize_transaction(user_message, has_voice)
         
         # Save chat message
         chat_message = ChatMessage.objects.create(
@@ -381,3 +387,251 @@ def _generate_response_text(ai_result, language):
             'investment': 'Investment'
         }
         return f"{ai_result['icon']} Classified as: {type_labels[ai_result['type']]} - {ai_result['description']} ({ai_result['amount']:,.0f}₫)" 
+
+
+@api_view(['GET'])
+def get_calendar_data(request, year, month):
+    """Get calendar data for specific month with transaction summaries"""
+    try:
+        from transactions.models import Transaction
+        from datetime import date, timedelta
+        import calendar
+        
+        # Get all transactions for the month
+        transactions = Transaction.objects.filter(
+            date__year=year,
+            date__month=month
+        ).select_related().order_by('date')
+        
+        # Group transactions by date
+        daily_data = {}
+        for transaction in transactions:
+            date_str = transaction.date.isoformat()
+            if date_str not in daily_data:
+                daily_data[date_str] = {
+                    'transactions': [],
+                    'totals': {'expense': 0, 'saving': 0, 'investment': 0, 'net': 0}
+                }
+            
+            # Add transaction data
+            transaction_data = {
+                'id': transaction.id,
+                'type': transaction.transaction_type,
+                'amount': float(transaction.amount),
+                'description': transaction.description,
+                'category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
+                'icon': transaction.get_icon(),
+                'confidence': transaction.ai_confidence
+            }
+            daily_data[date_str]['transactions'].append(transaction_data)
+            
+            # Update daily totals
+            if transaction.transaction_type == 'expense':
+                daily_data[date_str]['totals']['expense'] += float(transaction.amount)
+            elif transaction.transaction_type == 'saving':
+                daily_data[date_str]['totals']['saving'] += float(transaction.amount)
+            elif transaction.transaction_type == 'investment':
+                daily_data[date_str]['totals']['investment'] += float(transaction.amount)
+        
+        # Calculate net totals for each day
+        for date_str in daily_data:
+            totals = daily_data[date_str]['totals']
+            # Hiển thị chi tiêu là âm, nhưng net total là tổng của tất cả
+            expense_display = -abs(totals['expense']) if totals['expense'] != 0 else 0
+            totals['expense'] = expense_display
+            totals['net'] = abs(totals['expense']) + totals['saving'] + totals['investment']
+        
+        # Get month info
+        month_name = calendar.month_name[month]
+        days_in_month = calendar.monthrange(year, month)[1]
+        first_day_weekday = calendar.monthrange(year, month)[0]  # 0=Monday
+        
+        return Response({
+            'year': year,
+            'month': month,
+            'month_name': month_name,
+            'days_in_month': days_in_month,
+            'first_day_weekday': first_day_weekday,
+            'daily_data': daily_data,
+            'total_transactions': transactions.count()
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting calendar data: {e}")
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+def get_daily_summary(request, date):
+    """Get detailed summary for a specific date"""
+    try:
+        from transactions.models import Transaction
+        from datetime import datetime
+        
+        # Parse date
+        target_date = datetime.strptime(date, '%Y-%m-%d').date()
+        
+        # Get transactions for the date
+        transactions = Transaction.objects.filter(
+            date=target_date
+        ).order_by('created_at')
+        
+        # Build summary
+        summary_data = {
+            'date': date,
+            'transactions': [],
+            'totals': {'expense': 0, 'saving': 0, 'investment': 0, 'net': 0},
+            'count': transactions.count()
+        }
+        
+        for transaction in transactions:
+            transaction_data = {
+                'id': transaction.id,
+                'type': transaction.transaction_type,
+                'amount': float(transaction.amount),
+                'description': transaction.description,
+                'category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
+                'icon': transaction.get_icon(),
+                'confidence': transaction.ai_confidence,
+                'created_at': transaction.created_at.isoformat()
+            }
+            summary_data['transactions'].append(transaction_data)
+            
+            # Update totals
+            if transaction.transaction_type == 'expense':
+                summary_data['totals']['expense'] += float(transaction.amount)
+            elif transaction.transaction_type == 'saving':
+                summary_data['totals']['saving'] += float(transaction.amount)
+            elif transaction.transaction_type == 'investment':
+                summary_data['totals']['investment'] += float(transaction.amount)
+        
+        # Calculate net total and format expense as negative
+        expense_display = -abs(summary_data['totals']['expense']) if summary_data['totals']['expense'] != 0 else 0
+        summary_data['totals']['expense'] = expense_display
+        summary_data['totals']['net'] = (
+            abs(summary_data['totals']['expense']) + 
+            summary_data['totals']['saving'] + 
+            summary_data['totals']['investment']
+        )
+        
+        return Response(summary_data)
+        
+    except ValueError:
+        return Response({'error': 'Invalid date format. Use YYYY-MM-DD'}, status=400)
+    except Exception as e:
+        logger.error(f"Error getting daily summary: {e}")
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+def get_monthly_totals(request):
+    """Get monthly totals for dashboard display"""
+    try:
+        from transactions.monthly_service import get_current_month_totals
+        from datetime import datetime
+        
+        # Get current month totals
+        totals = get_current_month_totals()
+        
+        # Format for display
+        formatted_totals = {
+            'expense': f"-{totals['expense']:,.0f}₫",
+            'saving': f"+{totals['saving']:,.0f}₫",
+            'investment': f"+{totals['investment']:,.0f}₫",
+            'net_total': f"+{totals['net_total']:,.0f}₫"
+        }
+        
+        return Response({
+            'monthly_totals': totals,
+            'formatted': formatted_totals,
+            'month': datetime.now().month,
+            'year': datetime.now().year
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting monthly totals: {e}")
+        return Response({'error': str(e)}, status=500)
+
+@api_view(['GET'])
+def get_translations(request, language):
+    """Get translation strings for i18n support"""
+    try:
+        from django.utils.translation import activate, gettext as _
+        
+        # Activate the requested language
+        activate(language)
+        
+        # Common translations for the app
+        translations = {
+            # Calendar
+            'calendar': _('Calendar'),
+            'previous_month': _('Previous Month'),
+            'next_month': _('Next Month'),
+            'today': _('Today'),
+            'this_month': _('This Month'),
+            
+            # Days of week
+            'monday': _('Monday'),
+            'tuesday': _('Tuesday'),
+            'wednesday': _('Wednesday'),
+            'thursday': _('Thursday'),
+            'friday': _('Friday'),
+            'saturday': _('Saturday'),
+            'sunday': _('Sunday'),
+            
+            # Months
+            'january': _('January'),
+            'february': _('February'),
+            'march': _('March'),
+            'april': _('April'),
+            'may': _('May'),
+            'june': _('June'),
+            'july': _('July'),
+            'august': _('August'),
+            'september': _('September'),
+            'october': _('October'),
+            'november': _('November'),
+            'december': _('December'),
+            
+            # Transaction types
+            'expense': _('Expense'),
+            'saving': _('Saving'),
+            'investment': _('Investment'),
+            'net_amount': _('Net Amount'),
+            'monthly_total': _('Monthly Total'),
+            
+            # Actions
+            'send': _('Send'),
+            'confirm': _('Confirm'),
+            'cancel': _('Cancel'),
+            'add_transaction': _('Add Transaction'),
+            'voice_input': _('Voice Input'),
+            
+            # Status
+            'loading': _('Loading...'),
+            'error': _('Error'),
+            'success': _('Success'),
+            
+            # Voice features
+            'listening': _('Listening...'),
+            'voice_input_tooltip': _('Voice Input (Ctrl+Shift+V)'),
+            'speak_clearly': _('Please speak clearly'),
+            
+            # Filters
+            'all': _('All'),
+            'filter_expense': _('Expenses'),
+            'filter_saving': _('Savings'),
+            'filter_investment': _('Investments'),
+            
+            # Messages
+            'no_transactions': _('No transactions for this day'),
+            'transaction_added': _('Transaction added successfully'),
+            'ai_processing': _('AI is processing your message...'),
+        }
+        
+        return Response({
+            'language': language,
+            'translations': translations
+        })
+        
+    except Exception as e:
+        logger.error(f"Error getting translations: {e}")
+        return Response({'error': str(e)}, status=500) 

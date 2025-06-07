@@ -38,7 +38,7 @@ class AIChat {
         this.addMessage(welcomeText, 'bot');
     }
     
-    async sendMessage() {
+    async sendMessage(hasVoice = false) {
         if (this.isProcessing) return;
         
         const message = this.chatInput.value.trim();
@@ -46,7 +46,14 @@ class AIChat {
         
         // Clear input and add user message
         this.chatInput.value = '';
-        this.addMessage(message, 'user');
+        
+        // Reset input styling if it was from voice
+        if (hasVoice && this.chatInput) {
+            this.chatInput.style.fontStyle = 'normal';
+            this.chatInput.style.color = '';
+        }
+        
+        this.addMessage(message, 'user', null, hasVoice);
         
         // Show typing indicator
         this.showTypingIndicator();
@@ -54,13 +61,18 @@ class AIChat {
         
         try {
             // Process message with AI
-            const response = await this.processMessage(message);
+            const response = await this.processMessage(message, hasVoice);
             
             // Remove typing indicator
             this.removeTypingIndicator();
             
-            // Add AI response
-            this.addMessage(response.suggested_text, 'bot', response);
+            // Add AI response with date info if available
+            let responseText = response.suggested_text;
+            if (response.parsed_date_description && response.parsed_date_description !== 'hôm nay' && response.parsed_date_description !== 'today') {
+                responseText += ` (${response.parsed_date_description})`;
+            }
+            
+            this.addMessage(responseText, 'bot', response);
             
         } catch (error) {
             console.error('Chat error:', error);
@@ -100,16 +112,18 @@ class AIChat {
         return await response.json();
     }
     
-    addMessage(text, sender, data = null) {
+    addMessage(text, sender, data = null, hasVoice = false) {
         if (!this.chatContainer) return;
         
         const messageDiv = document.createElement('div');
         messageDiv.className = 'chat-bubble animate-fadeInUp';
         
         if (sender === 'user') {
+            // Add voice indicator for voice messages
+            const voiceIndicator = hasVoice ? '<span class="text-xs opacity-75">🎤</span> ' : '';
             messageDiv.innerHTML = `
                 <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg p-3 text-sm ml-8 max-w-xs">
-                    <p>${this.escapeHtml(text)}</p>
+                    <p>${voiceIndicator}${this.escapeHtml(text)}</p>
                 </div>
             `;
         } else {
@@ -303,9 +317,9 @@ class AIChat {
 }
 
 // Global functions for backward compatibility with existing HTML
-function sendMessage() {
+function sendMessage(hasVoice = false) {
     if (window.aiChat) {
-        window.aiChat.sendMessage();
+        window.aiChat.sendMessage(hasVoice);
     }
 }
 

@@ -163,4 +163,57 @@ msgstr "CN"
 
 # Monthly total description
 msgid "net_amount"
-msgstr "Tổng chi tiền" 
+msgstr "Số dư ròng"
+
+# Voice input features
+msgid "Voice Input (Ctrl+Shift+V)"
+msgstr "Nhập bằng giọng nói (Ctrl+Shift+V)"
+
+msgid "Đang nghe..."
+msgstr "Đang nghe..."
+
+msgid "Listening..."
+msgstr "Đang nghe..."
+
+msgid "Voice recognition started"
+msgstr "Bắt đầu nhận diện giọng nói"
+
+msgid "Voice recognition ended"
+msgstr "Kết thúc nhận diện giọng nói"
+
+msgid "No speech detected. Please try again."
+msgstr "Không nghe thấy giọng nói. Hãy thử lại."
+
+msgid "Cannot access microphone. Check permissions."
+msgstr "Không thể truy cập microphone. Kiểm tra quyền truy cập."
+
+msgid "Microphone access denied."
+msgstr "Quyền truy cập microphone bị từ chối."
+
+msgid "Network error. Check internet connection."
+msgstr "Lỗi mạng. Kiểm tra kết nối internet."
+
+msgid "Voice recognition error. Please try again."
+msgstr "Lỗi nhận diện giọng nói. Hãy thử lại."
+
+msgid "Browser does not support voice input. Please use Chrome or Edge."
+msgstr "Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge."
+
+# Date parsing descriptions
+msgid "hôm nay"
+msgstr "hôm nay"
+
+msgid "hôm qua"
+msgstr "hôm qua"
+
+msgid "hôm kia"
+msgstr "hôm kia"
+
+msgid "today"
+msgstr "hôm nay"
+
+msgid "yesterday"
+msgstr "hôm qua"
+
+msgid "day before yesterday"
+msgstr "hôm kia" 

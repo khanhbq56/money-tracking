@@ -19,7 +19,7 @@ class MonthlyTotalService:
             month (int): Month to update (1-12)
             
         Returns:
-            MonthlyTotal: Updated monthly total object
+            dict: Updated monthly totals
         """
         # Get all transactions for the month
         transactions = Transaction.objects.filter(
@@ -27,35 +27,28 @@ class MonthlyTotalService:
             date__month=month
         )
         
-        # Calculate totals by transaction type
+        # Calculate totals
         expense_total = abs(transactions.filter(
             transaction_type='expense'
-        ).aggregate(total=Sum('amount'))['total'] or Decimal('0'))
+        ).aggregate(total=Sum('amount'))['total'] or 0)
         
-        saving_total = transactions.filter(
+        saving_total = abs(transactions.filter(
             transaction_type='saving'
-        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        ).aggregate(total=Sum('amount'))['total'] or 0)
         
-        investment_total = transactions.filter(
+        investment_total = abs(transactions.filter(
             transaction_type='investment'
-        ).aggregate(total=Sum('amount'))['total'] or Decimal('0')
+        ).aggregate(total=Sum('amount'))['total'] or 0)
         
-        # Calculate total money spent (all categories as positive)
-        net_total = abs(expense_total) + saving_total + investment_total
+        # Calculate net total (tổng của tất cả loại giao dịch)
+        net_total = expense_total + saving_total + investment_total
         
-        # Update or create monthly total
-        monthly_total, created = MonthlyTotal.objects.update_or_create(
-            year=year,
-            month=month,
-            defaults={
-                'total_expense': expense_total,
-                'total_saving': saving_total,
-                'total_investment': investment_total,
-                'net_total': net_total
-            }
-        )
-        
-        return monthly_total
+        return {
+            'expense': expense_total,
+            'saving': saving_total,
+            'investment': investment_total,
+            'net_total': net_total
+        }
     
     @staticmethod
     def get_current_month_totals():
@@ -63,32 +56,10 @@ class MonthlyTotalService:
         Get current month totals for dashboard.
         
         Returns:
-            dict: Current month totals with formatted values
+            dict: Current month totals
         """
         now = datetime.now()
-        
-        try:
-            monthly_total = MonthlyTotal.objects.get(
-                year=now.year,
-                month=now.month
-            )
-            totals = {
-                'expense': monthly_total.total_expense,
-                'saving': monthly_total.total_saving,
-                'investment': monthly_total.total_investment,
-                'net_total': monthly_total.net_total
-            }
-        except MonthlyTotal.DoesNotExist:
-            # Calculate and create if doesn't exist
-            monthly_total = MonthlyTotalService.update_monthly_totals(now.year, now.month)
-            totals = {
-                'expense': monthly_total.total_expense,
-                'saving': monthly_total.total_saving,
-                'investment': monthly_total.total_investment,
-                'net_total': monthly_total.net_total
-            }
-        
-        return totals
+        return MonthlyTotalService.update_monthly_totals(now.year, now.month)
     
     @staticmethod
     def get_formatted_totals():
@@ -183,4 +154,8 @@ def update_monthly_totals_on_transaction_change(transaction):
     MonthlyTotalService.update_monthly_totals(
         transaction.date.year,
         transaction.date.month
-    ) 
+    )
+
+def get_month_totals(year, month):
+    """Get totals for specific month"""
+    return MonthlyTotalService.update_monthly_totals(year, month) 

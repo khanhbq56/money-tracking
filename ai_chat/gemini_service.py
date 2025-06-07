@@ -5,6 +5,7 @@ import json
 import logging
 from typing import Dict, Any, Optional
 from datetime import datetime, date
+from .date_parser import DateParser
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +15,7 @@ class GeminiService:
         """Initialize Gemini service with language support"""
         self.language = language
         self.model = None
+        self.date_parser = DateParser(language)
         self._initialize_gemini()
     
     def _initialize_gemini(self):
@@ -24,7 +26,7 @@ class GeminiService:
                 return
             
             genai.configure(api_key=settings.GEMINI_API_KEY)
-            self.model = genai.GenerativeModel('gemini-pro')
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
             logger.info("Gemini API initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize Gemini API: {e}")
@@ -33,8 +35,8 @@ class GeminiService:
     def categorize_transaction(self, message: str, has_voice: bool = False) -> Dict[str, Any]:
         """Analyze user message and categorize transaction with date parsing"""
         try:
-            # Parse date from message (default to today for now)
-            parsed_date = date.today()
+            # Parse date from message using DateParser
+            parsed_date = self.date_parser.parse_date_from_message(message)
             
             if self.model:
                 # Use Gemini AI for categorization
@@ -45,6 +47,7 @@ class GeminiService:
             
             # Add metadata
             result['parsed_date'] = parsed_date.isoformat()
+            result['parsed_date_description'] = self.date_parser.get_relative_description(parsed_date)
             result['has_voice'] = has_voice
             result['language'] = self.language
             
@@ -52,6 +55,7 @@ class GeminiService:
             
         except Exception as e:
             logger.error(f"Error in categorize_transaction: {e}")
+            parsed_date = self.date_parser.parse_date_from_message(message)
             return self._fallback_categorization(message, has_voice, parsed_date)
     
     def _categorize_with_gemini(self, message: str) -> Dict[str, Any]:

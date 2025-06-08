@@ -15,7 +15,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Allowed hosts for production
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,*.railway.app,healthcheck.railway.app',
+    default='localhost,127.0.0.1,*.railway.app,healthcheck.railway.app,money-tracking-production.up.railway.app',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -42,15 +42,15 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 X_FRAME_OPTIONS = 'DENY'
 
 # CORS settings for production
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = config(
     'CORS_ALLOWED_ORIGINS', 
-    default='https://yourapp.railway.app', 
+    default='https://money-tracking-production.up.railway.app', 
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 

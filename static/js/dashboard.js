@@ -329,7 +329,7 @@ class Dashboard {
         const transactionHTML = transactions.map(transaction => {
             // Handle API format: transaction_type, amount
             const transactionType = transaction.transaction_type;
-            const amount = parseFloat(transaction.amount);
+            const amount = Math.abs(parseFloat(transaction.amount)); // Ensure positive amount
             const amountValue = transactionType === 'expense' ? -amount : amount;
             totalToday += amountValue;
             

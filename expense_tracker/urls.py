@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from .health import health_check
 from .debug_static import debug_static_files
+import ai_chat.views
 
 # Main app views (template rendering) - MUST come first
 urlpatterns = i18n_patterns(
@@ -36,7 +37,7 @@ urlpatterns += [
     path('api/ai_chat/', include('ai_chat.urls')),
     
     # API aliases for frontend compatibility
-    path('api/meme/', include('ai_chat.urls')),  # /api/meme/weekly/ -> ai_chat meme endpoints
+    path('api/meme/weekly/', ai_chat.views.generate_weekly_meme, name='meme_weekly_alias'),
     path('api/chat/', include('ai_chat.urls')),  # /api/chat/process/, /api/chat/confirm/ -> ai_chat endpoints
 ]
 

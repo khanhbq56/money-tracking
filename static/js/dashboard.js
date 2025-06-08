@@ -330,8 +330,8 @@ class Dashboard {
             // Handle API format: transaction_type, amount
             const transactionType = transaction.transaction_type;
             const amount = Math.abs(parseFloat(transaction.amount)); // Ensure positive amount
-            const amountValue = transactionType === 'expense' ? -amount : amount;
-            totalToday += amountValue;
+            // For total calculation: use absolute values (total money moved in a day)
+            totalToday += amount;
             
             const colorClass = transactionType === 'expense' ? 'text-red-600' : 'text-green-600';
             const sign = transactionType === 'expense' ? '-' : '+';
@@ -352,9 +352,10 @@ class Dashboard {
             `;
         }).join('');
         
-        const totalClass = totalToday >= 0 ? 'text-green-600' : 'text-red-600';
-        const totalSign = totalToday >= 0 ? '+' : '-';
-        const totalAbsAmount = Math.abs(totalToday);
+        // Total is always positive (sum of absolute values)
+        const totalClass = 'text-blue-600'; // Blue for total amount moved
+        const totalSign = '+'; // Always positive for total money moved
+        const totalAbsAmount = totalToday;
         
         return `
             <div class="space-y-1">

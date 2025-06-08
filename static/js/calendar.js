@@ -355,10 +355,17 @@ class ExpenseCalendar {
             eventsContainer.appendChild(moreElement);
         }
         
-        // Create day total badge
-        if (dayData.total !== 0) {
-            const totalBadge = this.createTotalBadge(dayData.total);
-            dayDiv.appendChild(totalBadge);
+        // Create day total badge (only for filtered transactions)
+        if (filteredTransactions.length > 0) {
+            const filteredTotal = filteredTransactions.reduce((sum, t) => {
+                const amount = t.transaction_type === 'expense' ? -Math.abs(t.amount) : Math.abs(t.amount);
+                return sum + amount;
+            }, 0);
+            
+            if (filteredTotal !== 0) {
+                const totalBadge = this.createTotalBadge(filteredTotal);
+                dayDiv.appendChild(totalBadge);
+            }
         }
         
         // Assemble day element
@@ -378,7 +385,16 @@ class ExpenseCalendar {
         if (this.currentFilter === 'all') {
             return transactions;
         }
-        return transactions.filter(t => t.transaction_type === this.currentFilter);
+        
+        const filtered = transactions.filter(t => t.transaction_type === this.currentFilter);
+        
+        // Debug logging
+        if (transactions.length > 0) {
+            console.log(`🔍 Filter: ${this.currentFilter}, Original: ${transactions.length}, Filtered: ${filtered.length}`);
+            console.log('Sample transaction types:', transactions.map(t => t.transaction_type));
+        }
+        
+        return filtered;
     }
     
     /**

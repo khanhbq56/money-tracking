@@ -190,6 +190,167 @@
         font-size: 0.5rem;
         padding: 1px 4px;
     }
+    
+    /* Enhanced chat mobile layout */
+    .grid.grid-cols-1.xl\\:grid-cols-5.lg\\:grid-cols-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Stack sidebar vertically on mobile */
+    .xl\\:col-span-2.lg\\:col-span-2 {
+        order: 2;
+    }
+    
+    .xl\\:col-span-3.lg\\:col-span-2 {
+        order: 1;
+    }
+    
+    /* Ensure chat input area has enough space */
+    #chat-input {
+        min-width: 120px !important;
+    }
+    
+    /* Make buttons touch-friendly on mobile */
+    #voice-btn, button[onclick="sendMessage()"] {
+        min-height: 44px;
+        padding: 8px 12px;
+    }
+}
+
+/* Tablet responsive */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Adjust grid for tablet */
+    .grid.grid-cols-1.xl\\:grid-cols-5.lg\\:grid-cols-4 {
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+    }
+    
+    .xl\\:col-span-3.lg\\:col-span-2 {
+        grid-column: span 1;
+    }
+    
+    .xl\\:col-span-2.lg\\:col-span-2 {
+        grid-column: span 1;
+    }
+    
+    /* Better chat sizing on tablet */
+    .chat-container {
+        min-width: 280px;
+    }
+    
+    #chat-messages {
+        min-height: 10rem;
+        max-height: 18rem;
+    }
+}
+
+/* Large screens - improved spacing */
+@media (min-width: 1280px) {
+    /* On XL screens, give more space to chat */
+    .max-w-7xl {
+        max-width: 90rem;
+    }
+    
+    /* Better proportions on large screens */
+    .grid.grid-cols-1.xl\\:grid-cols-5.lg\\:grid-cols-4 {
+        grid-template-columns: 3fr 2fr;
+        gap: 2rem;
+    }
+    
+    .chat-container {
+        min-width: 380px;
+    }
+    
+    #chat-messages {
+        min-height: 14rem;
+        max-height: 24rem;
+    }
+}
+
+/* Desktop responsive */
+@media (min-width: 1024px) and (max-width: 1279px) {
+    .grid.grid-cols-1.xl\\:grid-cols-5.lg\\:grid-cols-4 {
+        grid-template-columns: 5fr 3fr;
+        gap: 1.5rem;
+    }
+    
+    .chat-container {
+        min-width: 320px;
+    }
+}
+
+/* Chat specific responsive improvements */
+.chat-input-container {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    align-items: stretch;
+}
+
+.chat-input-container input {
+    flex: 1;
+    min-width: 0;
+}
+
+.chat-input-container button {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Ensure chat messages area is properly sized */
+#chat-messages {
+    min-height: 12rem;
+    max-height: 20rem;
+}
+
+/* Improve chat container width on different screen sizes */
+.chat-container {
+    min-width: 320px;
+}
+
+/* Better spacing for chat bubbles */
+.chat-bubble {
+    margin-bottom: 0.75rem;
+}
+
+.chat-bubble:last-child {
+    margin-bottom: 0;
+}
+
+/* Enhanced button styling for better visibility */
+#voice-btn {
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button[onclick="sendMessage()"] {
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 640px) {
+    #chat-messages {
+        min-height: 8rem;
+        max-height: 15rem;
+    }
+    
+    /* On very small screens, stack input elements if needed */
+    .chat-input-container {
+        flex-wrap: wrap;
+    }
+    
+    .chat-input-container input {
+        flex-basis: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .chat-input-container button {
+        flex: 1;
+    }
 }
 
 /* Filter buttons */

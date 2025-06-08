@@ -248,11 +248,25 @@ class ExpenseCalendar {
     updateDayHeaders() {
         const headerElements = document.querySelectorAll('.calendar-day-header');
         const currentLang = window.i18n?.currentLang || 'vi';
-        const dayNames = currentLang === 'vi' ? this.dayNamesVi : this.dayNamesEn;
+        
+        // Use i18n translations if available, fallback to hardcoded
+        const dayTranslationKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         
         headerElements.forEach((element, index) => {
-            if (index < dayNames.length) {
-                element.textContent = dayNames[index];
+            if (index < dayTranslationKeys.length) {
+                const translationKey = dayTranslationKeys[index];
+                
+                // Try to get translation from i18n
+                if (window.i18n && window.i18n.t) {
+                    element.textContent = window.i18n.t(translationKey);
+                } else {
+                    // Fallback to hardcoded names
+                    const dayNames = currentLang === 'vi' ? this.dayNamesVi : this.dayNamesEn;
+                    element.textContent = dayNames[index];
+                }
+                
+                // Update data-i18n attribute for future updates
+                element.setAttribute('data-i18n', translationKey);
             }
         });
     }

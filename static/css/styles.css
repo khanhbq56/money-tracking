@@ -226,26 +226,64 @@
     background: #94a3b8;
 }
 
-/* Language switcher */
-#language-switcher {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 8px 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-    outline: none;
-    transition: all 0.2s ease;
+/* Language switcher - Enhanced Design */
+#language-switcher-btn {
+    position: relative;
+    z-index: 20;
 }
 
-#language-switcher:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+#language-switcher-btn:hover #dropdown-arrow {
+    transform: rotate(180deg);
 }
 
-#language-switcher:hover {
-    border-color: #d1d5db;
+#language-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+
+.language-option {
+    cursor: pointer;
+    user-select: none;
+}
+
+.language-option:hover {
+    background: linear-gradient(to right, #eef2ff, #f3e8ff);
+}
+
+.language-option.active {
+    background: linear-gradient(to right, #6366f1, #8b5cf6);
+    color: white;
+}
+
+.language-option.active:hover {
+    background: linear-gradient(to right, #4f46e5, #7c3aed);
+}
+
+/* Animation for dropdown */
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#language-dropdown.show {
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+/* Click outside handling */
+.language-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
 }
 
 /* Dashboard cards hover effects */

@@ -110,7 +110,7 @@ class Dashboard {
      */
     async fetchMonthlyTotals() {
         try {
-            const response = await fetch('/api/transactions/monthly-totals/');
+            const response = await fetch('/api/monthly-totals/');
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
@@ -124,7 +124,7 @@ class Dashboard {
                     expense: Math.abs(data.monthly_totals.expense || 0),
                     saving: Math.abs(data.monthly_totals.saving || 0),
                     investment: Math.abs(data.monthly_totals.investment || 0),
-                    monthly_net: data.monthly_totals.net || 0
+                    monthly_net: data.monthly_totals.net_total || 0
                 };
             }
             
@@ -140,7 +140,7 @@ class Dashboard {
      */
     async fetchTodaySummary() {
         try {
-            const response = await fetch('/api/transactions/today-summary/');
+            const response = await fetch('/api/today-summary/');
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }

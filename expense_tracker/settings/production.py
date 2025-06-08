@@ -55,7 +55,7 @@ CORS_ALLOWED_ORIGINS = config(
 )
 
 # Static files settings for production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # Ensure static files directory exists
 import os

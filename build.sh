@@ -28,9 +28,17 @@ ls -la staticfiles/
 ls -la staticfiles/js/ || echo "No js directory found"
 ls -la staticfiles/css/ || echo "No css directory found"
 
+# Make fresh migrations to ensure all models are included
+echo "🔄 Making fresh migrations..."
+uv run python manage.py makemigrations --verbosity=2
+
 # Run database migrations
 echo "🗄️ Running database migrations..."
-uv run python manage.py migrate
+uv run python manage.py migrate --verbosity=2
+
+# Show migration status
+echo "📊 Migration status:"
+uv run python manage.py showmigrations
 
 # Create cache table
 echo "💾 Creating cache table..."

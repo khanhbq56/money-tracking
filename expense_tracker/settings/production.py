@@ -19,15 +19,16 @@ ALLOWED_HOSTS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
-# Database - use PostgreSQL in production
-if dj_database_url:
+# Database - use Railway's PostgreSQL if available, otherwise SQLite
+DATABASE_URL = config('DATABASE_URL', default=None)
+
+if DATABASE_URL and dj_database_url:
+    # Use PostgreSQL from Railway
     DATABASES = {
-        'default': dj_database_url.parse(
-            config('DATABASE_URL', default='sqlite:///db.sqlite3')
-        )
+        'default': dj_database_url.parse(DATABASE_URL)
     }
 else:
-    # Fallback to SQLite if dj_database_url is not available
+    # Fallback to SQLite for development/testing
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

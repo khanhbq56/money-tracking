@@ -200,7 +200,7 @@ class ExpenseCalendar {
      */
     getFallbackData() {
         const today = new Date();
-        const todayKey = today.toISOString().split('T')[0];
+        const todayKey = this.formatDateForDatabase(today);
         
         return {
             [todayKey]: {
@@ -323,8 +323,8 @@ class ExpenseCalendar {
             dayDiv.classList.add('today');
         }
         
-        // Get day data
-        const dateKey = date.toISOString().split('T')[0];
+        // Get day data - use local date format to match database
+        const dateKey = this.formatDateForDatabase(date);
         const dayData = this.transactions[dateKey] || { transactions: [], total: 0, counts: {} };
         
         // Create day number
@@ -518,7 +518,7 @@ class ExpenseCalendar {
      */
     async onDayClick(date, dayData) {
         console.log('Day clicked:', date, dayData);
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = this.formatDateForDatabase(date);
         
         try {
             // Load detailed day data from API
@@ -645,6 +645,16 @@ class ExpenseCalendar {
         }
     }
     
+    /**
+     * Format date for database matching (avoid timezone issues)
+     */
+    formatDateForDatabase(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     /**
      * Format money amount
      */

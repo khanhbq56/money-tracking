@@ -356,4 +356,88 @@ document.addEventListener('DOMContentLoaded', function() {
 // Export for use in other modules
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ExpenseTrackerApp;
-} 
+}
+
+// Global event system for component communication
+class EventBus {
+    constructor() {
+        this.events = {};
+    }
+
+    on(event, callback) {
+        if (!this.events[event]) {
+            this.events[event] = [];
+        }
+        this.events[event].push(callback);
+    }
+
+    off(event, callback) {
+        if (!this.events[event]) return;
+        this.events[event] = this.events[event].filter(cb => cb !== callback);
+    }
+
+    emit(event, data) {
+        if (!this.events[event]) return;
+        this.events[event].forEach(callback => {
+            try {
+                callback(data);
+            } catch (error) {
+                console.error(`Error in event handler for ${event}:`, error);
+            }
+        });
+    }
+}
+
+// Global event bus instance
+window.eventBus = new EventBus();
+
+// Transaction update event handlers
+window.eventBus.on('transactionAdded', (data) => {
+    console.log('Transaction added, refreshing components:', data);
+    
+    // Refresh dashboard
+    if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
+        window.dashboard.refreshDashboard();
+    }
+    
+    // Refresh calendar
+    if (window.calendar && typeof window.calendar.refreshCalendar === 'function') {
+        window.calendar.refreshCalendar();
+    }
+    
+    // Show success notification
+    if (window.app && typeof window.app.showNotification === 'function') {
+        const message = window.i18n?.currentLang === 'vi' 
+            ? '✅ Đã thêm giao dịch thành công!'
+            : '✅ Transaction added successfully!';
+        window.app.showNotification(message, 'success');
+    }
+});
+
+window.eventBus.on('transactionUpdated', (data) => {
+    console.log('Transaction updated, refreshing components:', data);
+    
+    // Refresh dashboard
+    if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
+        window.dashboard.refreshDashboard();
+    }
+    
+    // Refresh calendar
+    if (window.calendar && typeof window.calendar.refreshCalendar === 'function') {
+        window.calendar.refreshCalendar();
+    }
+});
+
+window.eventBus.on('transactionDeleted', (data) => {
+    console.log('Transaction deleted, refreshing components:', data);
+    
+    // Refresh dashboard
+    if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
+        window.dashboard.refreshDashboard();
+    }
+    
+    // Refresh calendar
+    if (window.calendar && typeof window.calendar.refreshCalendar === 'function') {
+        window.calendar.refreshCalendar();
+    }
+}); 

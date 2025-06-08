@@ -223,12 +223,20 @@ class AIChat {
                 
             this.addMessage(successText, 'bot');
             
-            // Update dashboard and calendar
-            if (window.dashboard) {
-                window.dashboard.refreshDashboard();
-            }
-            if (window.calendar) {
-                window.calendar.loadTransactions();
+            // Broadcast transaction added event
+            if (window.eventBus) {
+                window.eventBus.emit('transactionAdded', {
+                    transaction: result.transaction,
+                    source: 'chat'
+                });
+            } else {
+                // Fallback to direct calls
+                if (window.dashboard) {
+                    window.dashboard.refreshDashboard();
+                }
+                if (window.calendar) {
+                    window.calendar.refreshCalendar();
+                }
             }
             
             // Remove the confirmation buttons

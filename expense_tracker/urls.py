@@ -34,6 +34,10 @@ urlpatterns += [
     # API endpoints (outside i18n patterns)
     path('api/', include('transactions.api_urls')),
     path('api/ai_chat/', include('ai_chat.urls')),
+    
+    # API aliases for frontend compatibility
+    path('api/meme/', include('ai_chat.urls')),  # /api/meme/weekly/ -> ai_chat meme endpoints
+    path('api/chat/', include('ai_chat.urls')),  # /api/chat/process/, /api/chat/confirm/ -> ai_chat endpoints
 ]
 
 # Serve static and media files during development

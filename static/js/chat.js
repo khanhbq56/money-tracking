@@ -25,7 +25,7 @@ class AIChat {
         }
         
         // Add welcome message if no messages exist
-        if (this.chatContainer && this.chatContainer.children.length <= 1) {
+        if (this.chatContainer && this.chatContainer.children.length === 0) {
             this.addWelcomeMessage();
         }
     }

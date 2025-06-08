@@ -281,25 +281,36 @@ class Dashboard {
         
         if (!card || !textElement) return;
         
-        // Remove existing color classes
-        card.classList.remove(
-            'from-purple-50', 'to-indigo-50', 'border-purple-200',
-            'from-green-50', 'to-emerald-50', 'border-green-200',
-            'from-red-50', 'to-pink-50', 'border-red-200'
-        );
-        textElement.classList.remove('text-purple-700', 'text-green-700', 'text-red-700');
-        
-        // Add appropriate color classes
-        if (netTotal > 0) {
-            card.classList.add('from-green-50', 'to-emerald-50', 'border-green-200');
-            textElement.classList.add('text-green-700');
-        } else if (netTotal < 0) {
-            card.classList.add('from-red-50', 'to-pink-50', 'border-red-200');
-            textElement.classList.add('text-red-700');
-        } else {
-            card.classList.add('from-purple-50', 'to-indigo-50', 'border-purple-200');
-            textElement.classList.add('text-purple-700');
-        }
+        // Use timeout to ensure DOM has been updated first
+        setTimeout(() => {
+            // Remove ALL existing gradient and border classes more thoroughly
+            card.className = card.className
+                .replace(/from-\w+-\d+/g, '')
+                .replace(/to-\w+-\d+/g, '')
+                .replace(/border-\w+-\d+/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            
+            textElement.className = textElement.className
+                .replace(/text-\w+-\d+/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+            
+            // Add appropriate color classes based on net total
+            if (netTotal > 0) {
+                // Positive - Green colors
+                card.classList.add('from-green-50', 'to-emerald-50', 'border-green-200');
+                textElement.classList.add('text-green-700');
+            } else if (netTotal < 0) {
+                // Negative - Red colors  
+                card.classList.add('from-red-50', 'to-pink-50', 'border-red-200');
+                textElement.classList.add('text-red-700');
+            } else {
+                // Zero - Purple colors (default)
+                card.classList.add('from-purple-50', 'to-indigo-50', 'border-purple-200');
+                textElement.classList.add('text-purple-700');
+            }
+        }, 50);
     }
     
     /**

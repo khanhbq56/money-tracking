@@ -167,10 +167,22 @@ def confirm_transaction(request):
         # Update monthly totals
         update_monthly_totals_on_transaction_change(transaction)
         
+        # Prepare transaction data for response
+        transaction_response_data = {
+            'id': transaction.id,
+            'transaction_type': transaction.transaction_type,
+            'amount': float(transaction.amount),
+            'description': transaction.description,
+            'expense_category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
+            'date': transaction_date.isoformat(),
+            'ai_confidence': transaction.ai_confidence
+        }
+        
         response_serializer = TransactionConfirmResponseSerializer({
             'success': True,
             'transaction_id': transaction.id,
             'transaction_date': transaction_date,
+            'transaction': transaction_response_data,
             'message': _('Transaction confirmed successfully')
         })
         
@@ -416,10 +428,10 @@ def get_calendar_data(request, year, month):
             # Add transaction data
             transaction_data = {
                 'id': transaction.id,
-                'type': transaction.transaction_type,
+                'transaction_type': transaction.transaction_type,  # Changed from 'type' to 'transaction_type'
                 'amount': float(transaction.amount),
                 'description': transaction.description,
-                'category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
+                'expense_category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
                 'icon': transaction.get_icon(),
                 'confidence': transaction.ai_confidence
             }
@@ -486,10 +498,10 @@ def get_daily_summary(request, date):
         for transaction in transactions:
             transaction_data = {
                 'id': transaction.id,
-                'type': transaction.transaction_type,
+                'transaction_type': transaction.transaction_type,  # Changed from 'type' to 'transaction_type'
                 'amount': float(transaction.amount),
                 'description': transaction.description,
-                'category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
+                'expense_category': transaction.expense_category if transaction.transaction_type == 'expense' else None,
                 'icon': transaction.get_icon(),
                 'confidence': transaction.ai_confidence,
                 'created_at': transaction.created_at.isoformat()

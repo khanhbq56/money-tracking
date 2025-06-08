@@ -15,7 +15,7 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Allowed hosts for production
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,*.railway.app',
+    default='localhost,127.0.0.1,*.railway.app,healthcheck.railway.app',
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
@@ -56,6 +56,12 @@ CORS_ALLOWED_ORIGINS = config(
 
 # Static files settings for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Ensure static files directory exists
+import os
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+if not os.path.exists(STATIC_ROOT):
+    os.makedirs(STATIC_ROOT, exist_ok=True)
 
 # Cache configuration for production
 CACHES = {

@@ -16,7 +16,10 @@ fi
 echo "📥 Installing dependencies with UV..."
 uv sync --frozen
 
-# Collect static files
+# Create staticfiles directory and collect static files
+echo "📁 Creating staticfiles directory..."
+mkdir -p staticfiles
+
 echo "📁 Collecting static files..."
 uv run python manage.py collectstatic --noinput
 

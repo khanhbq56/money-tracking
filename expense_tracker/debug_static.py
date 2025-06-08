@@ -35,4 +35,5 @@ def debug_static_files(request):
         if os.path.exists(source_js_dir):
             response_data['source_js_files'] = os.listdir(source_js_dir)
     
-    return JsonResponse(response_data, indent=2) 
+    import json
+    return JsonResponse(response_data, json_dumps_params={'indent': 2}) 

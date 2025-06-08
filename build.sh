@@ -32,6 +32,10 @@ ls -la staticfiles/css/ || echo "No css directory found"
 echo "🗄️ Running database migrations..."
 uv run python manage.py migrate
 
+# Create cache table
+echo "💾 Creating cache table..."
+uv run python manage.py createcachetable
+
 # Compile translation files
 echo "🌍 Compiling translation messages..."
 uv run python manage.py compilemessages

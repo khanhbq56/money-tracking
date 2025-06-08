@@ -364,8 +364,8 @@ def future_projection(request):
                 cursor.execute("SELECT COUNT(*) FROM transactions_transaction LIMIT 1")
                 
             # Initialize calculator if table exists
-            calculator = FutureProjectionCalculator()
-            projection_data = calculator.calculate_projection(months)
+        calculator = FutureProjectionCalculator()
+        projection_data = calculator.calculate_projection(months)
             
         except OperationalError:
             # Return mock data if table doesn't exist

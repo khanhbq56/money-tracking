@@ -247,28 +247,28 @@ class ExpenseCalendar {
      */
     updateDayHeaders() {
         const headerElements = document.querySelectorAll('.calendar-day-header');
-        const currentLang = window.i18n?.currentLang || 'vi';
         
-        // Use i18n translations if available, fallback to hardcoded
-        const dayTranslationKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        // Use i18n keys for proper translation
+        const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         
         headerElements.forEach((element, index) => {
-            if (index < dayTranslationKeys.length) {
-                const translationKey = dayTranslationKeys[index];
-                
+            if (index < dayKeys.length && window.i18n) {
                 // Try to get translation from i18n
-                if (window.i18n && window.i18n.t) {
-                    element.textContent = window.i18n.t(translationKey);
+                const translatedText = window.i18n.t(dayKeys[index]);
+                if (translatedText && translatedText !== dayKeys[index]) {
+                    element.textContent = translatedText;
                 } else {
-                    // Fallback to hardcoded names
+                    // Fallback to hardcoded names if i18n not available
+                    const currentLang = window.i18n?.currentLang || 'vi';
                     const dayNames = currentLang === 'vi' ? this.dayNamesVi : this.dayNamesEn;
-                    element.textContent = dayNames[index];
+                    if (index < dayNames.length) {
+                        element.textContent = dayNames[index];
+                    }
                 }
-                
-                // Update data-i18n attribute for future updates
-                element.setAttribute('data-i18n', translationKey);
             }
         });
+        
+        console.log('📅 Calendar day headers updated for language:', window.i18n?.currentLang || 'vi');
     }
     
     /**

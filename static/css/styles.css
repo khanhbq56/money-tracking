@@ -226,64 +226,42 @@
     background: #94a3b8;
 }
 
-/* Language switcher - Enhanced Design */
-#language-switcher-btn {
-    position: relative;
-    z-index: 20;
-}
-
-#language-switcher-btn:hover #dropdown-arrow {
-    transform: rotate(180deg);
-}
-
-#language-dropdown.show {
-    opacity: 1;
-    visibility: visible;
-    transform: scale(1);
-}
-
-.language-option {
+/* Enhanced Language switcher */
+#language-switcher {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 10px 32px 10px 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    user-select: none;
 }
 
-.language-option:hover {
-    background: linear-gradient(to right, #eef2ff, #f3e8ff);
+#language-switcher:hover {
+    border-color: #a855f7;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+    transform: translateY(-1px);
 }
 
-.language-option.active {
-    background: linear-gradient(to right, #6366f1, #8b5cf6);
-    color: white;
+#language-switcher:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1), 0 4px 12px rgba(168, 85, 247, 0.15);
+    transform: translateY(-1px);
 }
 
-.language-option.active:hover {
-    background: linear-gradient(to right, #4f46e5, #7c3aed);
+/* Language switcher dropdown arrow styling */
+.relative {
+    display: inline-block;
 }
 
-/* Animation for dropdown */
-@keyframes dropdownSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-#language-dropdown.show {
-    animation: dropdownSlideIn 0.2s ease-out;
-}
-
-/* Click outside handling */
-.language-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
+.relative:hover svg {
+    color: #8b5cf6;
+    transform: translateY(1px);
+    transition: all 0.2s ease;
 }
 
 /* Dashboard cards hover effects */

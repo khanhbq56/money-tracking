@@ -231,10 +231,10 @@ class AIChat {
                 });
             } else {
                 // Fallback to direct calls
-                if (window.dashboard) {
-                    window.dashboard.refreshDashboard();
-                }
-                if (window.calendar) {
+            if (window.dashboard) {
+                window.dashboard.refreshDashboard();
+            }
+            if (window.calendar) {
                     window.calendar.refreshCalendar();
                 }
             }

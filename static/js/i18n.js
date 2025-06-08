@@ -57,7 +57,15 @@ class I18n {
                 'tieng_viet': 'Tiếng Việt',
                 'english': 'English',
                 'expense_tracker': 'Theo Dõi Chi Tiêu',
-                'financial_calendar': 'Lịch Tài Chính'
+                'financial_calendar': 'Lịch Tài Chính',
+                // Days of week
+                'monday': 'Thứ 2',
+                'tuesday': 'Thứ 3',
+                'wednesday': 'Thứ 4',
+                'thursday': 'Thứ 5',
+                'friday': 'Thứ 6',
+                'saturday': 'Thứ 7',
+                'sunday': 'CN'
             },
             'en': {
                 'expense': 'Expense',
@@ -85,7 +93,15 @@ class I18n {
                 'tieng_viet': 'Tiếng Việt',
                 'english': 'English',
                 'expense_tracker': 'Expense Tracker',
-                'financial_calendar': 'Financial Calendar'
+                'financial_calendar': 'Financial Calendar',
+                // Days of week
+                'monday': 'Mon',
+                'tuesday': 'Tue',
+                'wednesday': 'Wed',
+                'thursday': 'Thu',
+                'friday': 'Fri',
+                'saturday': 'Sat',
+                'sunday': 'Sun'
             }
         };
         
@@ -126,6 +142,15 @@ class I18n {
         
         // Update HTML lang attribute
         document.documentElement.lang = lang;
+        
+        // Dispatch languageChanged event for calendar and other components
+        const languageChangeEvent = new CustomEvent('languageChanged', {
+            detail: { 
+                language: lang,
+                previousLanguage: this.currentLang 
+            }
+        });
+        document.dispatchEvent(languageChangeEvent);
         
         console.log(`Language changed to: ${lang}`);
     }

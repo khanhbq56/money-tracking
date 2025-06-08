@@ -11,30 +11,14 @@
             <!-- Language Switcher -->
             <div class="flex justify-end mb-4">
                 <div class="relative">
-                    <button id="language-switcher-btn" class="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border border-white/20 backdrop-blur-sm">
-                        <span id="current-flag">🇻🇳</span>
-                        <span id="current-lang" class="font-medium">{% trans "Tiếng Việt" %}</span>
-                        <svg class="w-4 h-4 transition-transform duration-200" id="dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    <select id="language-switcher" class="appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
+                        <option value="vi">🇻🇳 {% trans "Tiếng Việt" %}</option>
+                        <option value="en">🇺🇸 {% trans "English" %}</option>
+                    </select>
+                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
-                    </button>
-                    <div id="language-dropdown" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 z-50 opacity-0 invisible transform scale-95 transition-all duration-200 origin-top-right">
-                        <div class="py-2">
-                            <button class="language-option w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-700 transition-all duration-200" data-lang="vi">
-                                <span class="text-xl">🇻🇳</span>
-                                <div class="flex flex-col items-start">
-                                    <span class="font-medium">{% trans "Tiếng Việt" %}</span>
-                                    <span class="text-xs text-gray-500">Vietnamese</span>
-                                </div>
-                            </button>
-                            <button class="language-option w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 hover:text-indigo-700 transition-all duration-200" data-lang="en">
-                                <span class="text-xl">🇺🇸</span>
-                                <div class="flex flex-col items-start">
-                                    <span class="font-medium">{% trans "English" %}</span>
-                                    <span class="text-xs text-gray-500">English</span>
-                                </div>
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>

@@ -33,7 +33,7 @@ urlpatterns += [
     
     # API endpoints (outside i18n patterns)
     path('api/', include('transactions.api_urls')),
-    path('api/', include('ai_chat.urls')),
+    path('api/ai_chat/', include('ai_chat.urls')),
 ]
 
 # Serve static and media files during development

@@ -354,11 +354,35 @@ def future_projection(request):
         )
     
     try:
-        # Initialize calculator
-        calculator = FutureProjectionCalculator()
+        # Simple mock projection when DB is empty or tables don't exist
+        from django.db import connection
+        from django.db.utils import OperationalError
         
-        # Calculate projection
-        projection_data = calculator.calculate_projection(months)
+        try:
+            # Try to check if table exists
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT COUNT(*) FROM transactions_transaction LIMIT 1")
+                
+            # Initialize calculator if table exists
+            calculator = FutureProjectionCalculator()
+            projection_data = calculator.calculate_projection(months)
+            
+        except OperationalError:
+            # Return mock data if table doesn't exist
+            projection_data = {
+                'months': months,
+                'display_text': f'{months} tháng tới',
+                'base_projections': {
+                    'expense': {'amount': 0, 'formatted': '0₫', 'monthly_avg': 0},
+                    'saving': {'amount': 0, 'formatted': '0₫', 'monthly_avg': 0},
+                    'investment': {'amount': 0, 'formatted': '0₫', 'monthly_avg': 0},
+                    'net': {'amount': 0, 'formatted': '0₫', 'is_positive': True}
+                },
+                'scenarios': [],
+                'goals': [],
+                'patterns': {'monthly_averages': {'expense': 0, 'saving': 0, 'investment': 0}},
+                'generated_at': datetime.now().isoformat()
+            }
         
         return Response({
             'success': True,

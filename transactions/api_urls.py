@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from ai_chat.views import process_chat_message
 
 # Create router for viewsets
 router = DefaultRouter()
@@ -26,4 +27,7 @@ urlpatterns = [
     # Future projection endpoints (Phase 8)
     path('future-projection/', views.future_projection, name='future-projection'),
     path('monthly-analysis/', views.monthly_analysis, name='monthly-analysis'),
+    
+    # Chat processing endpoint
+    path('chat/process/', process_chat_message, name='chat-process'),
 ] 

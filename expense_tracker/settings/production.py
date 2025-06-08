@@ -57,11 +57,21 @@ CORS_ALLOWED_ORIGINS = config(
 # Static files settings for production
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
+# Whitenoise configuration
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_AUTOREFRESH = True
+
 # Ensure static files directory exists
 import os
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 if not os.path.exists(STATIC_ROOT):
     os.makedirs(STATIC_ROOT, exist_ok=True)
+
+# Static files configuration
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Cache configuration for production
 CACHES = {

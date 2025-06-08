@@ -7,6 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from .health import health_check
+from .debug_static import debug_static_files
 
 # Main app views (template rendering) - MUST come first
 urlpatterns = i18n_patterns(
@@ -25,6 +26,7 @@ urlpatterns += [
     # Basic health check
     path('', basic_health, name='basic_health'),
     path('health/', health_check, name='health_check'),
+    path('debug-static/', debug_static_files, name='debug_static'),
     
     # Admin
     path('admin/', admin.site.urls),

@@ -21,7 +21,12 @@ echo "📁 Creating staticfiles directory..."
 mkdir -p staticfiles
 
 echo "📁 Collecting static files..."
-uv run python manage.py collectstatic --noinput
+uv run python manage.py collectstatic --noinput --verbosity=2
+
+echo "📋 Listing collected static files..."
+ls -la staticfiles/
+ls -la staticfiles/js/ || echo "No js directory found"
+ls -la staticfiles/css/ || echo "No css directory found"
 
 # Run database migrations
 echo "🗄️ Running database migrations..."

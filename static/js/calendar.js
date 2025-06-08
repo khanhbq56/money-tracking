@@ -357,12 +357,14 @@ class ExpenseCalendar {
         
         // Create day total badge (only for filtered transactions)
         if (filteredTransactions.length > 0) {
+            // Calculate total as sum of absolute values (total money moved in a day)
+            // Similar to "today total" and "net total" logic
             const filteredTotal = filteredTransactions.reduce((sum, t) => {
-                const amount = t.transaction_type === 'expense' ? -Math.abs(t.amount) : Math.abs(t.amount);
+                const amount = Math.abs(t.amount); // Always use absolute value
                 return sum + amount;
             }, 0);
             
-            if (filteredTotal !== 0) {
+            if (filteredTotal > 0) {
                 const totalBadge = this.createTotalBadge(filteredTotal);
                 dayDiv.appendChild(totalBadge);
             }
@@ -460,12 +462,14 @@ class ExpenseCalendar {
      */
     createTotalBadge(total) {
         const badge = document.createElement('div');
-        badge.className = `day-total ${total > 0 ? 'positive' : 'negative'}`;
+        // Always use positive styling since we're showing absolute values (total money moved)
+        badge.className = `day-total positive`;
         
         const amount = Math.abs(total);
         const amountText = amount >= 1000000 ? `${(amount/1000000).toFixed(1)}M` : `${(amount/1000).toFixed(0)}k`;
-        badge.textContent = `${total > 0 ? '+' : ''}${amountText}`;
-        badge.title = this.formatMoney(total);
+        // Always show with + sign since it represents total money movement
+        badge.textContent = `+${amountText}`;
+        badge.title = this.formatMoney(amount);
         
         return badge;
     }

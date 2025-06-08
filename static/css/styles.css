@@ -258,25 +258,25 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-/* Debug CSS to force stable colors for monthly total card */
+/* Force stable purple colors for monthly total card */
 .dashboard-card:has(#monthly-net-total) {
-    /* Ensure we target the right card */
+    /* Always purple gradient - user requested consistent purple */
+    background: linear-gradient(to bottom right, rgb(250 245 255), rgb(233 213 255)) !important;
+    border-color: rgb(196 181 253) !important;
     position: relative;
 }
 
-.dashboard-card:has(#monthly-net-total).from-purple-50 {
+.dashboard-card:has(#monthly-net-total) #monthly-net-total {
+    /* Always purple text */
+    color: rgb(126 34 206) !important;
+}
+
+/* Ensure purple styling overrides any dynamic classes */
+.dashboard-card:has(#monthly-net-total).from-purple-50,
+.dashboard-card:has(#monthly-net-total).from-green-50,
+.dashboard-card:has(#monthly-net-total).from-red-50 {
     background: linear-gradient(to bottom right, rgb(250 245 255), rgb(233 213 255)) !important;
     border-color: rgb(196 181 253) !important;
-}
-
-.dashboard-card:has(#monthly-net-total).from-green-50 {
-    background: linear-gradient(to bottom right, rgb(240 253 244), rgb(187 247 208)) !important;
-    border-color: rgb(34 197 94) !important;
-}
-
-.dashboard-card:has(#monthly-net-total).from-red-50 {
-    background: linear-gradient(to bottom right, rgb(254 242 242), rgb(254 202 202)) !important;
-    border-color: rgb(239 68 68) !important;
 }
 
 /* Loading states */

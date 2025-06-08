@@ -8,10 +8,11 @@ function testDashboardMonthlyTotalColor() {
     console.log('🧪 Testing Dashboard Monthly Total Color Stability...');
     
     // Simulate different net total values and check color consistency
+    // Updated: Monthly total should ALWAYS be purple regardless of value
     const testCases = [
-        { netTotal: 1000000, expectedColorClass: 'from-green-50', description: 'Positive balance' },
-        { netTotal: -500000, expectedColorClass: 'from-red-50', description: 'Negative balance' },
-        { netTotal: 0, expectedColorClass: 'from-purple-50', description: 'Zero balance' }
+        { netTotal: 1000000, expectedColorClass: 'from-purple-50', description: 'Positive balance (should be purple)' },
+        { netTotal: -500000, expectedColorClass: 'from-purple-50', description: 'Negative balance (should be purple)' },
+        { netTotal: 0, expectedColorClass: 'from-purple-50', description: 'Zero balance (should be purple)' }
     ];
     
     testCases.forEach(testCase => {

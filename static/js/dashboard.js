@@ -296,20 +296,10 @@ class Dashboard {
                 .replace(/\s+/g, ' ')
                 .trim();
             
-            // Add appropriate color classes based on net total
-            if (netTotal > 0) {
-                // Positive - Green colors
-                card.classList.add('from-green-50', 'to-emerald-50', 'border-green-200');
-                textElement.classList.add('text-green-700');
-            } else if (netTotal < 0) {
-                // Negative - Red colors  
-                card.classList.add('from-red-50', 'to-pink-50', 'border-red-200');
-                textElement.classList.add('text-red-700');
-            } else {
-                // Zero - Purple colors (default)
-                card.classList.add('from-purple-50', 'to-indigo-50', 'border-purple-200');
-                textElement.classList.add('text-purple-700');
-            }
+            // ALWAYS use purple colors for monthly total (as requested by user)
+            // Regardless of positive, negative, or zero value
+            card.classList.add('from-purple-50', 'to-indigo-50', 'border-purple-200');
+            textElement.classList.add('text-purple-700');
         }, 50);
     }
     

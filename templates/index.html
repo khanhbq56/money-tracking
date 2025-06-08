@@ -95,9 +95,9 @@
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="grid grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 gap-6">
-            <!-- Calendar - Main Area -->
-            <div class="xl:col-span-3 lg:col-span-2">
+        <div class="grid grid-cols-1 gap-6">
+            <!-- Calendar - Main Area (expanded to take full width) -->
+            <div class="col-span-1">
                 <div class="calendar-container">
                     <!-- Calendar Header -->
                     <div class="calendar-header flex justify-between items-center">
@@ -151,103 +151,92 @@
                 </div>
             </div>
 
-            <!-- Right Sidebar -->
-            <div class="xl:col-span-2 lg:col-span-2 space-y-6">
-                <!-- AI Chat -->
-                <div class="chat-container bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4">
-                        <h3 class="font-bold text-white flex items-center" data-i18n="ai_assistant">
-                            🤖 {% trans "AI Assistant" %}
-                            <span class="ml-2 px-2 py-1 text-xs bg-white/20 text-white rounded-full backdrop-blur" data-i18n="online">{% trans "Online" %}</span>
-                        </h3>
+
+        </div>
+    </div>
+
+    <!-- Floating Action Button for Chat -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button 
+            id="chat-fab"
+            onclick="toggleChatModal()"
+            class="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-300 flex items-center justify-center group"
+            title="{% trans 'AI Assistant' %}"
+        >
+            <svg class="w-8 h-8 group-hover:rotate-12 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24">
+                <!-- Robot icon -->
+                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L12 1L3 7V9C3 10.1 3.9 11 5 11V16.5C5 17.3 5.7 18 6.5 18S8 17.3 8 16.5V14H16V16.5C16 17.3 16.7 18 17.5 18S19 17.3 19 16.5V11C20.1 11 21 10.1 21 9ZM7.5 12C6.7 12 6 11.3 6 10.5S6.7 9 7.5 9 9 9.7 9 10.5 8.3 12 7.5 12ZM16.5 12C15.7 12 15 11.3 15 10.5S15.7 9 16.5 9 18 9.7 18 10.5 17.3 12 16.5 12Z"/>
+            </svg>
+            <!-- Notification dot for new messages (initially hidden) -->
+            <div id="chat-notification" class="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full hidden animate-pulse"></div>
+        </button>
+    </div>
+
+    <!-- Chat Modal Overlay -->
+    <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-t-2xl flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="w-6 h-6 text-white mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L12 1L3 7V9C3 10.1 3.9 11 5 11V16.5C5 17.3 5.7 18 6.5 18S8 17.3 8 16.5V14H16V16.5C16 17.3 16.7 18 17.5 18S19 17.3 19 16.5V11C20.1 11 21 10.1 21 9ZM7.5 12C6.7 12 6 11.3 6 10.5S6.7 9 7.5 9 9 9.7 9 10.5 8.3 12 7.5 12ZM16.5 12C15.7 12 15 11.3 15 10.5S15.7 9 16.5 9 18 9.7 18 10.5 17.3 12 16.5 12Z"/>
+                        </svg>
+                        <h3 class="font-bold text-white" data-i18n="ai_assistant">{% trans "AI Assistant" %}</h3>
+                        <span class="ml-2 px-2 py-1 text-xs bg-white/20 text-white rounded-full backdrop-blur" data-i18n="online">{% trans "Online" %}</span>
                     </div>
-                    <div class="p-4">
-                        <div id="chat-messages" class="space-y-3 mb-4 h-48 overflow-y-auto custom-scrollbar">
-                            <div class="chat-bubble">
-                                <div class="bg-gray-100 rounded-lg p-3 text-sm">
-                                    <p data-i18n="welcome_message">👋 {% trans "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\"" %}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Enhanced input area with better responsive layout -->
-                        <div class="space-y-3">
-                            <div class="chat-input-container">
-                                <input 
-                                    type="text" 
-                                    id="chat-input" 
-                                    placeholder="{% trans "VD: coffee 25k, tiết kiệm 200k..." %}" 
-                                    data-i18n-placeholder="enter_transaction"
-                                    class="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                    onkeypress="handleChatKeyPress(event)"
-                                >
-                                <button 
-                                    id="voice-btn"
-                                    onclick="toggleVoiceInput()" 
-                                    class="flex-shrink-0 px-3 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm font-medium min-w-[44px]"
-                                    title="{% trans 'Voice Input (Ctrl+Shift+V)' %}"
-                                >
-                                    🎤
-                                </button>
-                                <button 
-                                    onclick="sendMessage()" 
-                                    class="flex-shrink-0 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition text-sm font-medium whitespace-nowrap"
-                                    data-i18n="send"
-                                >
-                                    {% trans "Gửi" %}
-                                </button>
-                            </div>
-                            <div class="flex flex-wrap gap-2">
-                                <button onclick="quickAdd('coffee 25k')" class="px-3 py-1 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition">☕ Coffee</button>
-                                <button onclick="quickAdd('ăn trưa 50k')" class="px-3 py-1 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition" data-i18n="lunch">🍜 {% trans "Ăn trưa" %}</button>
-                                <button onclick="quickAdd('tiết kiệm 200k')" class="px-3 py-1 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition" data-i18n="saving">💰 {% trans "Tiết Kiệm" %}</button>
+                    <button 
+                        onclick="toggleChatModal()"
+                        class="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Chat Messages -->
+                <div class="flex-1 p-4 overflow-hidden">
+                    <div id="chat-messages" class="space-y-3 h-64 overflow-y-auto custom-scrollbar">
+                        <div class="chat-bubble">
+                            <div class="bg-gray-100 rounded-lg p-3 text-sm">
+                                <p data-i18n="welcome_message">👋 {% trans "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\"" %}</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Quick Actions -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4">
-                        <h3 class="font-bold text-white" data-i18n="quick_actions">⚡ {% trans "Thao Tác Nhanh" %}</h3>
-                    </div>
-                    <div class="p-4 space-y-3">
-                        <button onclick="openFutureMe()" class="w-full px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:from-purple-600 hover:to-pink-600 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" data-i18n="future_me">
-                            🔮 {% trans "Future Me Simulator" %}
+                <!-- Chat Input -->
+                <div class="p-4 border-t bg-gray-50 rounded-b-2xl">
+                    <div class="flex space-x-2 mb-3">
+                        <input 
+                            type="text" 
+                            id="chat-input" 
+                            placeholder="{% trans "VD: coffee 25k, tiết kiệm 200k..." %}" 
+                            data-i18n-placeholder="enter_transaction"
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            onkeypress="handleChatKeyPress(event)"
+                        >
+                        <button 
+                            id="voice-btn"
+                            onclick="toggleVoiceInput()" 
+                            class="px-4 py-3 bg-orange-500 text-white rounded-xl hover:bg-orange-600 transition text-sm font-medium flex items-center justify-center"
+                            title="{% trans 'Voice Input (Ctrl+Shift+V)' %}"
+                        >
+                            🎤
                         </button>
-                        <button onclick="generateMeme()" class="w-full px-4 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" data-i18n="generate_meme">
-                            🎭 {% trans "Tạo Meme" %}
-                        </button>
-                        <button onclick="showStats()" class="w-full px-4 py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white rounded-xl hover:from-green-500 hover:to-blue-600 transition-all duration-300 text-sm font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" data-i18n="statistics">
-                            📊 {% trans "Thống Kê" %}
+                        <button 
+                            onclick="sendMessage()" 
+                            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition text-sm font-medium"
+                            data-i18n="send"
+                        >
+                            {% trans "Gửi" %}
                         </button>
                     </div>
-                </div>
-
-                <!-- Today Summary -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                    <div class="bg-gradient-to-r from-gray-600 to-gray-700 p-4">
-                        <h3 class="font-bold text-white" data-i18n="today">📝 {% trans "Hôm Nay" %}</h3>
-                    </div>
-                    <div class="p-4">
-                        <div id="today-summary" class="space-y-3 text-sm">
-                            <div class="flex justify-between items-center">
-                                <span class="text-red-600 flex items-center" data-i18n="lunch">🍜 {% trans "Ăn trưa" %}</span>
-                                <span class="text-red-600 font-semibold">-50,000₫</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-red-600 flex items-center">☕ Coffee</span>
-                                <span class="text-red-600 font-semibold">-25,000₫</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-green-600 flex items-center" data-i18n="saving">💰 {% trans "Tiết Kiệm" %}</span>
-                                <span class="text-green-600 font-semibold">+200,000₫</span>
-                            </div>
-                            <hr class="my-3 border-gray-200">
-                            <div class="flex justify-between items-center font-bold">
-                                <span class="text-gray-900" data-i18n="today_total">{% trans "Tổng hôm nay:" %}</span>
-                                <span class="text-green-600 text-lg">+125,000₫</span>
-                            </div>
-                        </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="quickAdd('coffee 25k')" class="px-3 py-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition">☕ Coffee</button>
+                        <button onclick="quickAdd('ăn trưa 50k')" class="px-3 py-2 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition" data-i18n="lunch">🍜 {% trans "Ăn trưa" %}</button>
+                        <button onclick="quickAdd('tiết kiệm 200k')" class="px-3 py-2 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition" data-i18n="saving">💰 {% trans "Tiết Kiệm" %}</button>
                     </div>
                 </div>
             </div>
@@ -262,8 +251,48 @@
     <!-- Load Meme Generator (Phase 9) -->
     <script src="{% static 'js/meme.js' %}"></script>
     
-    <!-- Placeholder functions for features to be implemented in later phases -->
+    <!-- Chat Modal Functions -->
     <script>
+        function toggleChatModal() {
+            const modal = document.getElementById('chat-modal');
+            const fab = document.getElementById('chat-fab');
+            
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                // Hide notification when opening modal
+                if (window.aiChat && window.aiChat.hideNotification) {
+                    window.aiChat.hideNotification();
+                }
+                // Focus the input when opening
+                setTimeout(() => {
+                    const input = document.getElementById('chat-input');
+                    if (input) input.focus();
+                }, 100);
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('chat-modal');
+            const modalContent = modal?.querySelector('.bg-white');
+            
+            modal?.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    toggleChatModal();
+                }
+            });
+
+            // ESC key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal?.classList.contains('hidden')) {
+                    toggleChatModal();
+                }
+            });
+        });
+
+        // Placeholder functions for features to be implemented in later phases
         function showStats() {
             console.log('Show Stats - to be implemented in Phase 10');
         }

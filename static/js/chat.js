@@ -156,10 +156,36 @@ class AIChat {
                     ${actionButtons}
                 </div>
             `;
+            
+            // Show notification if modal is closed
+            this.showNotificationIfModalClosed();
         }
         
         this.chatContainer.appendChild(messageDiv);
         this.scrollToBottom();
+    }
+    
+    showNotificationIfModalClosed() {
+        const modal = document.getElementById('chat-modal');
+        const notification = document.getElementById('chat-notification');
+        
+        if (modal && modal.classList.contains('hidden') && notification) {
+            notification.classList.remove('hidden');
+            
+            // Auto-hide notification after 5 seconds
+            setTimeout(() => {
+                if (notification && !notification.classList.contains('hidden')) {
+                    notification.classList.add('hidden');
+                }
+            }, 5000);
+        }
+    }
+    
+    hideNotification() {
+        const notification = document.getElementById('chat-notification');
+        if (notification) {
+            notification.classList.add('hidden');
+        }
     }
     
     showTypingIndicator() {

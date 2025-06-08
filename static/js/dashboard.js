@@ -353,7 +353,8 @@ class Dashboard {
         }).join('');
         
         const totalClass = totalToday >= 0 ? 'text-green-600' : 'text-red-600';
-        const totalSign = totalToday >= 0 ? '+' : '';
+        const totalSign = totalToday >= 0 ? '+' : '-';
+        const totalAbsAmount = Math.abs(totalToday);
         
         return `
             <div class="space-y-1">
@@ -362,7 +363,7 @@ class Dashboard {
             <hr class="my-3 border-gray-200">
             <div class="flex justify-between items-center font-bold">
                 <span class="text-gray-900">${window.i18n?.t('today_total') || 'Tổng hôm nay:'}</span>
-                <span class="${totalClass} text-lg">${totalSign}${this.formatAmount(Math.abs(totalToday))}</span>
+                <span class="${totalClass} text-lg">${totalSign}${this.formatAmount(totalAbsAmount)}</span>
             </div>
         `;
     }

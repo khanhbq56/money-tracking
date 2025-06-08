@@ -139,8 +139,8 @@ class I18n {
             const key = element.getAttribute('data-i18n');
             const translatedText = this.t(key);
             
-            // Preserve emojis and icons - improved handling
-            const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu;
+            // Preserve emojis and icons - enhanced handling for colored emojis
+            const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|🟢|🔴|🔵|📊|📅|🤖|⚡|📝/gu;
             const currentText = element.textContent.trim();
             const emojiMatch = currentText.match(emojiRegex);
             

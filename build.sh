@@ -41,6 +41,12 @@ uv run python manage.py makemigrations --verbosity=2
 echo "🗄️ Running database migrations..."
 uv run python manage.py migrate --verbosity=2 --run-syncdb
 
+# If migrations fail, try alternative approach
+if [ $? -ne 0 ]; then
+    echo "⚠️ Standard migration failed, trying alternative approach..."
+    uv run bash migrate.sh
+fi
+
 # Show migration status
 echo "📊 Migration status:"
 uv run python manage.py showmigrations

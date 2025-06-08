@@ -81,23 +81,77 @@ class Dashboard {
      */
     async loadDashboardData() {
         try {
-            // For Phase 3, get data from app mock data
-            // In later phases, this will fetch from API
-            const data = window.app.getCurrentData();
+            console.log('📊 Loading dashboard data from API...');
             
-            if (data && data.totals) {
-                this.updateDashboardCards(data.totals);
+            // Load monthly totals and today summary in parallel
+            const [monthlyData, todayData] = await Promise.all([
+                this.fetchMonthlyTotals(),
+                this.fetchTodaySummary()
+            ]);
+            
+            if (monthlyData) {
+                this.updateDashboardCards(monthlyData);
             }
             
-            if (data && data.todayTransactions) {
-                this.updateTodaySummary(data.todayTransactions);
+            if (todayData) {
+                this.updateTodaySummary(todayData.transactions);
             }
             
-            console.log('📄 Dashboard data loaded');
+            console.log('✅ Dashboard data loaded successfully');
             
         } catch (error) {
-            console.error('Error loading dashboard data:', error);
+            console.error('❌ Error loading dashboard data:', error);
             this.showErrorState();
+        }
+    }
+
+    /**
+     * Fetch monthly totals from API
+     */
+    async fetchMonthlyTotals() {
+        try {
+            const response = await fetch('/api/transactions/monthly-totals/');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('📈 Monthly totals fetched:', data);
+            
+            // Transform API response to expected format
+            if (data.monthly_totals) {
+                return {
+                    expense: Math.abs(data.monthly_totals.expense || 0),
+                    saving: Math.abs(data.monthly_totals.saving || 0),
+                    investment: Math.abs(data.monthly_totals.investment || 0),
+                    monthly_net: data.monthly_totals.net || 0
+                };
+            }
+            
+            return null;
+        } catch (error) {
+            console.error('❌ Error fetching monthly totals:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch today's summary from API
+     */
+    async fetchTodaySummary() {
+        try {
+            const response = await fetch('/api/transactions/today-summary/');
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('📅 Today summary fetched:', data);
+            
+            return data;
+        } catch (error) {
+            console.error('❌ Error fetching today summary:', error);
+            return null;
         }
     }
     
@@ -273,19 +327,26 @@ class Dashboard {
         
         let totalToday = 0;
         const transactionHTML = transactions.map(transaction => {
-            const amount = transaction.type === 'expense' ? -transaction.amount : transaction.amount;
-            totalToday += amount;
+            // Handle API format: transaction_type, amount
+            const transactionType = transaction.transaction_type;
+            const amount = parseFloat(transaction.amount);
+            const amountValue = transactionType === 'expense' ? -amount : amount;
+            totalToday += amountValue;
             
-            const colorClass = transaction.type === 'expense' ? 'text-red-600' : 'text-green-600';
-            const sign = transaction.type === 'expense' ? '-' : '+';
+            const colorClass = transactionType === 'expense' ? 'text-red-600' : 'text-green-600';
+            const sign = transactionType === 'expense' ? '-' : '+';
+            
+            // Get icon based on transaction type and category
+            const icon = this.getTransactionIcon(transactionType, transaction.expense_category);
             
             return `
-                <div class="flex justify-between items-center">
-                    <span class="${colorClass} flex items-center">
-                        ${transaction.icon} ${transaction.description}
+                <div class="flex justify-between items-center py-1">
+                    <span class="${colorClass} flex items-center text-sm">
+                        <span class="mr-2">${icon}</span>
+                        <span class="truncate max-w-32">${transaction.description}</span>
                     </span>
-                    <span class="${colorClass} font-semibold">
-                        ${sign}${this.formatAmount(transaction.amount).replace('₫', '')}₫
+                    <span class="${colorClass} font-semibold text-sm">
+                        ${sign}${this.formatAmount(amount)}
                     </span>
                 </div>
             `;
@@ -295,13 +356,42 @@ class Dashboard {
         const totalSign = totalToday >= 0 ? '+' : '';
         
         return `
-            ${transactionHTML}
+            <div class="space-y-1">
+                ${transactionHTML}
+            </div>
             <hr class="my-3 border-gray-200">
             <div class="flex justify-between items-center font-bold">
                 <span class="text-gray-900">${window.i18n?.t('today_total') || 'Tổng hôm nay:'}</span>
                 <span class="${totalClass} text-lg">${totalSign}${this.formatAmount(Math.abs(totalToday))}</span>
             </div>
         `;
+    }
+
+    /**
+     * Get icon for transaction type and category
+     */
+    getTransactionIcon(transactionType, category) {
+        const iconMap = {
+            'expense': {
+                'food': '🍽️',
+                'transport': '🚗',
+                'shopping': '🛒',
+                'entertainment': '🎬',
+                'health': '🏥',
+                'education': '📚',
+                'bills': '💡',
+                'rent': '🏠',
+                'other': '💸'
+            },
+            'saving': '💰',
+            'investment': '📈'
+        };
+        
+        if (transactionType === 'expense' && category) {
+            return iconMap.expense[category] || iconMap.expense.other;
+        }
+        
+        return iconMap[transactionType] || '💰';
     }
     
     /**
@@ -327,25 +417,19 @@ class Dashboard {
     /**
      * Handle data updates
      */
-    handleDataUpdate(newData) {
-        if (newData.totals) {
-            this.updateDashboardCards(newData.totals);
-        }
-        
-        if (newData.todayTransactions) {
-            this.updateTodaySummary(newData.todayTransactions);
-        }
+    async handleDataUpdate(newData) {
+        // When data updates (new transaction added), refresh from API
+        console.log('🔄 Data updated, refreshing dashboard...');
+        await this.loadDashboardData();
     }
     
     /**
      * Update language-dependent content
      */
-    updateLanguage(language) {
-        // Re-render today's summary with new language
-        const data = window.app.getCurrentData();
-        if (data && data.todayTransactions) {
-            this.updateTodaySummary(data.todayTransactions);
-        }
+    async updateLanguage(language) {
+        // Re-load data with new language
+        console.log('🌐 Language changed, refreshing dashboard...');
+        await this.loadDashboardData();
     }
     
     /**

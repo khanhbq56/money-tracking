@@ -265,7 +265,7 @@
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 10px 32px 10px 16px;
+    padding: 10px 16px;
     font-size: 1.2rem;
     font-weight: 600;
     color: #374151;
@@ -273,12 +273,18 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    text-align: center;
 }
 
-#language-switcher option {
-    font-size: 1.2rem;
-    text-align: center;
+#language-dropdown {
+    z-index: 1000;
+}
+
+.language-option {
+    transition: background-color 0.2s ease;
+}
+
+.language-option:hover {
+    background-color: #f3f4f6;
 }
 
 #language-switcher:hover {

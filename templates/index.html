@@ -11,14 +11,15 @@
             <!-- Language Switcher -->
             <div class="flex justify-end mb-4">
                 <div class="relative">
-                    <select id="language-switcher" class="appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200">
-                        <option value="vi">🇻🇳</option>
-                        <option value="en">🇺🇸</option>
-                    </select>
-                    <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div id="language-switcher" class="bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 cursor-pointer flex items-center justify-between min-w-[80px]">
+                        <span id="current-flag">🇻🇳</span>
+                        <svg class="w-4 h-4 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
+                    </div>
+                    <div id="language-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-xl shadow-lg z-10 hidden">
+                        <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-t-xl" data-lang="vi">🇻🇳</div>
+                        <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-b-xl" data-lang="en">🇺🇸</div>
                     </div>
                 </div>
             </div>

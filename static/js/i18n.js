@@ -131,8 +131,11 @@ class I18n {
         this.currentLang = lang;
         localStorage.setItem('language', lang);
         
-        // Update language switcher
-        document.getElementById('language-switcher').value = lang;
+        // Update language switcher flag
+        const currentFlag = document.getElementById('current-flag');
+        if (currentFlag) {
+            currentFlag.textContent = lang === 'vi' ? '🇻🇳' : '🇺🇸';
+        }
         
         // Reload translations
         await this.loadTranslations();
@@ -194,10 +197,31 @@ class I18n {
      */
     initLanguageSwitcher() {
         const switcher = document.getElementById('language-switcher');
-        if (switcher) {
-            switcher.value = this.currentLang;
-            switcher.addEventListener('change', (e) => {
-                this.setLanguage(e.target.value);
+        const dropdown = document.getElementById('language-dropdown');
+        const currentFlag = document.getElementById('current-flag');
+        
+        if (switcher && dropdown && currentFlag) {
+            // Set initial flag
+            currentFlag.textContent = this.currentLang === 'vi' ? '🇻🇳' : '🇺🇸';
+            
+            // Toggle dropdown on click
+            switcher.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('hidden');
+            });
+            
+            // Handle language option clicks
+            dropdown.querySelectorAll('.language-option').forEach(option => {
+                option.addEventListener('click', (e) => {
+                    const selectedLang = option.getAttribute('data-lang');
+                    this.setLanguage(selectedLang);
+                    dropdown.classList.add('hidden');
+                });
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', () => {
+                dropdown.classList.add('hidden');
             });
         }
     }

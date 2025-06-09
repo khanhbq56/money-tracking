@@ -912,6 +912,12 @@ function nextMonth() {
     }
 }
 
+// Helper function to get CSRF token
+function getCSRFToken() {
+    const cookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
+    return cookie ? cookie.split('=')[1] : '';
+}
+
 // Modal functions
 function closeDayDetailsModal() {
     const modal = document.getElementById('day-details-modal');
@@ -931,50 +937,20 @@ function showAddTransactionForDay() {
     closeDayDetailsModal();
     
     if (window.calendar && window.calendar.currentModalDate) {
-        const language = window.i18n?.currentLang || 'vi';
-        const dateStr = window.calendar.currentModalDate.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
-        
-        // Open chat and pre-fill with date context
-        const chatModal = document.getElementById('chat-modal');
-        const chatInput = document.getElementById('chat-input');
-        
-        if (chatModal && chatInput) {
-            chatModal.classList.remove('hidden');
-            
-            const prompt = language === 'vi' 
-                ? `Thêm giao dịch cho ngày ${dateStr}: `
-                : `Add transaction for ${dateStr}: `;
-            
-            chatInput.value = prompt;
-            chatInput.focus();
-            chatInput.setSelectionRange(prompt.length, prompt.length);
-        }
+        // Show transaction form modal
+        showTransactionForm('add', null, window.calendar.currentModalDate);
     }
 }
 
-function editTransaction() {
+function showEditTransactionForm() {
     closeTransactionDetailsModal();
     
-    if (window.calendar && window.calendar.currentTransaction) {
-        const transaction = window.calendar.currentTransaction;
-        const chatModal = document.getElementById('chat-modal');
-        const chatInput = document.getElementById('chat-input');
-        
-        if (chatModal && chatInput) {
-            chatModal.classList.remove('hidden');
-            
-            // Pre-fill with transaction details for editing
-            const amount = Math.abs(transaction.amount / 1000);
-            const editPrompt = `${transaction.description} ${amount}k`;
-            
-            chatInput.value = editPrompt;
-            chatInput.focus();
-            chatInput.select();
-        }
+    if (window.calendar && window.calendar.currentTransaction && window.calendar.currentTransactionDate) {
+        showTransactionForm('edit', window.calendar.currentTransaction, window.calendar.currentTransactionDate);
     }
 }
 
-function deleteTransaction() {
+async function deleteTransaction() {
     if (window.calendar && window.calendar.currentTransaction) {
         const language = window.i18n?.currentLang || 'vi';
         const confirmMsg = language === 'vi' 
@@ -982,16 +958,224 @@ function deleteTransaction() {
             : 'Are you sure you want to delete this transaction?';
             
         if (confirm(confirmMsg)) {
-            // TODO: Implement delete API call
-            console.log('Deleting transaction:', window.calendar.currentTransaction);
+            try {
+                const response = await fetch(`/api/transactions/${window.calendar.currentTransaction.id}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const successMsg = language === 'vi' 
+                        ? 'Đã xóa giao dịch thành công!'
+                        : 'Transaction deleted successfully!';
+                    
+                    closeTransactionDetailsModal();
+                    
+                    // Show success message
+                    if (window.showToast) {
+                        window.showToast(successMsg, 'success');
+                    } else {
+                        alert(successMsg);
+                    }
+                    
+                    // Refresh calendar and dashboard
+                    if (window.calendar) {
+                        window.calendar.refreshCalendar();
+                    }
+                    if (window.dashboard) {
+                        window.dashboard.refreshDashboard();
+                    }
+                } else {
+                    throw new Error('Failed to delete transaction');
+                }
+            } catch (error) {
+                console.error('Error deleting transaction:', error);
+                const errorMsg = language === 'vi' 
+                    ? 'Có lỗi xảy ra khi xóa giao dịch!'
+                    : 'Error deleting transaction!';
+                alert(errorMsg);
+            }
+        }
+    }
+}
+
+// Transaction form functions
+function showTransactionForm(mode, transaction, date) {
+    const modal = document.getElementById('transaction-form-modal');
+    const title = document.getElementById('transaction-form-title');
+    const saveButton = document.getElementById('save-button-text');
+    const form = document.getElementById('transaction-form');
+    
+    if (!modal || !form) return;
+    
+    // Set form mode
+    form.dataset.mode = mode;
+    form.dataset.transactionId = transaction ? transaction.id : '';
+    
+    // Update UI based on mode
+    const language = window.i18n?.currentLang || 'vi';
+    if (mode === 'edit') {
+        title.textContent = language === 'vi' ? 'Sửa giao dịch' : 'Edit Transaction';
+        saveButton.textContent = language === 'vi' ? 'Cập nhật' : 'Update';
+        populateFormWithTransaction(transaction, date);
+    } else {
+        title.textContent = language === 'vi' ? 'Thêm giao dịch' : 'Add Transaction';
+        saveButton.textContent = language === 'vi' ? 'Lưu' : 'Save';
+        clearForm();
+        // Set date for new transaction
+        if (date) {
+            document.getElementById('form-date').value = formatDateForInput(date);
+        }
+    }
+    
+    modal.classList.remove('hidden');
+}
+
+function populateFormWithTransaction(transaction, date) {
+    document.getElementById('form-description').value = transaction.description || '';
+    document.getElementById('form-amount').value = Math.abs(transaction.amount);
+    document.getElementById('form-type').value = transaction.transaction_type || '';
+    document.getElementById('form-date').value = formatDateForInput(date);
+    
+    // Handle expense category
+    if (transaction.transaction_type === 'expense') {
+        document.getElementById('expense-category-group').classList.remove('hidden');
+        document.getElementById('form-expense-category').value = transaction.expense_category || '';
+    } else {
+        document.getElementById('expense-category-group').classList.add('hidden');
+    }
+}
+
+function clearForm() {
+    document.getElementById('form-description').value = '';
+    document.getElementById('form-amount').value = '';
+    document.getElementById('form-type').value = '';
+    document.getElementById('form-expense-category').value = '';
+    document.getElementById('expense-category-group').classList.add('hidden');
+    
+    // Set today as default date
+    const today = new Date();
+    document.getElementById('form-date').value = formatDateForInput(today);
+}
+
+function formatDateForInput(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function toggleExpenseCategory() {
+    const typeSelect = document.getElementById('form-type');
+    const categoryGroup = document.getElementById('expense-category-group');
+    
+    if (typeSelect.value === 'expense') {
+        categoryGroup.classList.remove('hidden');
+        document.getElementById('form-expense-category').required = true;
+    } else {
+        categoryGroup.classList.add('hidden');
+        document.getElementById('form-expense-category').required = false;
+        document.getElementById('form-expense-category').value = '';
+    }
+}
+
+function closeTransactionFormModal() {
+    const modal = document.getElementById('transaction-form-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+async function saveTransaction() {
+    const form = document.getElementById('transaction-form');
+    const mode = form.dataset.mode;
+    const transactionId = form.dataset.transactionId;
+    
+    // Get form data
+    const formData = new FormData(form);
+    const data = {
+        description: formData.get('description'),
+        amount: parseFloat(formData.get('amount')),
+        transaction_type: formData.get('transaction_type'),
+        date: formData.get('date'),
+        expense_category: formData.get('expense_category') || null
+    };
+    
+    // Validate form
+    if (!data.description || !data.amount || !data.transaction_type || !data.date) {
+        const language = window.i18n?.currentLang || 'vi';
+        const errorMsg = language === 'vi' 
+            ? 'Vui lòng điền đầy đủ thông tin!'
+            : 'Please fill in all required fields!';
+        alert(errorMsg);
+        return;
+    }
+    
+    // Validate expense category
+    if (data.transaction_type === 'expense' && !data.expense_category) {
+        const language = window.i18n?.currentLang || 'vi';
+        const errorMsg = language === 'vi' 
+            ? 'Vui lòng chọn danh mục chi tiêu!'
+            : 'Please select expense category!';
+        alert(errorMsg);
+        return;
+    }
+    
+    try {
+        let url, method;
+        if (mode === 'edit') {
+            url = `/api/transactions/${transactionId}/`;
+            method = 'PUT';
+        } else {
+            url = '/api/transactions/';
+            method = 'POST';
+        }
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCSRFToken()
+            },
+            body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+            const language = window.i18n?.currentLang || 'vi';
+            const successMsg = language === 'vi' 
+                ? (mode === 'edit' ? 'Đã cập nhật giao dịch thành công!' : 'Đã thêm giao dịch thành công!')
+                : (mode === 'edit' ? 'Transaction updated successfully!' : 'Transaction added successfully!');
             
-            closeTransactionDetailsModal();
+            closeTransactionFormModal();
             
-            // Refresh calendar
+            // Show success message
+            if (window.showToast) {
+                window.showToast(successMsg, 'success');
+            } else {
+                alert(successMsg);
+            }
+            
+            // Refresh calendar and dashboard
             if (window.calendar) {
                 window.calendar.refreshCalendar();
             }
+            if (window.dashboard) {
+                window.dashboard.refreshDashboard();
+            }
+        } else {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to save transaction');
         }
+    } catch (error) {
+        console.error('Error saving transaction:', error);
+        const language = window.i18n?.currentLang || 'vi';
+        const errorMsg = language === 'vi' 
+            ? `Có lỗi xảy ra: ${error.message}`
+            : `Error: ${error.message}`;
+        alert(errorMsg);
     }
 }
 

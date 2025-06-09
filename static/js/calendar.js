@@ -619,10 +619,10 @@ class ExpenseCalendar {
         const totals = this.calculateDayTotals(dayData.transactions);
         
         // Update summary stats with proper signs
-        document.getElementById('day-expense-total').textContent = totals.expense > 0 ? `-${this.formatMoney(totals.expense)}` : this.formatMoney(0);
-        document.getElementById('day-saving-total').textContent = totals.saving > 0 ? `+${this.formatMoney(totals.saving)}` : this.formatMoney(0);
-        document.getElementById('day-investment-total').textContent = totals.investment > 0 ? `+${this.formatMoney(totals.investment)}` : this.formatMoney(0);
-        document.getElementById('day-net-total').textContent = totals.net > 0 ? `+${this.formatMoney(totals.net)}` : this.formatMoney(0);
+        document.getElementById('day-expense-total').textContent = totals.expense > 0 ? `-${this.formatMoneyAbsolute(totals.expense)}` : this.formatMoneyAbsolute(0);
+        document.getElementById('day-saving-total').textContent = totals.saving > 0 ? `+${this.formatMoneyAbsolute(totals.saving)}` : this.formatMoneyAbsolute(0);
+        document.getElementById('day-investment-total').textContent = totals.investment > 0 ? `+${this.formatMoneyAbsolute(totals.investment)}` : this.formatMoneyAbsolute(0);
+        document.getElementById('day-net-total').textContent = totals.net > 0 ? `+${this.formatMoneyAbsolute(totals.net)}` : this.formatMoneyAbsolute(0);
         
         // Update transactions list
         this.updateTransactionsList(dayData.transactions);
@@ -646,7 +646,15 @@ class ExpenseCalendar {
         
         // Update transaction details
         document.getElementById('transaction-description').textContent = transaction.description || '-';
-        document.getElementById('transaction-amount').textContent = this.formatMoney(transaction.amount);
+        
+        // Format amount with proper sign
+        let formattedAmount;
+        if (transaction.transaction_type === 'expense') {
+            formattedAmount = `-${this.formatMoneyAbsolute(transaction.amount)}`;
+        } else {
+            formattedAmount = `+${this.formatMoneyAbsolute(transaction.amount)}`;
+        }
+        document.getElementById('transaction-amount').textContent = formattedAmount;
         
         // Get type label
         const typeLabels = {
@@ -823,7 +831,7 @@ class ExpenseCalendar {
                         </div>
                     </div>
                     <div class="text-lg font-bold ${this.getAmountColorClass(transaction.amount)}">
-                        ${this.formatMoney(transaction.amount)}
+                        ${transaction.transaction_type === 'expense' ? '-' : '+'}${this.formatMoneyAbsolute(transaction.amount)}
                     </div>
                 </div>
             </div>
@@ -868,6 +876,14 @@ class ExpenseCalendar {
         const abs = Math.abs(amount);
         const sign = amount >= 0 ? '+' : '-';
         return `${amount < 0 ? '' : sign}${abs.toLocaleString('vi-VN')}₫`;
+    }
+    
+    /**
+     * Format money amount with absolute value (no sign prefix)
+     */
+    formatMoneyAbsolute(amount) {
+        const abs = Math.abs(amount);
+        return `${abs.toLocaleString('vi-VN')}₫`;
     }
     
     /**

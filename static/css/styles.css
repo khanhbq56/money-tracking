@@ -196,12 +196,50 @@
 
 /* Chat and other animations */
 .chat-bubble { 
-    animation: fadeInUp 0.3s ease-out; 
+    animation: fadeInUp 0.3s ease-out;
+    margin-bottom: 12px;
 }
 
 @keyframes fadeInUp { 
     from { opacity: 0; transform: translateY(10px); } 
     to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Chat message styles */
+.chat-bubble .bg-gradient-to-r {
+    position: relative;
+}
+
+.chat-bubble .bg-gradient-to-r::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.chat-bubble:hover .bg-gradient-to-r::before {
+    opacity: 0.1;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* User message styling */
+.chat-bubble .bg-gradient-to-r.from-blue-500 {
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Bot message styling */
+.chat-bubble .bg-white.border {
+    transition: all 0.2s ease;
+}
+
+.chat-bubble:hover .bg-white.border {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
 /* Mobile Responsive */

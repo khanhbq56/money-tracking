@@ -58,6 +58,7 @@ class I18n {
                 'english': 'English',
                 'expense_tracker': 'Theo Dõi Chi Tiêu',
                 'financial_calendar': 'Lịch Tài Chính',
+                'total_transactions': 'Tổng giao dịch',
                 // Days of week
                 'monday': 'Thứ 2',
                 'tuesday': 'Thứ 3',
@@ -94,6 +95,7 @@ class I18n {
                 'english': 'English',
                 'expense_tracker': 'Expense Tracker',
                 'financial_calendar': 'Financial Calendar',
+                'total_transactions': 'Total Transactions',
                 // Days of week
                 'monday': 'Mon',
                 'tuesday': 'Tue',

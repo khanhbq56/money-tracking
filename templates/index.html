@@ -286,8 +286,8 @@
     </div>
 
     <!-- Day Details Modal -->
-    <div id="day-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+    <div id="day-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeDayDetailsModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden" onclick="event.stopPropagation()">
             <!-- Modal Header -->
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
                 <div class="flex items-center justify-between">
@@ -311,15 +311,15 @@
                 <!-- Summary Stats -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div class="bg-red-50 rounded-xl p-4 text-center border border-red-200">
-                        <div class="text-red-600 text-sm font-semibold" data-i18n="expenses">Chi tiêu</div>
+                        <div class="text-red-600 text-sm font-semibold" data-i18n="expense">Chi tiêu</div>
                         <div class="text-red-700 text-xl font-bold" id="day-expense-total">-0₫</div>
                     </div>
                     <div class="bg-green-50 rounded-xl p-4 text-center border border-green-200">
-                        <div class="text-green-600 text-sm font-semibold" data-i18n="savings">Tiết kiệm</div>
+                        <div class="text-green-600 text-sm font-semibold" data-i18n="saving">Tiết kiệm</div>
                         <div class="text-green-700 text-xl font-bold" id="day-saving-total">+0₫</div>
                     </div>
                     <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-200">
-                        <div class="text-blue-600 text-sm font-semibold" data-i18n="investments">Đầu tư</div>
+                        <div class="text-blue-600 text-sm font-semibold" data-i18n="investment">Đầu tư</div>
                         <div class="text-blue-700 text-xl font-bold" id="day-investment-total">+0₫</div>
                     </div>
                 </div>
@@ -327,7 +327,7 @@
                 <!-- Net Total -->
                 <div class="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-200">
                     <div class="flex items-center justify-between">
-                        <span class="text-purple-600 font-semibold" data-i18n="net_total">Tổng ròng:</span>
+                        <span class="text-purple-600 font-semibold" data-i18n="total_transactions">Tổng giao dịch:</span>
                         <span class="text-purple-700 text-2xl font-bold" id="day-net-total">+0₫</span>
                     </div>
                 </div>
@@ -374,8 +374,8 @@
     </div>
 
     <!-- Transaction Details Modal -->
-    <div id="transaction-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+    <div id="transaction-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeTransactionDetailsModal()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md" onclick="event.stopPropagation()">
             <!-- Modal Header -->
             <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
                 <div class="flex items-center justify-between">

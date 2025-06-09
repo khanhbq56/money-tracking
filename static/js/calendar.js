@@ -618,11 +618,11 @@ class ExpenseCalendar {
         // Calculate totals
         const totals = this.calculateDayTotals(dayData.transactions);
         
-        // Update summary stats
-        document.getElementById('day-expense-total').textContent = this.formatMoney(totals.expense);
-        document.getElementById('day-saving-total').textContent = this.formatMoney(totals.saving);
-        document.getElementById('day-investment-total').textContent = this.formatMoney(totals.investment);
-        document.getElementById('day-net-total').textContent = this.formatMoney(totals.net);
+        // Update summary stats with proper signs
+        document.getElementById('day-expense-total').textContent = totals.expense > 0 ? `-${this.formatMoney(totals.expense)}` : this.formatMoney(0);
+        document.getElementById('day-saving-total').textContent = totals.saving > 0 ? `+${this.formatMoney(totals.saving)}` : this.formatMoney(0);
+        document.getElementById('day-investment-total').textContent = totals.investment > 0 ? `+${this.formatMoney(totals.investment)}` : this.formatMoney(0);
+        document.getElementById('day-net-total').textContent = totals.net > 0 ? `+${this.formatMoney(totals.net)}` : this.formatMoney(0);
         
         // Update transactions list
         this.updateTransactionsList(dayData.transactions);
@@ -776,15 +776,18 @@ class ExpenseCalendar {
         
         transactions.forEach(transaction => {
             const amount = transaction.amount;
-            totals.net += amount;
+            const absAmount = Math.abs(amount);
             
             if (transaction.transaction_type === 'expense') {
-                totals.expense += amount; // Will be negative
+                totals.expense += absAmount; // Always positive for display
             } else if (transaction.transaction_type === 'saving') {
-                totals.saving += amount; // Will be positive  
+                totals.saving += absAmount; // Always positive for display
             } else if (transaction.transaction_type === 'investment') {
-                totals.investment += amount; // Will be positive
+                totals.investment += absAmount; // Always positive for display
             }
+            
+            // Net total is sum of absolute values (total money activity)
+            totals.net += absAmount;
         });
         
         return totals;

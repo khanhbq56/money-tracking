@@ -337,10 +337,12 @@ class ExpenseCalendar {
             dayDiv.classList.add('today');
         }
         
-        // Add weekend class for Saturday (6) and Sunday (0)
+        // Add weekend classes for Saturday (6) and Sunday (0)
         const dayOfWeek = date.getDay();
-        if (dayOfWeek === 0 || dayOfWeek === 6) {
-            dayDiv.classList.add('weekend');
+        if (dayOfWeek === 6) {
+            dayDiv.classList.add('saturday');
+        } else if (dayOfWeek === 0) {
+            dayDiv.classList.add('sunday');
         }
         
         // Get day data - use local date format to match database

@@ -592,14 +592,46 @@ class ExpenseCalendar {
      */
     showDayDetails(date, dayData) {
         const language = window.i18n?.currentLang || 'vi';
-        const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
         
-        // For now, show alert - in future phases this could be a proper modal
-        const transactionSummary = dayData.transactions.map(t => 
-            `${this.getTransactionIcon(t)} ${t.description}: ${this.formatMoney(t.amount)}`
-        ).join('\n');
+        // Store current date for later use
+        this.currentModalDate = date;
+        this.currentModalData = dayData;
         
-        alert(`📅 ${dateStr}\n\n${transactionSummary}\n\n💰 Total: ${this.formatMoney(dayData.total)}`);
+        // Update modal title and date
+        const dayModalTitle = document.getElementById('day-modal-title');
+        const dayModalDate = document.getElementById('day-modal-date');
+        
+        if (dayModalTitle) {
+            dayModalTitle.textContent = language === 'vi' ? '📅 Chi tiết ngày' : '📅 Day Details';
+        }
+        
+        if (dayModalDate) {
+            const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dayModalDate.textContent = dateStr;
+        }
+        
+        // Calculate totals
+        const totals = this.calculateDayTotals(dayData.transactions);
+        
+        // Update summary stats
+        document.getElementById('day-expense-total').textContent = this.formatMoney(totals.expense);
+        document.getElementById('day-saving-total').textContent = this.formatMoney(totals.saving);
+        document.getElementById('day-investment-total').textContent = this.formatMoney(totals.investment);
+        document.getElementById('day-net-total').textContent = this.formatMoney(totals.net);
+        
+        // Update transactions list
+        this.updateTransactionsList(dayData.transactions);
+        
+        // Show modal
+        const modal = document.getElementById('day-details-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
     }
     
     /**
@@ -607,36 +639,75 @@ class ExpenseCalendar {
      */
     showEventDetails(transaction, date) {
         const language = window.i18n?.currentLang || 'vi';
-        const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
         
-        alert(`💳 ${transaction.description}\n📅 ${dateStr}\n💰 ${this.formatMoney(transaction.amount)}`);
+        // Store current transaction for later use
+        this.currentTransaction = transaction;
+        this.currentTransactionDate = date;
+        
+        // Update transaction details
+        document.getElementById('transaction-description').textContent = transaction.description || '-';
+        document.getElementById('transaction-amount').textContent = this.formatMoney(transaction.amount);
+        
+        // Get type label
+        const typeLabels = {
+            vi: { expense: 'Chi tiêu', saving: 'Tiết kiệm', investment: 'Đầu tư' },
+            en: { expense: 'Expense', saving: 'Saving', investment: 'Investment' }
+        };
+        const typeLabel = typeLabels[language][transaction.transaction_type] || transaction.transaction_type;
+        document.getElementById('transaction-type').textContent = typeLabel;
+        
+        // Format date
+        const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+        document.getElementById('transaction-date').textContent = dateStr;
+        
+        // Show modal
+        const modal = document.getElementById('transaction-details-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
     }
     
     /**
      * Show add transaction dialog
      */
     showAddTransactionDialog(date) {
+        // Show empty day modal first
+        this.currentModalDate = date;
+        this.currentModalData = { transactions: [], total: 0, counts: {} };
+        
         const language = window.i18n?.currentLang || 'vi';
-        const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
         
-        const description = prompt(
-            language === 'vi' 
-                ? `Thêm giao dịch cho ${dateStr}:\n(VD: coffee 25k, tiết kiệm 200k)`
-                : `Add transaction for ${dateStr}:\n(e.g., coffee 25k, save 200k)`
-        );
+        // Update modal title and date
+        const dayModalTitle = document.getElementById('day-modal-title');
+        const dayModalDate = document.getElementById('day-modal-date');
         
-        if (description) {
-            // In future phases, this will integrate with AI chat
-            console.log('Add transaction:', description, 'for date:', date);
-            
-            // For now, just add to chat input if available
-            const chatInput = document.getElementById('chat-input');
-            if (chatInput) {
-                chatInput.value = description;
-                if (window.aiChat) {
-                    window.aiChat.sendMessage();
-                }
-            }
+        if (dayModalTitle) {
+            dayModalTitle.textContent = language === 'vi' ? '📅 Chi tiết ngày' : '📅 Day Details';
+        }
+        
+        if (dayModalDate) {
+            const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            dayModalDate.textContent = dateStr;
+        }
+        
+        // Reset all totals to 0
+        document.getElementById('day-expense-total').textContent = this.formatMoney(0);
+        document.getElementById('day-saving-total').textContent = this.formatMoney(0);
+        document.getElementById('day-investment-total').textContent = this.formatMoney(0);
+        document.getElementById('day-net-total').textContent = this.formatMoney(0);
+        
+        // Show empty state
+        this.updateTransactionsList([]);
+        
+        // Show modal
+        const modal = document.getElementById('day-details-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
         }
     }
     
@@ -696,6 +767,96 @@ class ExpenseCalendar {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     }
+    
+    /**
+     * Calculate totals for a day
+     */
+    calculateDayTotals(transactions) {
+        const totals = { expense: 0, saving: 0, investment: 0, net: 0 };
+        
+        transactions.forEach(transaction => {
+            const amount = transaction.amount;
+            totals.net += amount;
+            
+            if (transaction.transaction_type === 'expense') {
+                totals.expense += amount; // Will be negative
+            } else if (transaction.transaction_type === 'saving') {
+                totals.saving += amount; // Will be positive  
+            } else if (transaction.transaction_type === 'investment') {
+                totals.investment += amount; // Will be positive
+            }
+        });
+        
+        return totals;
+    }
+    
+    /**
+     * Update transactions list in modal
+     */
+    updateTransactionsList(transactions) {
+        const listContainer = document.getElementById('day-transactions-list');
+        const emptyState = document.getElementById('day-empty-state');
+        
+        if (!listContainer) return;
+        
+        if (!transactions || transactions.length === 0) {
+            listContainer.innerHTML = '';
+            if (emptyState) emptyState.classList.remove('hidden');
+            return;
+        }
+        
+        if (emptyState) emptyState.classList.add('hidden');
+        
+        listContainer.innerHTML = transactions.map(transaction => `
+            <div class="transaction-item bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer" onclick="window.calendar.showEventDetails(${JSON.stringify(transaction).replace(/"/g, '&quot;')}, new Date('${this.currentModalDate.toISOString()}'))">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center ${this.getTransactionBgClass(transaction.transaction_type)}">
+                            <span class="text-lg">${this.getTransactionIcon(transaction)}</span>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">${transaction.description}</div>
+                            <div class="text-sm text-gray-500">${this.getTypeLabel(transaction.transaction_type)}</div>
+                        </div>
+                    </div>
+                    <div class="text-lg font-bold ${this.getAmountColorClass(transaction.amount)}">
+                        ${this.formatMoney(transaction.amount)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    /**
+     * Get background class for transaction type
+     */
+    getTransactionBgClass(type) {
+        const classes = {
+            expense: 'bg-red-100 text-red-600',
+            saving: 'bg-green-100 text-green-600', 
+            investment: 'bg-blue-100 text-blue-600'
+        };
+        return classes[type] || 'bg-gray-100 text-gray-600';
+    }
+    
+    /**
+     * Get amount color class
+     */
+    getAmountColorClass(amount) {
+        return amount >= 0 ? 'text-green-600' : 'text-red-600';
+    }
+    
+    /**
+     * Get type label based on current language
+     */
+    getTypeLabel(type) {
+        const language = window.i18n?.currentLang || 'vi';
+        const labels = {
+            vi: { expense: 'Chi tiêu', saving: 'Tiết kiệm', investment: 'Đầu tư' },
+            en: { expense: 'Expense', saving: 'Saving', investment: 'Investment' }
+        };
+        return labels[language][type] || type;
+    }
 
     /**
      * Format money amount
@@ -745,6 +906,89 @@ function previousMonth() {
 function nextMonth() {
     if (window.calendar) {
         window.calendar.nextMonth();
+    }
+}
+
+// Modal functions
+function closeDayDetailsModal() {
+    const modal = document.getElementById('day-details-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function closeTransactionDetailsModal() {
+    const modal = document.getElementById('transaction-details-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+function showAddTransactionForDay() {
+    closeDayDetailsModal();
+    
+    if (window.calendar && window.calendar.currentModalDate) {
+        const language = window.i18n?.currentLang || 'vi';
+        const dateStr = window.calendar.currentModalDate.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+        
+        // Open chat and pre-fill with date context
+        const chatModal = document.getElementById('chat-modal');
+        const chatInput = document.getElementById('chat-input');
+        
+        if (chatModal && chatInput) {
+            chatModal.classList.remove('hidden');
+            
+            const prompt = language === 'vi' 
+                ? `Thêm giao dịch cho ngày ${dateStr}: `
+                : `Add transaction for ${dateStr}: `;
+            
+            chatInput.value = prompt;
+            chatInput.focus();
+            chatInput.setSelectionRange(prompt.length, prompt.length);
+        }
+    }
+}
+
+function editTransaction() {
+    closeTransactionDetailsModal();
+    
+    if (window.calendar && window.calendar.currentTransaction) {
+        const transaction = window.calendar.currentTransaction;
+        const chatModal = document.getElementById('chat-modal');
+        const chatInput = document.getElementById('chat-input');
+        
+        if (chatModal && chatInput) {
+            chatModal.classList.remove('hidden');
+            
+            // Pre-fill with transaction details for editing
+            const amount = Math.abs(transaction.amount / 1000);
+            const editPrompt = `${transaction.description} ${amount}k`;
+            
+            chatInput.value = editPrompt;
+            chatInput.focus();
+            chatInput.select();
+        }
+    }
+}
+
+function deleteTransaction() {
+    if (window.calendar && window.calendar.currentTransaction) {
+        const language = window.i18n?.currentLang || 'vi';
+        const confirmMsg = language === 'vi' 
+            ? 'Bạn có chắc chắn muốn xóa giao dịch này?'
+            : 'Are you sure you want to delete this transaction?';
+            
+        if (confirm(confirmMsg)) {
+            // TODO: Implement delete API call
+            console.log('Deleting transaction:', window.calendar.currentTransaction);
+            
+            closeTransactionDetailsModal();
+            
+            // Refresh calendar
+            if (window.calendar) {
+                window.calendar.refreshCalendar();
+            }
+        }
     }
 }
 

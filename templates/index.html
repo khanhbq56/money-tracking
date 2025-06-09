@@ -283,6 +283,158 @@
             </div>
         </div>
     </div>
+
+    <!-- Day Details Modal -->
+    <div id="day-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="text-xl font-bold" id="day-modal-title">📅 Chi tiết ngày</h3>
+                        <p class="text-indigo-100 text-sm" id="day-modal-date">Thứ 2, 24 tháng 6, 2024</p>
+                    </div>
+                    <button 
+                        onclick="closeDayDetailsModal()"
+                        class="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 max-h-[calc(90vh-200px)] overflow-y-auto">
+                <!-- Summary Stats -->
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-red-50 rounded-xl p-4 text-center border border-red-200">
+                        <div class="text-red-600 text-sm font-semibold" data-i18n="expenses">Chi tiêu</div>
+                        <div class="text-red-700 text-xl font-bold" id="day-expense-total">-0₫</div>
+                    </div>
+                    <div class="bg-green-50 rounded-xl p-4 text-center border border-green-200">
+                        <div class="text-green-600 text-sm font-semibold" data-i18n="savings">Tiết kiệm</div>
+                        <div class="text-green-700 text-xl font-bold" id="day-saving-total">+0₫</div>
+                    </div>
+                    <div class="bg-blue-50 rounded-xl p-4 text-center border border-blue-200">
+                        <div class="text-blue-600 text-sm font-semibold" data-i18n="investments">Đầu tư</div>
+                        <div class="text-blue-700 text-xl font-bold" id="day-investment-total">+0₫</div>
+                    </div>
+                </div>
+
+                <!-- Net Total -->
+                <div class="bg-purple-50 rounded-xl p-4 mb-6 border border-purple-200">
+                    <div class="flex items-center justify-between">
+                        <span class="text-purple-600 font-semibold" data-i18n="net_total">Tổng ròng:</span>
+                        <span class="text-purple-700 text-2xl font-bold" id="day-net-total">+0₫</span>
+                    </div>
+                </div>
+
+                <!-- Transactions List -->
+                <div id="day-transactions-list" class="space-y-3">
+                    <!-- Transactions will be populated by JavaScript -->
+                </div>
+
+                <!-- Empty State -->
+                <div id="day-empty-state" class="text-center py-8 hidden">
+                    <div class="text-gray-400 text-6xl mb-4">📋</div>
+                    <p class="text-gray-500 font-medium mb-4" data-i18n="no_transactions_day">Chưa có giao dịch nào trong ngày này</p>
+                    <button 
+                        onclick="showAddTransactionForDay()"
+                        class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-600 transition-all duration-300"
+                        data-i18n="add_first_transaction"
+                    >
+                        Thêm giao dịch đầu tiên
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+                <button 
+                    onclick="showAddTransactionForDay()"
+                    class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center gap-2"
+                >
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    <span data-i18n="add_transaction">Thêm giao dịch</span>
+                </button>
+                <button 
+                    onclick="closeDayDetailsModal()"
+                    class="bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-600 transition-colors"
+                    data-i18n="close"
+                >
+                    Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div id="transaction-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold" data-i18n="transaction_details">Chi tiết giao dịch</h3>
+                    <button 
+                        onclick="closeTransactionDetailsModal()"
+                        class="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                    >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6">
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="description">Mô tả:</span>
+                        <span class="font-semibold" id="transaction-description">-</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="amount">Số tiền:</span>
+                        <span class="font-bold text-xl" id="transaction-amount">-</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="type">Loại:</span>
+                        <span class="font-semibold" id="transaction-type">-</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-600" data-i18n="date">Ngày:</span>
+                        <span class="font-semibold" id="transaction-date">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-end gap-3">
+                <button 
+                    onclick="editTransaction()"
+                    class="bg-yellow-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-yellow-600 transition-colors flex items-center gap-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    <span data-i18n="edit">Sửa</span>
+                </button>
+                <button 
+                    onclick="deleteTransaction()"
+                    class="bg-red-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-red-600 transition-colors flex items-center gap-2"
+                >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    <span data-i18n="delete">Xóa</span>
+                </button>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_js %}

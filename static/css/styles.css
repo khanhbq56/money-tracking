@@ -31,6 +31,13 @@
     letter-spacing: 0.5px;
 }
 
+.calendar-day-header.weekend {
+    background: rgba(255,255,255,0.15);
+    border-radius: 8px;
+    color: #fef3c7;
+    font-weight: 700;
+}
+
 .calendar-day {
     aspect-ratio: 1;
     background: rgba(255,255,255,0.95);
@@ -43,6 +50,16 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+}
+
+.calendar-day.weekend {
+    background: linear-gradient(135deg, rgba(255,248,220,0.95) 0%, rgba(255,243,199,0.95) 100%);
+    border: 1px solid rgba(255,193,7,0.3);
+}
+
+.calendar-day.weekend:hover {
+    background: linear-gradient(135deg, rgba(255,248,220,1) 0%, rgba(255,243,199,1) 100%);
+    box-shadow: 0 8px 25px rgba(255,193,7,0.2);
 }
 
 .calendar-day:hover {

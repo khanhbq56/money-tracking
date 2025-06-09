@@ -347,6 +347,15 @@ class AIChat {
     
     updateLanguage(newLanguage) {
         this.currentLanguage = newLanguage;
+        // Clear existing messages and add new welcome message
+        this.clearChat();
+        this.addWelcomeMessage();
+    }
+    
+    clearChat() {
+        if (this.chatContainer) {
+            this.chatContainer.innerHTML = '';
+        }
     }
 }
 
@@ -428,4 +437,11 @@ if (window.i18n) {
             window.aiChat.updateLanguage(lang);
         }
     };
-} 
+}
+
+// Listen for language change events
+document.addEventListener('languageChanged', function(event) {
+    if (window.aiChat) {
+        window.aiChat.updateLanguage(event.detail.language);
+    }
+}); 

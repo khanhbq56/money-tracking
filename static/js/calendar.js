@@ -1017,9 +1017,9 @@ async function deleteTransaction() {
                 }
             }
         }, {
-            title: language === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction',
-            confirmText: language === 'vi' ? 'Xóa' : 'Delete',
-            cancelText: language === 'vi' ? 'Hủy' : 'Cancel'
+            title: window.i18n?.currentLang === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction',
+            confirmText: window.i18n?.currentLang === 'vi' ? 'Xóa' : 'Delete',
+            cancelText: window.i18n?.currentLang === 'vi' ? 'Hủy' : 'Cancel'
         });
     }
 }

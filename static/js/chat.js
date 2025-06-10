@@ -344,16 +344,17 @@ class AIChat {
                 
             this.addMessage(successText, 'bot');
             
-            // Show toast notification
+            // Show toast notification for chat confirmation (different from regular add)
             if (window.app && typeof window.app.showNotification === 'function') {
                 window.app.showNotification(successText, 'success');
             }
             
-            // Broadcast transaction added event
+            // Broadcast transaction added event (without notification since we already showed it)
             if (window.eventBus) {
                 window.eventBus.emit('transactionAdded', {
                     transaction: result.transaction,
-                    source: 'chat'
+                    source: 'chat',
+                    skipNotification: true  // Tell eventBus not to show notification
                 });
             } else {
                 // Fallback to direct calls

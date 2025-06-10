@@ -405,11 +405,9 @@ window.eventBus.on('transactionAdded', (data) => {
         window.calendar.refreshCalendar();
     }
     
-    // Show success notification
-    if (window.app && typeof window.app.showNotification === 'function') {
-        const message = window.i18n?.currentLang === 'vi' 
-            ? '✅ Đã thêm giao dịch thành công!'
-            : '✅ Transaction added successfully!';
+    // Show success notification (unless explicitly skipped)
+    if (!data.skipNotification && window.app && typeof window.app.showNotification === 'function') {
+        const message = window.i18n ? window.i18n.t('transaction_added_success') : '✅ Transaction added successfully!';
         window.app.showNotification(message, 'success');
     }
 });

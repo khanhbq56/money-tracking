@@ -372,10 +372,14 @@ class MemeGenerator {
     
     async shareMeme() {
         if (!this.currentMeme) {
-            if (window.showAlertDialog) {
-                window.showAlertDialog('Không có meme để chia sẻ!', { type: 'error' });
+            const language = window.i18n?.currentLang || 'vi';
+            const errorMsg = language === 'vi' ? 'Không có meme để chia sẻ!' : 'No meme to share!';
+            if (window.app && window.app.showNotification) {
+                window.app.showNotification(errorMsg, 'error');
+            } else if (window.showAlertDialog) {
+                window.showAlertDialog(errorMsg, { type: 'error' });
             } else {
-                alert('Không có meme để chia sẻ!');
+                alert(errorMsg);
             }
             return;
         }

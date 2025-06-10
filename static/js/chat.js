@@ -166,7 +166,7 @@ class AIChat {
                     
                     const categoryName = categoryNames[this.currentLanguage]?.[aiResult.category] || aiResult.category;
                     categoryInfo = `
-                        <div class="text-xs text-gray-600 mt-1">
+                        <div class="text-xs text-gray-600">
                             <span class="inline-flex items-center">
                                 📂 ${categoryName}
                             </span>
@@ -182,7 +182,7 @@ class AIChat {
                         ? date.toLocaleDateString('vi-VN')
                         : date.toLocaleDateString('en-US');
                     dateInfo = `
-                        <div class="text-xs text-gray-600 mt-1">
+                        <div class="text-xs text-gray-600">
                             <span class="inline-flex items-center">
                                 📅 ${formattedDate}
                             </span>
@@ -191,7 +191,7 @@ class AIChat {
                 } else {
                     const todayText = window.i18n ? window.i18n.t('today') : (this.currentLanguage === 'vi' ? 'Hôm nay' : 'Today');
                     dateInfo = `
-                        <div class="text-xs text-gray-600 mt-1">
+                        <div class="text-xs text-gray-600">
                             <span class="inline-flex items-center">
                                 📅 ${todayText}
                             </span>
@@ -199,16 +199,11 @@ class AIChat {
                     `;
                 }
                 
-                const confidenceText = window.i18n ? window.i18n.t('confidence') : (this.currentLanguage === 'vi' ? 'Độ tin cậy' : 'Confidence');
-                
                 detailsSection = `
-                    <div class="bg-gray-50 rounded-lg p-2 mt-2 border-l-4 border-blue-400">
-                        ${dateInfo}
-                        ${categoryInfo}
-                        <div class="text-xs text-gray-600 mt-1">
-                            <span class="inline-flex items-center">
-                                🎯 ${confidenceText}: ${Math.round((aiResult.confidence || 0.8) * 100)}%
-                            </span>
+                    <div class="bg-gray-50 rounded-lg p-3 mt-2 border-l-4 border-blue-400">
+                        <div class="space-y-2">
+                            ${dateInfo}
+                            ${categoryInfo}
                         </div>
                     </div>
                 `;

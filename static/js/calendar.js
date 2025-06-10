@@ -1169,7 +1169,9 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng điền đầy đủ thông tin!'
             : 'Please fill in all required fields!';
-        if (window.showAlertDialog) {
+        if (window.app && window.app.showNotification) {
+            window.app.showNotification(errorMsg, 'error');
+        } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });
         } else {
             alert(errorMsg);
@@ -1183,7 +1185,9 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng chọn danh mục chi tiêu!'
             : 'Please select expense category!';
-        if (window.showAlertDialog) {
+        if (window.app && window.app.showNotification) {
+            window.app.showNotification(errorMsg, 'error');
+        } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });
         } else {
             alert(errorMsg);
@@ -1218,9 +1222,9 @@ async function saveTransaction() {
             
             closeTransactionFormModal();
             
-            // Show success message
-            if (window.showToast) {
-                window.showToast(successMsg, 'success');
+            // Show success notification
+            if (window.app && window.app.showNotification) {
+                window.app.showNotification(successMsg, 'success');
             } else if (window.showAlertDialog) {
                 window.showAlertDialog(successMsg, { type: 'success' });
             } else {
@@ -1244,7 +1248,9 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? `Có lỗi xảy ra: ${error.message}`
             : `Error: ${error.message}`;
-        if (window.showAlertDialog) {
+        if (window.app && window.app.showNotification) {
+            window.app.showNotification(errorMsg, 'error');
+        } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });
         } else {
             alert(errorMsg);

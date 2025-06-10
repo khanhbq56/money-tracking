@@ -44,6 +44,7 @@ const viTranslations = {
     'no_transactions_day': 'Chưa có giao dịch nào trong ngày này',
     'no_transactions_today': 'Chưa có giao dịch hôm nay',
     'description_placeholder': 'VD: ăn trưa, cafe...',
+    'confidence': 'Độ tin cậy',
     'generate_new': 'Tạo mới',
     'share': 'Chia sẻ',
     'ai_analysis': 'Phân tích AI',

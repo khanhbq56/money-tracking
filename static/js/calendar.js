@@ -1051,10 +1051,16 @@ function showTransactionForm(mode, transaction, date) {
     } else {
         title.textContent = language === 'vi' ? 'Thêm giao dịch' : 'Add Transaction';
         saveButton.textContent = language === 'vi' ? 'Lưu' : 'Save';
-        clearForm();
-        // Set date for new transaction
-        if (date) {
-            document.getElementById('form-date').value = formatDateForInput(date);
+        
+        // Check if transaction contains AI data (from chat edit)
+        if (transaction && (transaction.description || transaction.amount || transaction.transaction_type)) {
+            populateFormWithAIData(transaction, date);
+        } else {
+            clearForm();
+            // Set date for new transaction
+            if (date) {
+                document.getElementById('form-date').value = formatDateForInput(date);
+            }
         }
     }
     
@@ -1073,6 +1079,32 @@ function populateFormWithTransaction(transaction, date) {
         document.getElementById('form-expense-category').value = transaction.expense_category || '';
     } else {
         document.getElementById('expense-category-group').classList.add('hidden');
+    }
+}
+
+function populateFormWithAIData(aiData, date) {
+    document.getElementById('form-description').value = aiData.description || '';
+    document.getElementById('form-amount').value = aiData.amount || '';
+    document.getElementById('form-type').value = aiData.transaction_type || '';
+    
+    // Set date - use AI parsed date or provided date or today
+    let targetDate = date;
+    if (aiData.date) {
+        targetDate = new Date(aiData.date);
+    } else if (!targetDate) {
+        targetDate = new Date();
+    }
+    document.getElementById('form-date').value = formatDateForInput(targetDate);
+    
+    // Handle expense category
+    if (aiData.transaction_type === 'expense') {
+        document.getElementById('expense-category-group').classList.remove('hidden');
+        document.getElementById('form-expense-category').value = aiData.expense_category || '';
+        document.getElementById('form-expense-category').required = true;
+    } else {
+        document.getElementById('expense-category-group').classList.add('hidden');
+        document.getElementById('form-expense-category').required = false;
+        document.getElementById('form-expense-category').value = '';
     }
 }
 

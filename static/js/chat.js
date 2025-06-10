@@ -129,12 +129,92 @@ class AIChat {
             `;
         } else {
             let actionButtons = '';
+            let detailsSection = '';
+            
             if (data && data.ai_result) {
+                const aiResult = data.ai_result;
                 const confirmText = this.currentLanguage === 'vi' ? '✅ Xác nhận' : '✅ Confirm';
                 const editText = this.currentLanguage === 'vi' ? '✏️ Sửa' : '✏️ Edit';
                 
+                // Create details section with date and category info
+                let categoryInfo = '';
+                if (aiResult.type === 'expense' && aiResult.category) {
+                    const categoryNames = {
+                        'vi': {
+                            'food': '🍜 Ăn uống',
+                            'coffee': '☕ Coffee',
+                            'transport': '🚗 Di chuyển',
+                            'shopping': '🛒 Mua sắm',
+                            'entertainment': '🎬 Giải trí',
+                            'health': '🏥 Sức khỏe',
+                            'education': '📚 Giáo dục',
+                            'utilities': '⚡ Tiện ích',
+                            'other': '📦 Khác'
+                        },
+                        'en': {
+                            'food': '🍜 Food & Dining',
+                            'coffee': '☕ Coffee',
+                            'transport': '🚗 Transportation',
+                            'shopping': '🛒 Shopping',
+                            'entertainment': '🎬 Entertainment',
+                            'health': '🏥 Healthcare',
+                            'education': '📚 Education',
+                            'utilities': '⚡ Utilities',
+                            'other': '📦 Other'
+                        }
+                    };
+                    
+                    const categoryName = categoryNames[this.currentLanguage]?.[aiResult.category] || aiResult.category;
+                    categoryInfo = `
+                        <div class="text-xs text-gray-600 mt-1">
+                            <span class="inline-flex items-center">
+                                📂 ${categoryName}
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                // Format date info
+                let dateInfo = '';
+                if (aiResult.parsed_date) {
+                    const date = new Date(aiResult.parsed_date);
+                    const formattedDate = this.currentLanguage === 'vi' 
+                        ? date.toLocaleDateString('vi-VN')
+                        : date.toLocaleDateString('en-US');
+                    dateInfo = `
+                        <div class="text-xs text-gray-600 mt-1">
+                            <span class="inline-flex items-center">
+                                📅 ${formattedDate}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    const todayText = window.i18n ? window.i18n.t('today') : (this.currentLanguage === 'vi' ? 'Hôm nay' : 'Today');
+                    dateInfo = `
+                        <div class="text-xs text-gray-600 mt-1">
+                            <span class="inline-flex items-center">
+                                📅 ${todayText}
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                const confidenceText = window.i18n ? window.i18n.t('confidence') : (this.currentLanguage === 'vi' ? 'Độ tin cậy' : 'Confidence');
+                
+                detailsSection = `
+                    <div class="bg-gray-50 rounded-lg p-2 mt-2 border-l-4 border-blue-400">
+                        ${dateInfo}
+                        ${categoryInfo}
+                        <div class="text-xs text-gray-600 mt-1">
+                            <span class="inline-flex items-center">
+                                🎯 ${confidenceText}: ${Math.round((aiResult.confidence || 0.8) * 100)}%
+                            </span>
+                        </div>
+                    </div>
+                `;
+                
                 actionButtons = `
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap gap-2 mt-3">
                         <button 
                             onclick="window.aiChat.confirmTransaction(${this.escapeJson(data)})" 
                             class="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-xs hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
@@ -143,7 +223,7 @@ class AIChat {
                         </button>
                         <button 
                             onclick="window.aiChat.editTransaction(${this.escapeJson(data)})" 
-                            class="px-3 py-2 bg-gradient-to-r from-gray-500 to-gray-600 text-white rounded-xl text-xs hover:from-gray-600 hover:to-gray-700 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                            class="px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl text-xs hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
                         >
                             ${editText}
                         </button>
@@ -157,7 +237,8 @@ class AIChat {
                     <div class="flex items-start gap-2">
                         <span class="text-lg">🤖</span>
                         <div class="flex-1">
-                            <p class="leading-relaxed text-gray-800 mb-3">${this.escapeHtml(text)}</p>
+                            <p class="leading-relaxed text-gray-800 mb-2">${this.escapeHtml(text)}</p>
+                            ${detailsSection}
                             ${actionButtons}
                         </div>
                     </div>
@@ -288,18 +369,39 @@ class AIChat {
     }
     
     editTransaction(data) {
-        // For now, just populate the input with the transaction details for re-editing
+        // Open transaction form with pre-filled data instead of re-chatting
         const aiResult = data.ai_result;
-        const editText = `${aiResult.description} ${aiResult.amount/1000}k`;
         
-        this.chatInput.value = editText;
-        this.chatInput.focus();
+        // Prepare transaction data for editing
+        const transactionData = {
+            description: aiResult.description,
+            amount: Math.abs(aiResult.amount),
+            transaction_type: aiResult.type,
+            expense_category: aiResult.category || '',
+            date: aiResult.parsed_date || new Date().toISOString().split('T')[0]
+        };
         
-        const helpText = this.currentLanguage === 'vi'
-            ? '✏️ Hãy chỉnh sửa và gửi lại!'
-            : '✏️ Please edit and send again!';
+        // Close chat modal first
+        const chatModal = document.getElementById('chat-modal');
+        if (chatModal) {
+            chatModal.classList.add('hidden');
+        }
+        
+        // Use calendar's showTransactionForm if available, otherwise show our own form
+        if (window.showTransactionForm) {
+            window.showTransactionForm('add', transactionData, new Date(transactionData.date));
+        } else {
+            // Fallback: populate chat input
+            const editText = `${aiResult.description} ${aiResult.amount/1000}k`;
+            this.chatInput.value = editText;
+            this.chatInput.focus();
             
-        this.addMessage(helpText, 'bot');
+            const helpText = this.currentLanguage === 'vi'
+                ? '✏️ Hãy chỉnh sửa và gửi lại!'
+                : '✏️ Please edit and send again!';
+                
+            this.addMessage(helpText, 'bot');
+        }
     }
     
     disableConfirmationButtons(chatId) {

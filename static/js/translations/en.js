@@ -44,6 +44,7 @@ const enTranslations = {
     'no_transactions_day': 'No transactions for this day',
     'no_transactions_today': 'No transactions today',
     'description_placeholder': 'e.g: lunch, coffee...',
+    'confidence': 'Confidence',
     'generate_new': 'Generate New',
     'share': 'Share',
     'ai_analysis': 'AI Analysis',

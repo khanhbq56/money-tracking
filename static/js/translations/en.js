@@ -69,6 +69,7 @@ const enTranslations = {
     
     // Chat edit message
     'chat_edit_help': '✏️ Please edit and send again!',
+    'chat_analysis_message': 'I have analyzed your transaction:',
     
     // Transaction types display
     'transaction_type_expense': '🔴 Expense',

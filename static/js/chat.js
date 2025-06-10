@@ -228,12 +228,24 @@ class AIChat {
             }
             
             messageDiv.className = 'chat-bubble animate-fadeInUp flex justify-start';
+            
+            // For AI results, show simplified message or no message at all if we have details
+            let messageContent = '';
+            if (data && data.ai_result) {
+                // Only show simple confirmation message for AI results since details are shown below
+                const confirmationText = window.i18n ? window.i18n.t('chat_analysis_message') : 'I have analyzed your transaction:';
+                messageContent = `<p class="leading-relaxed text-gray-800 mb-2">${confirmationText}</p>`;
+            } else {
+                // For regular messages, show the full text
+                messageContent = `<p class="leading-relaxed text-gray-800 mb-2">${this.escapeHtml(text)}</p>`;
+            }
+            
             messageDiv.innerHTML = `
                 <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-md p-4 text-sm max-w-sm shadow-lg">
                     <div class="flex items-start gap-2">
                         <span class="text-lg">🤖</span>
                         <div class="flex-1">
-                            <p class="leading-relaxed text-gray-800 mb-2">${this.escapeHtml(text)}</p>
+                            ${messageContent}
                             ${detailsSection}
                             ${actionButtons}
                         </div>

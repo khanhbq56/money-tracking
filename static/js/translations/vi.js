@@ -69,6 +69,7 @@ const viTranslations = {
     
     // Chat edit message
     'chat_edit_help': '✏️ Hãy chỉnh sửa và gửi lại!',
+    'chat_analysis_message': 'Tôi đã phân tích thông tin giao dịch của bạn:',
     
     // Transaction types display
     'transaction_type_expense': '🔴 Chi tiêu',

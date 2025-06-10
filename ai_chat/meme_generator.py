@@ -344,20 +344,22 @@ class MemeGenerator:
     def _create_shareable_text(self, personality: str, analysis: Dict[str, Any]) -> str:
         """Create shareable text for social media"""
         
-        if self.language == 'vi':
-            personality_labels = {
+        personality_labels_map = {
+            'vi': {
                 'coffee_addict': f"☕ Coffee Addict - Chi {analysis['category_totals'].get('coffee', 0):,}₫ cho coffee tuần này!",
                 'foodie_explorer': f"🍜 Foodie Explorer - Khám phá ẩm thực với {analysis['category_totals'].get('food', 0):,}₫!",
                 'saving_master': f"💰 Saving Master - Tiết kiệm {analysis['saving_total']:,}₫ tuần này!",
                 'balanced_spender': f"⚖️ Balanced Spender - Cân bằng chi tiêu khá tốt!"
-            }
-        else:
-            personality_labels = {
+            },
+            'en': {
                 'coffee_addict': f"☕ Coffee Addict - Spent {analysis['category_totals'].get('coffee', 0):,}₫ on coffee this week!",
                 'foodie_explorer': f"🍜 Foodie Explorer - Food adventures cost {analysis['category_totals'].get('food', 0):,}₫!",
                 'saving_master': f"💰 Saving Master - Saved {analysis['saving_total']:,}₫ this week!",
                 'balanced_spender': f"⚖️ Balanced Spender - Pretty good balance!"
             }
+        }
+        
+        personality_labels = personality_labels_map.get(self.language, personality_labels_map['vi'])
         
         return personality_labels.get(personality, personality_labels['balanced_spender'])
 
@@ -378,35 +380,42 @@ class MemeGenerator:
         
         insights = []
         
-        if self.language == 'vi':
-            # Category insights
-            if analysis['dominant_category_amount'] > 0:
-                insights.append(f"Category chi tiêu nhiều nhất: {analysis['dominant_category']} ({analysis['dominant_category_amount']:,}₫)")
-            
-            # Frequency insights
-            if analysis['transaction_count'] > 20:
-                insights.append(f"Bạn có {analysis['transaction_count']} giao dịch tuần này - khá tích cực!")
-            elif analysis['transaction_count'] < 5:
-                insights.append("Ít giao dịch tuần này - có thể bạn đang tiết kiệm?")
-            
-            # Net total insights
-            if analysis['net_total'] > 0:
-                insights.append(f"Tuyệt vời! Bạn có số dư dương {analysis['net_total']:,}₫ tuần này")
-            else:
-                insights.append("Chi tiêu nhiều hơn tiết kiệm tuần này")
+        insight_templates = {
+            'vi': {
+                'dominant_category': "Category chi tiêu nhiều nhất: {category} ({amount:,}₫)",
+                'high_frequency': "Bạn có {count} giao dịch tuần này - khá tích cực!",
+                'low_frequency': "Ít giao dịch tuần này - có thể bạn đang tiết kiệm?",
+                'positive_balance': "Tuyệt vời! Bạn có số dư dương {amount:,}₫ tuần này",
+                'negative_balance': "Chi tiêu nhiều hơn tiết kiệm tuần này"
+            },
+            'en': {
+                'dominant_category': "Top spending category: {category} ({amount:,}₫)",
+                'high_frequency': "You had {count} transactions this week - quite active!",
+                'low_frequency': "Few transactions this week - maybe you're saving?",
+                'positive_balance': "Great! You have positive balance of {amount:,}₫ this week",
+                'negative_balance': "Spent more than saved this week"
+            }
+        }
+        
+        templates = insight_templates.get(self.language, insight_templates['vi'])
+        
+        # Category insights
+        if analysis['dominant_category_amount'] > 0:
+            insights.append(templates['dominant_category'].format(
+                category=analysis['dominant_category'],
+                amount=analysis['dominant_category_amount']
+            ))
+        
+        # Frequency insights
+        if analysis['transaction_count'] > 20:
+            insights.append(templates['high_frequency'].format(count=analysis['transaction_count']))
+        elif analysis['transaction_count'] < 5:
+            insights.append(templates['low_frequency'])
+        
+        # Net total insights
+        if analysis['net_total'] > 0:
+            insights.append(templates['positive_balance'].format(amount=analysis['net_total']))
         else:
-            # English insights
-            if analysis['dominant_category_amount'] > 0:
-                insights.append(f"Top spending category: {analysis['dominant_category']} ({analysis['dominant_category_amount']:,}₫)")
-            
-            if analysis['transaction_count'] > 20:
-                insights.append(f"You had {analysis['transaction_count']} transactions this week - quite active!")
-            elif analysis['transaction_count'] < 5:
-                insights.append("Few transactions this week - maybe you're saving?")
-            
-            if analysis['net_total'] > 0:
-                insights.append(f"Great! You have positive balance of {analysis['net_total']:,}₫ this week")
-            else:
-                insights.append("Spent more than saved this week")
+            insights.append(templates['negative_balance'])
         
         return insights

@@ -275,81 +275,44 @@ def _simple_categorization(message, language='vi'):
         'icon': '📦'
     }
     
-    # Pattern matching for Vietnamese
-    if language == 'vi':
-        if any(word in message_lower for word in ['coffee', 'cafe', 'cà phê']):
-            result.update({
-                'type': 'expense',
-                'category': 'coffee',
-                'description': 'Coffee',
-                'icon': '☕'
-            })
-        elif any(word in message_lower for word in ['ăn', 'trưa', 'sáng', 'tối', 'phở', 'cơm']):
-            result.update({
-                'type': 'expense',
-                'category': 'food',
-                'description': 'Ăn uống',
-                'icon': '🍜'
-            })
-        elif any(word in message_lower for word in ['grab', 'taxi', 'xe ôm', 'xăng']):
-            result.update({
-                'type': 'expense',
-                'category': 'transport',
-                'description': 'Di chuyển',
-                'icon': '🚗'
-            })
-        elif any(word in message_lower for word in ['tiết kiệm', 'gửi ngân hàng', 'save']):
-            result.update({
-                'type': 'saving',
-                'description': 'Tiết kiệm',
-                'category': None,
-                'icon': '💰'
-            })
-        elif any(word in message_lower for word in ['đầu tư', 'mua cổ phiếu', 'invest', 'bitcoin']):
-            result.update({
-                'type': 'investment',
-                'description': 'Đầu tư',
-                'category': None,
-                'icon': '📈'
-            })
+    # Pattern matching (language-independent logic)
+    from .translation_utils import get_category_display_name
     
-    # English patterns
-    elif language == 'en':
-        if any(word in message_lower for word in ['coffee', 'cafe']):
-            result.update({
-                'type': 'expense',
-                'category': 'coffee',
-                'description': 'Coffee',
-                'icon': '☕'
-            })
-        elif any(word in message_lower for word in ['lunch', 'dinner', 'food', 'eat']):
-            result.update({
-                'type': 'expense',
-                'category': 'food',
-                'description': 'Food',
-                'icon': '🍜'
-            })
-        elif any(word in message_lower for word in ['transport', 'taxi', 'gas', 'fuel']):
-            result.update({
-                'type': 'expense',
-                'category': 'transport',
-                'description': 'Transport',
-                'icon': '🚗'
-            })
-        elif any(word in message_lower for word in ['saving', 'save money', 'bank deposit']):
-            result.update({
-                'type': 'saving',
-                'description': 'Saving',
-                'category': None,
-                'icon': '💰'
-            })
-        elif any(word in message_lower for word in ['investment', 'buy stocks', 'invest']):
-            result.update({
-                'type': 'investment',
-                'description': 'Investment',
-                'category': None,
-                'icon': '📈'
-            })
+    if any(word in message_lower for word in ['coffee', 'cafe', 'cà phê']):
+        result.update({
+            'type': 'expense',
+            'category': 'coffee',
+            'description': get_category_display_name('coffee', language),
+            'icon': '☕'
+        })
+    elif any(word in message_lower for word in ['ăn', 'trưa', 'sáng', 'tối', 'phở', 'cơm', 'lunch', 'dinner', 'food', 'eat']):
+        result.update({
+            'type': 'expense',
+            'category': 'food',
+            'description': get_category_display_name('food', language),
+            'icon': '🍜'
+        })
+    elif any(word in message_lower for word in ['grab', 'taxi', 'xe ôm', 'xăng', 'transport', 'gas', 'fuel']):
+        result.update({
+            'type': 'expense',
+            'category': 'transport',
+            'description': get_category_display_name('transport', language),
+            'icon': '🚗'
+        })
+    elif any(word in message_lower for word in ['tiết kiệm', 'gửi ngân hàng', 'save', 'saving', 'save money', 'bank deposit']):
+        result.update({
+            'type': 'saving',
+            'description': get_category_display_name('saving', language),
+            'category': None,
+            'icon': '💰'
+        })
+    elif any(word in message_lower for word in ['đầu tư', 'mua cổ phiếu', 'invest', 'bitcoin', 'investment', 'buy stocks']):
+        result.update({
+            'type': 'investment',
+            'description': get_category_display_name('investment', language),
+            'category': None,
+            'icon': '📈'
+        })
     
     return result
 
@@ -385,20 +348,21 @@ def _extract_amount(message):
 
 def _generate_response_text(ai_result, language):
     """Generate human-readable response text based on AI result"""
-    if language == 'vi':
-        type_labels = {
-            'expense': 'Chi tiêu',
-            'saving': 'Tiết kiệm',
-            'investment': 'Đầu tư'
-        }
-        return f"{ai_result['icon']} Phân loại: {type_labels[ai_result['type']]} - {ai_result['description']} ({ai_result['amount']:,.0f}₫)"
-    else:
-        type_labels = {
-            'expense': 'Expense',
-            'saving': 'Saving', 
-            'investment': 'Investment'
-        }
-        return f"{ai_result['icon']} Classified as: {type_labels[ai_result['type']]} - {ai_result['description']} ({ai_result['amount']:,.0f}₫)" 
+    from .translation_utils import get_type_display_name
+    
+    # Get translated type label
+    type_display = get_type_display_name(ai_result['type'], language)
+    
+    from django.utils.translation import gettext as _
+    
+    # Use translation system for response text
+    response_template = _('ai_classification_response')  # Will be different for VI and EN
+    return response_template.format(
+        icon=ai_result['icon'],
+        type_display=type_display,
+        description=ai_result['description'],
+        amount=ai_result['amount']
+    ) 
 
 
 @api_view(['GET'])

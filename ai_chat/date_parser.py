@@ -126,31 +126,30 @@ class DateParser:
     def _parse_relative_expressions(self, message: str) -> Optional[date]:
         """Parse relative time expressions"""
         
-        # Parse "X days ago" / "X ngày trước"
-        if self.language == 'vi':
-            # Pattern for "X ngày trước"
-            match = re.search(r'(\d+)\s*ngày\s*trước', message)
+        # Define patterns for both languages
+        relative_patterns = {
+            'vi': [
+                (r'(\d+)\s*ngày\s*trước', 'days'),    # X ngày trước
+                (r'(\d+)\s*tuần\s*trước', 'weeks'),   # X tuần trước
+            ],
+            'en': [
+                (r'(\d+)\s*days?\s*ago', 'days'),     # X days ago
+                (r'(\d+)\s*weeks?\s*ago', 'weeks'),   # X weeks ago
+            ]
+        }
+        
+        # Get patterns for current language
+        patterns = relative_patterns.get(self.language, relative_patterns['vi'])
+        
+        # Try each pattern
+        for pattern, unit in patterns:
+            match = re.search(pattern, message)
             if match:
-                days_back = int(match.group(1))
-                return self.today - timedelta(days=days_back)
-            
-            # Pattern for "X tuần trước"
-            match = re.search(r'(\d+)\s*tuần\s*trước', message)
-            if match:
-                weeks_back = int(match.group(1))
-                return self.today - timedelta(weeks=weeks_back)
-        else:
-            # Pattern for "X days ago"
-            match = re.search(r'(\d+)\s*days?\s*ago', message)
-            if match:
-                days_back = int(match.group(1))
-                return self.today - timedelta(days=days_back)
-            
-            # Pattern for "X weeks ago"
-            match = re.search(r'(\d+)\s*weeks?\s*ago', message)
-            if match:
-                weeks_back = int(match.group(1))
-                return self.today - timedelta(weeks=weeks_back)
+                amount = int(match.group(1))
+                if unit == 'days':
+                    return self.today - timedelta(days=amount)
+                elif unit == 'weeks':
+                    return self.today - timedelta(weeks=amount)
         
         return None
     
@@ -212,54 +211,36 @@ class DateParser:
     
     def format_parsed_date(self, parsed_date: date) -> str:
         """Format parsed date for display"""
-        if self.language == 'vi':
-            if parsed_date == self.today:
-                return "hôm nay"
-            elif parsed_date == self.today - timedelta(days=1):
-                return "hôm qua"
-            elif parsed_date == self.today - timedelta(days=2):
-                return "hôm kia"
-            else:
-                return parsed_date.strftime("%d/%m/%Y")
+        from .translation_utils import format_date_description
+        from django.utils.translation import gettext as _
+        
+        days_diff = (self.today - parsed_date).days
+        relative_desc = format_date_description(days_diff, self.language)
+        
+        if relative_desc:
+            return relative_desc
         else:
-            if parsed_date == self.today:
-                return "today"
-            elif parsed_date == self.today - timedelta(days=1):
-                return "yesterday"
-            elif parsed_date == self.today - timedelta(days=2):
-                return "day before yesterday"
-            else:
-                return parsed_date.strftime("%m/%d/%Y")
+            # For older dates, use translation system for date format
+            date_format = _('date_format')  # Will be 'dd/MM/yyyy' for VI, 'MM/dd/yyyy' for EN
+            
+            # Convert Django date format to Python strftime format
+            python_format = date_format.replace('dd', '%d').replace('MM', '%m').replace('yyyy', '%Y')
+            return parsed_date.strftime(python_format)
     
     def get_relative_description(self, parsed_date: date) -> str:
         """Get a relative description of the parsed date"""
-        days_diff = (self.today - parsed_date).days
+        from .translation_utils import format_date_description
+        from django.utils.translation import gettext as _
         
-        if self.language == 'vi':
-            if days_diff == 0:
-                return "hôm nay"
-            elif days_diff == 1:
-                return "hôm qua"
-            elif days_diff == 2:
-                return "hôm kia"
-            elif days_diff < 7:
-                return f"{days_diff} ngày trước"
-            elif days_diff < 30:
-                weeks = days_diff // 7
-                return f"{weeks} tuần trước"
-            else:
-                return parsed_date.strftime("%d/%m/%Y")
+        days_diff = (self.today - parsed_date).days
+        relative_desc = format_date_description(days_diff, self.language)
+        
+        if relative_desc:
+            return relative_desc
         else:
-            if days_diff == 0:
-                return "today"
-            elif days_diff == 1:
-                return "yesterday"
-            elif days_diff == 2:
-                return "day before yesterday"
-            elif days_diff < 7:
-                return f"{days_diff} days ago"
-            elif days_diff < 30:
-                weeks = days_diff // 7
-                return f"{weeks} weeks ago"
-            else:
-                return parsed_date.strftime("%m/%d/%Y") 
+            # For older dates, use translation system for date format
+            date_format = _('date_format')  # Will be 'dd/MM/yyyy' for VI, 'MM/dd/yyyy' for EN
+            
+            # Convert Django date format to Python strftime format
+            python_format = date_format.replace('dd', '%d').replace('MM', '%m').replace('yyyy', '%Y')
+            return parsed_date.strftime(python_format) 

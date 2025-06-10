@@ -31,9 +31,9 @@ class AIChat {
     }
     
     addWelcomeMessage() {
-        const welcomeText = this.currentLanguage === 'vi' 
-            ? '👋 Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: "ăn trưa 50k"'
-            : '👋 Hello! Tell me about your transaction. E.g.: "coffee 25k"';
+        const welcomeText = window.i18n ? 
+            `👋 ${window.i18n.t('welcome_message')}` :
+            '👋 Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: "ăn trưa 50k"';
             
         this.addMessage(welcomeText, 'bot');
     }
@@ -78,9 +78,9 @@ class AIChat {
             console.error('Chat error:', error);
             this.removeTypingIndicator();
             
-            const errorText = this.currentLanguage === 'vi'
-                ? '❌ Xin lỗi, có lỗi xảy ra. Vui lòng thử lại!'
-                : '❌ Sorry, an error occurred. Please try again!';
+            const errorText = window.i18n ? 
+                `❌ ${window.i18n.t('error_occurred')}` :
+                '❌ Xin lỗi, có lỗi xảy ra. Vui lòng thử lại!';
                 
             this.addMessage(errorText, 'bot');
         } finally {
@@ -172,11 +172,11 @@ class AIChat {
                 let dateText = '';
                 if (aiResult.parsed_date) {
                     const date = new Date(aiResult.parsed_date);
-                    dateText = this.currentLanguage === 'vi' 
-                        ? date.toLocaleDateString('vi-VN')
-                        : date.toLocaleDateString('en-US');
+                    const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+        const locale = localeMap[this.currentLanguage] || 'en-US';
+                    dateText = date.toLocaleDateString(locale);
                 } else {
-                    dateText = window.i18n ? window.i18n.t('today') : (this.currentLanguage === 'vi' ? 'Hôm nay' : 'Today');
+                    dateText = window.i18n ? window.i18n.t('today') : 'Hôm nay';
                 }
                 
                 // Get transaction type display

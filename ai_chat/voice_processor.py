@@ -59,9 +59,9 @@ class VoiceProcessor:
         # Convert to lowercase for processing
         cleaned = transcript.lower().strip()
         
-        # Common voice recognition corrections for Vietnamese
-        if self.language == 'vi':
-            voice_corrections = {
+        # Voice recognition corrections by language
+        voice_corrections_map = {
+            'vi': {
                 # Number corrections
                 'hai mươi lăm': '25',
                 'hai mươi năm': '25', 
@@ -102,10 +102,8 @@ class VoiceProcessor:
                 'hôm qua': 'hôm qua',
                 'ngày hôm qua': 'hôm qua',
                 'ngày hôm nay': 'hôm nay',
-            }
-        else:
-            # English voice corrections
-            voice_corrections = {
+            },
+            'en': {
                 # Number corrections
                 'twenty five': '25',
                 'fifty': '50',
@@ -126,6 +124,10 @@ class VoiceProcessor:
                 'gas money': 'gas',
                 'fuel': 'gas',
             }
+        }
+        
+        # Get corrections for current language
+        voice_corrections = voice_corrections_map.get(self.language, voice_corrections_map['vi'])
         
         # Apply corrections
         for wrong, correct in voice_corrections.items():
@@ -155,10 +157,7 @@ class VoiceProcessor:
         # Enhance description with date context if not today
         if parsed_date != self.date_parser.today:
             date_desc = self.date_parser.get_relative_description(parsed_date)
-            if self.language == 'vi':
-                result['description'] = f"{result.get('description', '')} ({date_desc})"
-            else:
-                result['description'] = f"{result.get('description', '')} ({date_desc})"
+            result['description'] = f"{result.get('description', '')} ({date_desc})"
         
         # Voice-specific amount corrections
         result = self._correct_voice_amounts(result, transcript)
@@ -170,23 +169,24 @@ class VoiceProcessor:
         
         transcript_lower = transcript.lower()
         
-        # Common voice amount patterns
-        if self.language == 'vi':
-            # Check for common Vietnamese amount patterns
-            amount_patterns = [
+        # Voice amount patterns by language
+        amount_patterns_map = {
+            'vi': [
                 (r'(\d+)\s*nghìn', lambda m: int(m.group(1)) * 1000),
                 (r'(\d+)\s*triệu', lambda m: int(m.group(1)) * 1000000),
                 (r'(\d+)\s*k', lambda m: int(m.group(1)) * 1000),
                 (r'(\d+)\s*m', lambda m: int(m.group(1)) * 1000000),
-            ]
-        else:
-            # English amount patterns
-            amount_patterns = [
+            ],
+            'en': [
                 (r'(\d+)\s*thousand', lambda m: int(m.group(1)) * 1000),
                 (r'(\d+)\s*million', lambda m: int(m.group(1)) * 1000000),
                 (r'(\d+)\s*k', lambda m: int(m.group(1)) * 1000),
                 (r'(\d+)\s*m', lambda m: int(m.group(1)) * 1000000),
             ]
+        }
+        
+        # Get patterns for current language
+        amount_patterns = amount_patterns_map.get(self.language, amount_patterns_map['vi'])
         
         # Try to extract amount with voice patterns
         for pattern, converter in amount_patterns:
@@ -218,19 +218,15 @@ class VoiceProcessor:
         
         # Check for common voice recognition issues
         if len(transcript) < 5:
+            from .translation_utils import get_voice_suggestion
             suggestions['detected_issues'].append('transcript_too_short')
-            if self.language == 'vi':
-                suggestions['suggestions'].append('Hãy nói rõ hơn, ví dụ: "coffee hai mười lăm nghìn"')
-            else:
-                suggestions['suggestions'].append('Please speak more clearly, e.g.: "coffee twenty five thousand"')
+            suggestions['suggestions'].append(get_voice_suggestion('speak_clearly', self.language))
         
         # Check for unclear amounts
         if not re.search(r'\d+', transcript):
+            from .translation_utils import get_voice_suggestion
             suggestions['detected_issues'].append('no_amount_detected')
-            if self.language == 'vi':
-                suggestions['suggestions'].append('Không tìm thấy số tiền. Hãy nói rõ số tiền, ví dụ: "25k" hoặc "hai mười lăm nghìn"')
-            else:
-                suggestions['suggestions'].append('No amount detected. Please specify the amount, e.g.: "25k" or "twenty five thousand"')
+            suggestions['suggestions'].append(get_voice_suggestion('no_amount', self.language))
         
         # Check for unclear transaction type
         common_keywords = {
@@ -240,11 +236,9 @@ class VoiceProcessor:
         
         keywords = common_keywords.get(self.language, common_keywords['vi'])
         if not any(keyword in transcript_lower for keyword in keywords):
+            from .translation_utils import get_voice_suggestion
             suggestions['detected_issues'].append('unclear_transaction_type')
-            if self.language == 'vi':
-                suggestions['suggestions'].append('Loại giao dịch không rõ. Hãy thêm từ khóa như "coffee", "ăn trưa", "tiết kiệm"')
-            else:
-                suggestions['suggestions'].append('Transaction type unclear. Please add keywords like "coffee", "lunch", "saving"')
+            suggestions['suggestions'].append(get_voice_suggestion('unclear_type', self.language))
         
         return suggestions
     

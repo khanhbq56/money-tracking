@@ -260,7 +260,11 @@ class ExpenseCalendar {
                 } else {
                     // Fallback to hardcoded names if i18n not available
                     const currentLang = window.i18n?.currentLang || 'vi';
-                    const dayNames = currentLang === 'vi' ? this.dayNamesVi : this.dayNamesEn;
+                    const dayNamesMap = {
+                        'vi': this.dayNamesVi,
+                        'en': this.dayNamesEn
+                    };
+                    const dayNames = dayNamesMap[currentLang] || this.dayNamesVi;
                     if (index < dayNames.length) {
                         element.textContent = dayNames[index];
                     }
@@ -602,11 +606,14 @@ class ExpenseCalendar {
         const dayModalDate = document.getElementById('day-modal-date');
         
         if (dayModalTitle) {
-            dayModalTitle.textContent = language === 'vi' ? '📅 Chi tiết ngày' : '📅 Day Details';
+            const titleText = window.i18n ? window.i18n.t('dialog_day_details') : '📅 Chi tiết ngày';
+            dayModalTitle.textContent = titleText;
         }
         
         if (dayModalDate) {
-            const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
+            const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+            const locale = localeMap[window.i18n?.currentLang] || 'en-US';
+            const dateStr = date.toLocaleDateString(locale, {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -665,7 +672,9 @@ class ExpenseCalendar {
         document.getElementById('transaction-type').textContent = typeLabel;
         
         // Format date
-        const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US');
+        const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+        const locale = localeMap[language] || 'en-US';
+        const dateStr = date.toLocaleDateString(locale);
         document.getElementById('transaction-date').textContent = dateStr;
         
         // Show modal
@@ -690,11 +699,14 @@ class ExpenseCalendar {
         const dayModalDate = document.getElementById('day-modal-date');
         
         if (dayModalTitle) {
-            dayModalTitle.textContent = language === 'vi' ? '📅 Chi tiết ngày' : '📅 Day Details';
+            const titleText = window.i18n ? window.i18n.t('dialog_day_details') : '📅 Chi tiết ngày';
+            dayModalTitle.textContent = titleText;
         }
         
         if (dayModalDate) {
-            const dateStr = date.toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
+            const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+            const locale = localeMap[window.i18n?.currentLang] || 'en-US';
+            const dateStr = date.toLocaleDateString(locale, {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
@@ -1017,9 +1029,9 @@ async function deleteTransaction() {
                 }
             }
         }, {
-            title: window.i18n?.currentLang === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction',
-            confirmText: window.i18n?.currentLang === 'vi' ? 'Xóa' : 'Delete',
-            cancelText: window.i18n?.currentLang === 'vi' ? 'Hủy' : 'Cancel'
+            title: window.i18n ? window.i18n.t('dialog_delete_transaction') : 'Xóa giao dịch',
+            confirmText: window.i18n ? window.i18n.t('button_delete') : 'Xóa',
+            cancelText: window.i18n ? window.i18n.t('button_cancel') : 'Hủy'
         });
     }
 }
@@ -1038,14 +1050,13 @@ function showTransactionForm(mode, transaction, date) {
     form.dataset.transactionId = transaction ? transaction.id : '';
     
     // Update UI based on mode
-    const language = window.i18n?.currentLang || 'vi';
     if (mode === 'edit') {
-        title.textContent = language === 'vi' ? 'Sửa giao dịch' : 'Edit Transaction';
-        saveButton.textContent = language === 'vi' ? 'Cập nhật' : 'Update';
+        title.textContent = window.i18n ? window.i18n.t('edit_transaction') : 'Sửa giao dịch';
+        saveButton.textContent = window.i18n ? window.i18n.t('button_update') : 'Cập nhật';
         populateFormWithTransaction(transaction, date);
     } else {
-        title.textContent = language === 'vi' ? 'Thêm giao dịch' : 'Add Transaction';
-        saveButton.textContent = language === 'vi' ? 'Lưu' : 'Save';
+        title.textContent = window.i18n ? window.i18n.t('add_transaction') : 'Thêm giao dịch';
+        saveButton.textContent = window.i18n ? window.i18n.t('save') : 'Lưu';
         
         // Check if transaction contains AI data (from chat edit)
         if (transaction && (transaction.description || transaction.amount || transaction.transaction_type)) {

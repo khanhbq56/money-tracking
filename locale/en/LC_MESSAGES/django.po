@@ -199,6 +199,52 @@ msgstr "Voice recognition error. Please try again."
 msgid "Browser does not support voice input. Please use Chrome or Edge."
 msgstr "Browser does not support voice input. Please use Chrome or Edge."
 
+# Date format keys
+msgid "date_format"
+msgstr "MM/dd/yyyy"
+
+# AI response template
+msgid "ai_classification_response"
+msgstr "{icon} Classified as: {type_display} - {description} ({amount:,.0f}₫)"
+
+# Gemini prompt template
+msgid "gemini_prompt_template"
+msgstr ""
+"Analyze the following English message and return accurate JSON:\n"
+"\n"
+"Message: \"{message}\"\n"
+"\n"
+"Return JSON with this EXACT format:\n"
+"{{\n"
+"    \"type\": \"expense|saving|investment\",\n"
+"    \"amount\": positive_amount_in_VND,\n"
+"    \"description\": \"short_description\",\n"
+"    \"category\": \"category_code\", \n"
+"    \"confidence\": 0.8,\n"
+"    \"icon\": \"emoji\"\n"
+"}}\n"
+"\n"
+"Classification rules:\n"
+"1. EXPENSES:\n"
+"   - \"coffee\", \"cafe\" → type: \"expense\", category: \"coffee\", icon: \"☕\"\n"
+"   - \"lunch\", \"dinner\", \"food\", \"eat\" → type: \"expense\", category: \"food\", icon: \"🍜\"\n"
+"   - \"transport\", \"taxi\", \"gas\", \"fuel\" → type: \"expense\", category: \"transport\", icon: \"🚗\"\n"
+"   - \"shopping\", \"buy clothes\" → type: \"expense\", category: \"shopping\", icon: \"🛒\"\n"
+"   - Default others → type: \"expense\", category: \"other\", icon: \"📦\"\n"
+"\n"
+"2. SAVINGS:\n"
+"   - \"saving\", \"save money\", \"bank deposit\" → type: \"saving\", category: null, icon: \"💰\"\n"
+"\n"
+"3. INVESTMENTS:\n"
+"   - \"investment\", \"buy stocks\", \"invest\" → type: \"investment\", category: null, icon: \"📈\"\n"
+"\n"
+"4. Amount extraction:\n"
+"   - \"25k\" = 25000\n"
+"   - \"1.5M\" = 1500000\n"
+"   - Default multiply by 1000\n"
+"\n"
+"Always return positive amount and confidence 0.6-1.0."
+
 # Date parsing descriptions
 msgid "hôm nay"
 msgstr "today"
@@ -216,4 +262,78 @@ msgid "yesterday"
 msgstr "yesterday"
 
 msgid "day before yesterday"
-msgstr "day before yesterday" 
+msgstr "day before yesterday"
+
+# Category keys for backend translation utils
+msgid "category_food"
+msgstr "Food & Drink"
+
+msgid "category_coffee"
+msgstr "Coffee"
+
+msgid "category_transport"
+msgstr "Transport"
+
+msgid "category_shopping"
+msgstr "Shopping"
+
+msgid "category_entertainment"
+msgstr "Entertainment"
+
+msgid "category_health"
+msgstr "Healthcare"
+
+msgid "category_education"
+msgstr "Education"
+
+msgid "category_utilities"
+msgstr "Utilities"
+
+msgid "category_other"
+msgstr "Other"
+
+msgid "category_saving"
+msgstr "Saving"
+
+msgid "category_investment"
+msgstr "Investment"
+
+# Date description keys
+msgid "date_today"
+msgstr "today"
+
+msgid "date_yesterday"
+msgstr "yesterday"
+
+msgid "date_day_before_yesterday"
+msgstr "day before yesterday"
+
+msgid "date_days_ago"
+msgstr "{days} days ago"
+
+msgid "date_weeks_ago"
+msgstr "{weeks} weeks ago"
+
+# Voice suggestion keys
+msgid "voice_speak_clearly"
+msgstr "Please speak more clearly, e.g.: \"coffee twenty five thousand\""
+
+msgid "voice_no_amount"
+msgstr "No amount detected. Please specify the amount, e.g.: \"25k\" or \"twenty five thousand\""
+
+msgid "voice_unclear_type"
+msgstr "Transaction type unclear. Please add keywords like \"coffee\", \"lunch\", \"saving\""
+
+# Error message keys
+msgid "error_language_not_supported"
+msgstr "Language not supported"
+
+# Transaction type keys
+msgid "transaction_type_expense"
+msgstr "Expense"
+
+msgid "transaction_type_saving"
+msgstr "Saving"
+
+msgid "transaction_type_investment"
+msgstr "Investment" 

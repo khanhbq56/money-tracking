@@ -211,13 +211,14 @@ class VoiceInput {
         
         let hasTransactionType = false;
         
-        if (currentLang === 'vi') {
-            const keywords = ['coffee', 'ăn', 'trưa', 'sáng', 'tối', 'tiết kiệm', 'taxi', 'grab', 'xăng'];
-            hasTransactionType = keywords.some(keyword => transcript.toLowerCase().includes(keyword));
-        } else {
-            const keywords = ['coffee', 'lunch', 'dinner', 'breakfast', 'saving', 'taxi', 'gas'];
-            hasTransactionType = keywords.some(keyword => transcript.toLowerCase().includes(keyword));
-        }
+        // Define keywords for both languages
+        const keywordsByLanguage = {
+            'vi': ['coffee', 'ăn', 'trưa', 'sáng', 'tối', 'tiết kiệm', 'taxi', 'grab', 'xăng'],
+            'en': ['coffee', 'lunch', 'dinner', 'breakfast', 'saving', 'taxi', 'gas']
+        };
+        
+        const keywords = keywordsByLanguage[currentLang] || keywordsByLanguage['vi'];
+        hasTransactionType = keywords.some(keyword => transcript.toLowerCase().includes(keyword));
         
         return hasAmount && hasTransactionType && transcript.length >= 5;
     }
@@ -232,63 +233,47 @@ class VoiceInput {
     }
     
     showSendConfirmation(transcript) {
-        const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
-        const message = currentLang === 'vi' 
-            ? `Đã ghi nhận: "${transcript}". Nhấn Gửi để xử lý.`
-            : `Recorded: "${transcript}". Press Send to process.`;
+        const message = window.i18n ? 
+            window.i18n.t('voice_recorded_message', {transcript: transcript}) :
+            `Đã ghi nhận: "${transcript}". Nhấn Gửi để xử lý.`;
         
         this.showVoiceMessage(message, 'info');
     }
     
     handleVoiceError(error) {
-        const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
-        let errorMessage = '';
+        let errorKey = 'voice_error';
         
         switch (error) {
             case 'no-speech':
-                errorMessage = currentLang === 'vi' 
-                    ? 'Không nghe thấy giọng nói. Hãy thử lại.'
-                    : 'No speech detected. Please try again.';
+                errorKey = 'voice_no_speech';
                 break;
             case 'audio-capture':
-                errorMessage = currentLang === 'vi'
-                    ? 'Không thể truy cập microphone. Kiểm tra quyền truy cập.'
-                    : 'Cannot access microphone. Check permissions.';
+                errorKey = 'voice_access_denied';
                 break;
             case 'not-allowed':
-                errorMessage = currentLang === 'vi'
-                    ? 'Quyền truy cập microphone bị từ chối.'
-                    : 'Microphone access denied.';
+                errorKey = 'voice_access_denied';
                 break;
             case 'network':
-                errorMessage = currentLang === 'vi'
-                    ? 'Lỗi mạng. Kiểm tra kết nối internet.'
-                    : 'Network error. Check internet connection.';
+                errorKey = 'voice_network_error';
                 break;
             case 'start_error':
-                errorMessage = currentLang === 'vi'
-                    ? 'Không thể khởi động voice recognition.'
-                    : 'Cannot start voice recognition.';
+                errorKey = 'voice_error';
                 break;
             case 'empty_transcript':
-                errorMessage = currentLang === 'vi'
-                    ? 'Không nhận diện được giọng nói. Hãy nói rõ hơn.'
-                    : 'No speech recognized. Please speak more clearly.';
+                errorKey = 'voice_no_speech';
                 break;
             default:
-                errorMessage = currentLang === 'vi'
-                    ? 'Lỗi voice recognition. Hãy thử lại.'
-                    : 'Voice recognition error. Please try again.';
+                errorKey = 'voice_error';
         }
         
+        const errorMessage = window.i18n ? window.i18n.t(errorKey) : 'Lỗi voice recognition. Hãy thử lại.';
         this.showVoiceError(errorMessage);
     }
     
     showBrowserNotSupported() {
-        const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
-        const message = currentLang === 'vi'
-            ? 'Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge.'
-            : 'Browser does not support voice input. Please use Chrome or Edge.';
+        const message = window.i18n ? 
+            window.i18n.t('voice_not_supported') :
+            'Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge.';
         
         this.showVoiceError(message);
         
@@ -303,12 +288,11 @@ class VoiceInput {
         const voiceBtn = document.getElementById('voice-btn');
         if (!voiceBtn) return;
         
-        const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
-        
         if (isListening) {
             voiceBtn.classList.add('listening', 'bg-red-500', 'hover:bg-red-600');
             voiceBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-            voiceBtn.innerHTML = currentLang === 'vi' ? '🎤 Đang nghe...' : '🎤 Listening...';
+            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
+            voiceBtn.innerHTML = `🎤 ${listeningText}`;
             voiceBtn.disabled = false;
         } else {
             voiceBtn.classList.remove('listening', 'bg-red-500', 'hover:bg-red-600');
@@ -326,10 +310,10 @@ class VoiceInput {
             indicator.id = 'voice-listening-indicator';
             indicator.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center space-x-2';
             
-            const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
+            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
             indicator.innerHTML = `
                 <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
-                <span>${currentLang === 'vi' ? 'Đang nghe...' : 'Listening...'}</span>
+                <span>${listeningText}</span>
             `;
             
             document.body.appendChild(indicator);
@@ -341,10 +325,8 @@ class VoiceInput {
         const chatInput = document.getElementById('chat-input');
         if (chatInput) {
             chatInput.classList.add('border-red-500', 'ring-2', 'ring-red-200');
-            chatInput.placeholder = window.i18n ? window.i18n.currentLang === 'vi' 
-                ? 'Đang nghe...' 
-                : 'Listening...' 
-                : 'Đang nghe...';
+            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
+            chatInput.placeholder = listeningText;
         }
     }
     
@@ -359,10 +341,12 @@ class VoiceInput {
         const chatInput = document.getElementById('chat-input');
         if (chatInput) {
             chatInput.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
-            const currentLang = window.i18n ? window.i18n.currentLang : 'vi';
-            chatInput.placeholder = currentLang === 'vi' 
-                ? 'VD: coffee 25k, tiết kiệm 200k...' 
-                : 'E.g.: coffee 25k, saving 200k...';
+            
+            // Use translation system for placeholder
+            const placeholder = window.i18n ? 
+                window.i18n.t('enter_transaction') : 
+                'VD: coffee 25k, tiết kiệm 200k...';
+            chatInput.placeholder = placeholder;
         }
     }
     

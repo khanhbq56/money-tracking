@@ -59,6 +59,7 @@ const enTranslations = {
     'transaction_update_error': '❌ Error updating transaction. Please try again!',
     'transaction_delete_error': '❌ Error deleting transaction. Please try again!',
     'transaction_confirm_error': '❌ Error confirming transaction. Please try again!',
+    'error_occurred': 'Sorry, an error occurred. Please try again!',
     
     // Validation messages
     'validation_required_fields': '⚠️ Please fill in all required fields!',
@@ -85,7 +86,44 @@ const enTranslations = {
     'thursday': 'Thu',
     'friday': 'Fri',
     'saturday': 'Sat',
-    'sunday': 'Sun'
+    'sunday': 'Sun',
+    
+    // Voice input
+    'voice_listening': 'Listening...',
+    'voice_input_tooltip': 'Voice Input (Ctrl+Shift+V)',
+    'voice_not_supported': 'Browser does not support voice input. Please use Chrome or Edge.',
+    'voice_no_speech': 'No speech detected. Please try again.',
+    'voice_access_denied': 'Microphone access denied.',
+    'voice_network_error': 'Network error. Check internet connection.',
+    'voice_error': 'Voice recognition error. Please try again.',
+    'voice_recorded_message': 'Recorded: "{transcript}". Press Send to process.',
+    
+    // Date formatting
+    'date_today': 'today',
+    'date_yesterday': 'yesterday',
+    'date_day_before_yesterday': 'day before yesterday',
+    'date_format': 'MM/dd/yyyy',
+    'date_days_ago': '{days} days ago',
+    'date_weeks_ago': '{weeks} weeks ago',
+    
+    // Category translations
+    'category_food': 'Food & Drink',
+    'category_transport': 'Transport',
+    'category_saving': 'Saving',
+    'category_investment': 'Investment',
+    
+    // Dialog titles
+    'dialog_delete_transaction': 'Delete Transaction',
+    'dialog_day_details': '📅 Day Details',
+    'button_delete': 'Delete',
+    'button_cancel': 'Cancel',
+    'edit_transaction': 'Edit Transaction',
+    'button_update': 'Update',
+    
+    // Alert dialog titles
+    'error_title': 'Error',
+    'success_title': 'Success',
+    'notice_title': 'Notice'
 };
 
 // Export for use in i18n.js

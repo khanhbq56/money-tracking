@@ -654,13 +654,16 @@
             if (!modal) return;
             
             // Set content
-            const language = window.i18n?.currentLang || 'vi';
-            titleElement.textContent = options.title || (language === 'vi' ? 'Xác nhận' : 'Confirm');
+            const defaultTitle = window.i18n ? window.i18n.t('confirm') : 'Xác nhận';
+            const defaultConfirmText = window.i18n ? window.i18n.t('confirm') : 'Xác nhận';
+            const defaultCancelText = window.i18n ? window.i18n.t('cancel') : 'Hủy';
+            
+            titleElement.textContent = options.title || defaultTitle;
             messageElement.textContent = message;
             
             // Set button text
-            confirmBtn.textContent = options.confirmText || (language === 'vi' ? 'Xác nhận' : 'Confirm');
-            cancelBtn.textContent = options.cancelText || (language === 'vi' ? 'Hủy' : 'Cancel');
+            confirmBtn.textContent = options.confirmText || defaultConfirmText;
+            cancelBtn.textContent = options.cancelText || defaultCancelText;
             
             // Set button styles
             confirmBtn.className = `px-6 py-3 text-white rounded-xl font-semibold transition-colors ${
@@ -689,22 +692,28 @@
             if (!modal) return;
             
             // Set content
-            const language = window.i18n?.currentLang || 'vi';
             const isError = options.type === 'error';
             const isSuccess = options.type === 'success';
             
-            titleElement.textContent = options.title || 
-                (isError ? (language === 'vi' ? 'Lỗi' : 'Error') :
-                 isSuccess ? (language === 'vi' ? 'Thành công' : 'Success') :
-                 (language === 'vi' ? 'Thông báo' : 'Notice'));
-                 
+            // Use translation system for dialog titles
+            let defaultTitle;
+            if (isError) {
+                defaultTitle = window.i18n ? window.i18n.t('error_title') : 'Lỗi';
+            } else if (isSuccess) {
+                defaultTitle = window.i18n ? window.i18n.t('success_title') : 'Thành công';
+            } else {
+                defaultTitle = window.i18n ? window.i18n.t('notice_title') : 'Thông báo';
+            }
+            
+            titleElement.textContent = options.title || defaultTitle;
             messageElement.textContent = message;
             
             // Hide cancel button for alerts
             cancelBtn.style.display = 'none';
             
             // Set confirm button
-            confirmBtn.textContent = language === 'vi' ? 'Đóng' : 'Close';
+            const closeText = window.i18n ? window.i18n.t('close') : 'Đóng';
+            confirmBtn.textContent = closeText;
             confirmBtn.className = `px-6 py-3 text-white rounded-xl font-semibold transition-colors ${
                 isError ? 'bg-red-500 hover:bg-red-600' :
                 isSuccess ? 'bg-green-500 hover:bg-green-600' :

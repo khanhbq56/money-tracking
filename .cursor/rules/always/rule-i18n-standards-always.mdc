@@ -1,0 +1,50 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# I18n Standards - No Hardcoded Language Conditionals
+
+## Context
+
+- Apply to all code changes in Django + JavaScript money tracking app
+- Enforces centralized translation system instead of language conditionals
+- Prevents `if language == 'vi'` patterns that break scalability
+- Required for maintaining clean i18n architecture
+
+## Critical Rules
+
+- **NEVER** use `if language == 'vi'` or `currentLang === 'vi'` conditionals
+- **ALWAYS** use translation functions: `_('key')` (Python) or `window.i18n.t('key')` (JS)
+- **REPLACE** ternary language checks with language-mapped objects: `const map = {'vi': 'text1', 'en': 'text2'}`
+- **USE** snake_case for all translation keys consistently
+- **ADD** new keys to BOTH Django .po files AND JavaScript translation files
+- **PRESERVE** technical locale mappings for browser APIs (e.g., `vi-VN`, `en-US`)
+
+## Examples
+
+<example>
+  // ✅ CORRECT: Language-mapped object
+  const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+  const locale = localeMap[currentLang] || 'en-US';
+  
+  // ✅ CORRECT: Translation function
+  const title = window.i18n.t('delete_transaction');
+  
+  // ✅ CORRECT: Django translation
+  from django.utils.translation import gettext as _
+  message = _('transaction_saved_success')
+</example>
+
+<example type="invalid">
+  // ❌ FORBIDDEN: Hardcoded language conditional
+  const title = currentLang === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction';
+  
+  // ❌ FORBIDDEN: Language if-else
+  if (language == 'vi') {
+      return 'Tiết kiệm'
+  } else {
+      return 'Saving'
+  }
+</example>
+

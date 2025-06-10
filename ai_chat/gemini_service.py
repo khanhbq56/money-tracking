@@ -85,81 +85,12 @@ class GeminiService:
     
     def _build_prompt(self, message: str, language: str) -> str:
         """Build appropriate prompt based on language"""
-        if language == 'vi':
-            return f"""
-Phân tích tin nhắn tiếng Việt sau và trả về JSON chính xác:
-
-Tin nhắn: "{message}"
-
-Trả về JSON với format này CHÍNH XÁC:
-{{
-    "type": "expense|saving|investment",
-    "amount": số_tiền_VND_dương,
-    "description": "mô_tả_ngắn_gọn",
-    "category": "category_code",
-    "confidence": 0.8,
-    "icon": "emoji"
-}}
-
-Quy tắc phân loại:
-1. CHI TIÊU (expense):
-   - "coffee", "cafe", "cà phê" → type: "expense", category: "coffee", icon: "☕"
-   - "ăn", "trưa", "sáng", "tối", "phở", "cơm", "bún" → type: "expense", category: "food", icon: "🍜"
-   - "grab", "taxi", "xe ôm", "xăng", "uber" → type: "expense", category: "transport", icon: "🚗"
-   - "mua sắm", "shopping", "áo", "quần", "giày" → type: "expense", category: "shopping", icon: "🛒"
-   - "xem phim", "game", "giải trí" → type: "expense", category: "entertainment", icon: "🎬"
-   - Mặc định khác → type: "expense", category: "other", icon: "📦"
-
-2. TIẾT KIỆM (saving):
-   - "tiết kiệm", "gửi ngân hàng", "save" → type: "saving", category: null, icon: "💰"
-
-3. ĐẦU TƯ (investment):
-   - "mua cổ phiếu", "đầu tư", "invest", "bitcoin", "crypto" → type: "investment", category: null, icon: "📈"
-
-4. Trích xuất số tiền:
-   - "25k" = 25000
-   - "1.5M" = 1500000
-   - "100" = 100000 (mặc định nghìn)
-
-Luôn trả về amount dương và confidence từ 0.6 đến 1.0.
-"""
-        else:  # English
-            return f"""
-Analyze the following English message and return accurate JSON:
-
-Message: "{message}"
-
-Return JSON with this EXACT format:
-{{
-    "type": "expense|saving|investment",
-    "amount": positive_amount_in_VND,
-    "description": "short_description",
-    "category": "category_code", 
-    "confidence": 0.8,
-    "icon": "emoji"
-}}
-
-Classification rules:
-1. EXPENSES:
-   - "coffee", "cafe" → type: "expense", category: "coffee", icon: "☕"
-   - "lunch", "dinner", "food", "eat" → type: "expense", category: "food", icon: "🍜"
-   - "transport", "taxi", "gas", "fuel" → type: "expense", category: "transport", icon: "🚗"
-   - "shopping", "buy clothes" → type: "expense", category: "shopping", icon: "🛒"
-   - Default others → type: "expense", category: "other", icon: "📦"
-
-2. SAVINGS:
-   - "saving", "save money", "bank deposit" → type: "saving", category: null, icon: "💰"
-
-3. INVESTMENTS:
-   - "investment", "buy stocks", "invest" → type: "investment", category: null, icon: "📈"
-
-4. Amount extraction:
-   - "25k" = 25000
-   - "1.5M" = 1500000
-   - Default multiply by 1000
-
-Always return positive amount and confidence 0.6-1.0.
-"""
+        from django.utils.translation import gettext as _
+        
+        # Use translation system for prompt template
+        prompt_template = _('gemini_prompt_template')
+        
+        return prompt_template.format(message=message)
     
     def _validate_ai_result(self, result: Dict[str, Any], original_message: str) -> Dict[str, Any]:
         """Validate and normalize AI result"""
@@ -221,41 +152,45 @@ Always return positive amount and confidence 0.6-1.0.
         
         # Food detection
         elif any(word in message_lower for word in ['ăn', 'trưa', 'sáng', 'tối', 'phở', 'cơm', 'bún', 'lunch', 'dinner', 'food']):
+            from .translation_utils import get_category_display_name
             result.update({
                 'type': 'expense',
                 'category': 'food',
                 'icon': '🍜',
-                'description': 'Ăn uống' if self.language == 'vi' else 'Food',
+                'description': get_category_display_name('food', self.language),
                 'confidence': 0.8
             })
         
         # Transport detection
         elif any(word in message_lower for word in ['grab', 'taxi', 'xe ôm', 'xăng', 'transport', 'fuel']):
+            from .translation_utils import get_category_display_name
             result.update({
                 'type': 'expense',
                 'category': 'transport',
                 'icon': '🚗',
-                'description': 'Di chuyển' if self.language == 'vi' else 'Transport',
+                'description': get_category_display_name('transport', self.language),
                 'confidence': 0.8
             })
         
         # Saving detection
         elif any(word in message_lower for word in ['tiết kiệm', 'gửi', 'save', 'saving']):
+            from .translation_utils import get_category_display_name
             result.update({
                 'type': 'saving',
                 'category': None,
                 'icon': '💰',
-                'description': 'Tiết kiệm' if self.language == 'vi' else 'Saving',
+                'description': get_category_display_name('saving', self.language),
                 'confidence': 0.9
             })
         
         # Investment detection
         elif any(word in message_lower for word in ['đầu tư', 'cổ phiếu', 'invest', 'stock', 'bitcoin']):
+            from .translation_utils import get_category_display_name
             result.update({
                 'type': 'investment',
                 'category': None,
                 'icon': '📈',
-                'description': 'Đầu tư' if self.language == 'vi' else 'Investment',
+                'description': get_category_display_name('investment', self.language),
                 'confidence': 0.8
             })
         

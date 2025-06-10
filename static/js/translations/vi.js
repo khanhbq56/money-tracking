@@ -59,6 +59,7 @@ const viTranslations = {
     'transaction_update_error': '❌ Lỗi khi cập nhật giao dịch. Vui lòng thử lại!',
     'transaction_delete_error': '❌ Lỗi khi xóa giao dịch. Vui lòng thử lại!',
     'transaction_confirm_error': '❌ Lỗi khi xác nhận giao dịch. Vui lòng thử lại!',
+    'error_occurred': 'Xin lỗi, có lỗi xảy ra. Vui lòng thử lại!',
     
     // Validation messages
     'validation_required_fields': '⚠️ Vui lòng điền đầy đủ thông tin!',
@@ -85,7 +86,44 @@ const viTranslations = {
     'thursday': 'Thứ 5',
     'friday': 'Thứ 6',
     'saturday': 'Thứ 7',
-    'sunday': 'CN'
+    'sunday': 'CN',
+    
+    // Voice input
+    'voice_listening': 'Đang nghe...',
+    'voice_input_tooltip': 'Nhập bằng giọng nói (Ctrl+Shift+V)',
+    'voice_not_supported': 'Trình duyệt không hỗ trợ nhập bằng giọng nói. Vui lòng sử dụng Chrome hoặc Edge.',
+    'voice_no_speech': 'Không phát hiện giọng nói. Vui lòng thử lại.',
+    'voice_access_denied': 'Quyền truy cập microphone bị từ chối.',
+    'voice_network_error': 'Lỗi mạng. Kiểm tra kết nối internet.',
+    'voice_error': 'Lỗi nhận dạng giọng nói. Vui lòng thử lại.',
+    'voice_recorded_message': 'Đã ghi nhận: "{transcript}". Nhấn Gửi để xử lý.',
+    
+    // Date formatting
+    'date_today': 'hôm nay',
+    'date_yesterday': 'hôm qua',
+    'date_day_before_yesterday': 'hôm kia',
+    'date_format': 'dd/MM/yyyy',
+    'date_days_ago': '{days} ngày trước',
+    'date_weeks_ago': '{weeks} tuần trước',
+    
+    // Category translations
+    'category_food': 'Ăn uống',
+    'category_transport': 'Di chuyển',
+    'category_saving': 'Tiết kiệm',
+    'category_investment': 'Đầu tư',
+    
+    // Dialog titles
+    'dialog_delete_transaction': 'Xóa giao dịch',
+    'dialog_day_details': '📅 Chi tiết ngày',
+    'button_delete': 'Xóa',
+    'button_cancel': 'Hủy',
+    'edit_transaction': 'Sửa giao dịch',
+    'button_update': 'Cập nhật',
+    
+    // Alert dialog titles
+    'error_title': 'Lỗi',
+    'success_title': 'Thành công', 
+    'notice_title': 'Thông báo'
 };
 
 // Export for use in i18n.js

@@ -199,6 +199,53 @@ msgstr "Lỗi nhận diện giọng nói. Hãy thử lại."
 msgid "Browser does not support voice input. Please use Chrome or Edge."
 msgstr "Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge."
 
+# Date format keys
+msgid "date_format"
+msgstr "dd/MM/yyyy"
+
+# AI response template
+msgid "ai_classification_response"
+msgstr "{icon} Phân loại: {type_display} - {description} ({amount:,.0f}₫)"
+
+# Gemini prompt template  
+msgid "gemini_prompt_template"
+msgstr ""
+"Phân tích tin nhắn tiếng Việt sau và trả về JSON chính xác:\n"
+"\n"
+"Tin nhắn: \"{message}\"\n"
+"\n"
+"Trả về JSON với format này CHÍNH XÁC:\n"
+"{{\n"
+"    \"type\": \"expense|saving|investment\",\n"
+"    \"amount\": số_tiền_VND_dương,\n"
+"    \"description\": \"mô_tả_ngắn_gọn\",\n"
+"    \"category\": \"category_code\",\n"
+"    \"confidence\": 0.8,\n"
+"    \"icon\": \"emoji\"\n"
+"}}\n"
+"\n"
+"Quy tắc phân loại:\n"
+"1. CHI TIÊU (expense):\n"
+"   - \"coffee\", \"cafe\", \"cà phê\" → type: \"expense\", category: \"coffee\", icon: \"☕\"\n"
+"   - \"ăn\", \"trưa\", \"sáng\", \"tối\", \"phở\", \"cơm\", \"bún\" → type: \"expense\", category: \"food\", icon: \"🍜\"\n"
+"   - \"grab\", \"taxi\", \"xe ôm\", \"xăng\", \"uber\" → type: \"expense\", category: \"transport\", icon: \"🚗\"\n"
+"   - \"mua sắm\", \"shopping\", \"áo\", \"quần\", \"giày\" → type: \"expense\", category: \"shopping\", icon: \"🛒\"\n"
+"   - \"xem phim\", \"game\", \"giải trí\" → type: \"expense\", category: \"entertainment\", icon: \"🎬\"\n"
+"   - Mặc định khác → type: \"expense\", category: \"other\", icon: \"📦\"\n"
+"\n"
+"2. TIẾT KIỆM (saving):\n"
+"   - \"tiết kiệm\", \"gửi ngân hàng\", \"save\" → type: \"saving\", category: null, icon: \"💰\"\n"
+"\n"
+"3. ĐẦU TƯ (investment):\n"
+"   - \"mua cổ phiếu\", \"đầu tư\", \"invest\", \"bitcoin\", \"crypto\" → type: \"investment\", category: null, icon: \"📈\"\n"
+"\n"
+"4. Trích xuất số tiền:\n"
+"   - \"25k\" = 25000\n"
+"   - \"1.5M\" = 1500000\n"
+"   - \"100\" = 100000 (mặc định nghìn)\n"
+"\n"
+"Luôn trả về amount dương và confidence từ 0.6 đến 1.0."
+
 # Date parsing descriptions
 msgid "hôm nay"
 msgstr "hôm nay"
@@ -216,4 +263,78 @@ msgid "yesterday"
 msgstr "hôm qua"
 
 msgid "day before yesterday"
-msgstr "hôm kia" 
+msgstr "hôm kia"
+
+# Category keys for backend translation utils
+msgid "category_food"
+msgstr "Ăn uống"
+
+msgid "category_coffee"
+msgstr "Coffee"
+
+msgid "category_transport"
+msgstr "Di chuyển"
+
+msgid "category_shopping"
+msgstr "Mua sắm"
+
+msgid "category_entertainment"
+msgstr "Giải trí"
+
+msgid "category_health"
+msgstr "Sức khỏe"
+
+msgid "category_education"
+msgstr "Giáo dục"
+
+msgid "category_utilities"
+msgstr "Tiện ích"
+
+msgid "category_other"
+msgstr "Khác"
+
+msgid "category_saving"
+msgstr "Tiết kiệm"
+
+msgid "category_investment"
+msgstr "Đầu tư"
+
+# Date description keys
+msgid "date_today"
+msgstr "hôm nay"
+
+msgid "date_yesterday"
+msgstr "hôm qua"
+
+msgid "date_day_before_yesterday"
+msgstr "hôm kia"
+
+msgid "date_days_ago"
+msgstr "{days} ngày trước"
+
+msgid "date_weeks_ago"
+msgstr "{weeks} tuần trước"
+
+# Voice suggestion keys
+msgid "voice_speak_clearly"
+msgstr "Hãy nói rõ hơn, ví dụ: \"coffee hai mười lăm nghìn\""
+
+msgid "voice_no_amount"
+msgstr "Không tìm thấy số tiền. Hãy nói rõ số tiền, ví dụ: \"25k\" hoặc \"hai mười lăm nghìn\""
+
+msgid "voice_unclear_type"
+msgstr "Loại giao dịch không rõ. Hãy thêm từ khóa như \"coffee\", \"ăn trưa\", \"tiết kiệm\""
+
+# Error message keys
+msgid "error_language_not_supported"
+msgstr "Ngôn ngữ không được hỗ trợ"
+
+# Transaction type keys
+msgid "transaction_type_expense"
+msgstr "Chi tiêu"
+
+msgid "transaction_type_saving"
+msgstr "Tiết kiệm"
+
+msgid "transaction_type_investment"
+msgstr "Đầu tư" 

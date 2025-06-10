@@ -87,7 +87,8 @@ class I18n {
         // Update language switcher flag
         const currentFlag = document.getElementById('current-flag');
         if (currentFlag) {
-            currentFlag.textContent = lang === 'vi' ? '🇻🇳' : '🇺🇸';
+                                    const flagMap = { 'vi': '🇻🇳', 'en': '🇺🇸' };
+                        currentFlag.textContent = flagMap[lang] || '🇺🇸';
         }
         
         // Reload translations
@@ -155,7 +156,8 @@ class I18n {
         
         if (switcher && dropdown && currentFlag) {
             // Set initial flag
-            currentFlag.textContent = this.currentLang === 'vi' ? '🇻🇳' : '🇺🇸';
+            const flagMap = { 'vi': '🇻🇳', 'en': '🇺🇸' };
+        currentFlag.textContent = flagMap[this.currentLang] || '🇺🇸';
             
             // Toggle dropdown on click
             switcher.addEventListener('click', (e) => {
@@ -232,7 +234,8 @@ class I18n {
      * Get date format for current language
      */
     getDateFormat() {
-        return this.currentLang === 'vi' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
+        const formatMap = { 'vi': 'dd/MM/yyyy', 'en': 'MM/dd/yyyy' };
+        return formatMap[this.currentLang] || 'MM/dd/yyyy';
     }
     
     /**

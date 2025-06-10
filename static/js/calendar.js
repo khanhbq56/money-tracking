@@ -968,10 +968,7 @@ function showEditTransactionForm() {
 
 async function deleteTransaction() {
     if (window.calendar && window.calendar.currentTransaction) {
-        const language = window.i18n?.currentLang || 'vi';
-        const confirmMsg = language === 'vi' 
-            ? 'Bạn có chắc chắn muốn xóa giao dịch này?'
-            : 'Are you sure you want to delete this transaction?';
+        const confirmMsg = window.i18n ? window.i18n.t('confirm_delete_transaction') : 'Are you sure you want to delete this transaction?';
             
         // Use confirmation dialog instead of confirm()
         window.showConfirmationDialog(confirmMsg, async () => {
@@ -985,9 +982,7 @@ async function deleteTransaction() {
                 });
                 
                 if (response.ok) {
-                    const successMsg = language === 'vi' 
-                        ? '✅ Đã xóa giao dịch thành công!'
-                        : '✅ Transaction deleted successfully!';
+                    const successMsg = window.i18n ? window.i18n.t('transaction_deleted_success') : 'Transaction deleted successfully!';
                     
                     closeTransactionDetailsModal();
                     
@@ -1012,9 +1007,7 @@ async function deleteTransaction() {
                 }
             } catch (error) {
                 console.error('Error deleting transaction:', error);
-                const errorMsg = language === 'vi' 
-                    ? '❌ Có lỗi xảy ra khi xóa giao dịch!'
-                    : '❌ Error deleting transaction!';
+                const errorMsg = window.i18n ? window.i18n.t('transaction_delete_error') : 'Error deleting transaction!';
                 if (window.app && typeof window.app.showNotification === 'function') {
                     window.app.showNotification(errorMsg, 'error');
                 } else if (window.showAlertDialog) {
@@ -1167,10 +1160,7 @@ async function saveTransaction() {
     
     // Validate form
     if (!data.description || !data.amount || !data.transaction_type || !data.date) {
-        const language = window.i18n?.currentLang || 'vi';
-        const errorMsg = language === 'vi' 
-            ? '❌ Vui lòng điền đầy đủ thông tin!'
-            : '❌ Please fill in all required fields!';
+        const errorMsg = window.i18n ? window.i18n.t('validation_required_fields') : 'Please fill in all required fields!';
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1183,10 +1173,7 @@ async function saveTransaction() {
     
     // Validate expense category
     if (data.transaction_type === 'expense' && !data.expense_category) {
-        const language = window.i18n?.currentLang || 'vi';
-        const errorMsg = language === 'vi' 
-            ? '❌ Vui lòng chọn danh mục chi tiêu!'
-            : '❌ Please select expense category!';
+        const errorMsg = window.i18n ? window.i18n.t('validation_expense_category') : 'Please select expense category!';
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1217,10 +1204,8 @@ async function saveTransaction() {
         });
         
         if (response.ok) {
-            const language = window.i18n?.currentLang || 'vi';
-            const successMsg = language === 'vi' 
-                ? (mode === 'edit' ? '✅ Đã cập nhật giao dịch thành công!' : '✅ Đã thêm giao dịch thành công!')
-                : (mode === 'edit' ? '✅ Transaction updated successfully!' : '✅ Transaction added successfully!');
+            const successMsgKey = mode === 'edit' ? 'transaction_updated_success' : 'transaction_added_success';
+            const successMsg = window.i18n ? window.i18n.t(successMsgKey) : (mode === 'edit' ? 'Transaction updated successfully!' : 'Transaction added successfully!');
             
             closeTransactionFormModal();
             
@@ -1246,10 +1231,8 @@ async function saveTransaction() {
         }
     } catch (error) {
         console.error('Error saving transaction:', error);
-        const language = window.i18n?.currentLang || 'vi';
-        const errorMsg = language === 'vi' 
-            ? `❌ Có lỗi xảy ra: ${error.message}`
-            : `❌ Error: ${error.message}`;
+        const errorMsgKey = mode === 'edit' ? 'transaction_update_error' : 'transaction_add_error';
+        const errorMsg = window.i18n ? window.i18n.t(errorMsgKey) : `Error: ${error.message}`;
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {

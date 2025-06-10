@@ -40,12 +40,40 @@ const viTranslations = {
     'save': 'Lưu',
     'cancel': 'Hủy',
     'close': 'Đóng',
+    'confirm': 'Xác nhận',
     'add_first_transaction': 'Thêm giao dịch đầu tiên',
     'no_transactions_day': 'Chưa có giao dịch nào trong ngày này',
     'no_transactions_today': 'Chưa có giao dịch hôm nay',
     'description_placeholder': 'VD: ăn trưa, cafe...',
     'confidence': 'Độ tin cậy',
     'generate_new': 'Tạo mới',
+    
+    // Transaction messages
+    'transaction_added_success': '✅ Đã thêm giao dịch thành công!',
+    'transaction_updated_success': '✅ Đã cập nhật giao dịch thành công!',
+    'transaction_deleted_success': '✅ Đã xóa giao dịch thành công!',
+    'transaction_confirm_success': '✅ Đã xác nhận giao dịch thành công!',
+    
+    // Error messages
+    'transaction_add_error': '❌ Lỗi khi thêm giao dịch. Vui lòng thử lại!',
+    'transaction_update_error': '❌ Lỗi khi cập nhật giao dịch. Vui lòng thử lại!',
+    'transaction_delete_error': '❌ Lỗi khi xóa giao dịch. Vui lòng thử lại!',
+    'transaction_confirm_error': '❌ Lỗi khi xác nhận giao dịch. Vui lòng thử lại!',
+    
+    // Validation messages
+    'validation_required_fields': '⚠️ Vui lòng điền đầy đủ thông tin!',
+    'validation_expense_category': '⚠️ Vui lòng chọn danh mục chi tiêu!',
+    
+    // Confirmation messages
+    'confirm_delete_transaction': 'Bạn có chắc chắn muốn xóa giao dịch này?',
+    
+    // Chat edit message
+    'chat_edit_help': '✏️ Hãy chỉnh sửa và gửi lại!',
+    
+    // Transaction types display
+    'transaction_type_expense': '🔴 Chi tiêu',
+    'transaction_type_saving': '🟢 Tiết kiệm', 
+    'transaction_type_investment': '🔵 Đầu tư',
     'share': 'Chia sẻ',
     'ai_analysis': 'Phân tích AI',
     'weekly_meme': 'Meme tuần',

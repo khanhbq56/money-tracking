@@ -40,12 +40,40 @@ const enTranslations = {
     'save': 'Save',
     'cancel': 'Cancel',
     'close': 'Close',
+    'confirm': 'Confirm',
     'add_first_transaction': 'Add First Transaction',
     'no_transactions_day': 'No transactions for this day',
     'no_transactions_today': 'No transactions today',
     'description_placeholder': 'e.g: lunch, coffee...',
     'confidence': 'Confidence',
     'generate_new': 'Generate New',
+    
+    // Transaction messages
+    'transaction_added_success': '✅ Transaction added successfully!',
+    'transaction_updated_success': '✅ Transaction updated successfully!',
+    'transaction_deleted_success': '✅ Transaction deleted successfully!',
+    'transaction_confirm_success': '✅ Transaction confirmed successfully!',
+    
+    // Error messages
+    'transaction_add_error': '❌ Error adding transaction. Please try again!',
+    'transaction_update_error': '❌ Error updating transaction. Please try again!',
+    'transaction_delete_error': '❌ Error deleting transaction. Please try again!',
+    'transaction_confirm_error': '❌ Error confirming transaction. Please try again!',
+    
+    // Validation messages
+    'validation_required_fields': '⚠️ Please fill in all required fields!',
+    'validation_expense_category': '⚠️ Please select expense category!',
+    
+    // Confirmation messages
+    'confirm_delete_transaction': 'Are you sure you want to delete this transaction?',
+    
+    // Chat edit message
+    'chat_edit_help': '✏️ Please edit and send again!',
+    
+    // Transaction types display
+    'transaction_type_expense': '🔴 Expense',
+    'transaction_type_saving': '🟢 Saving',
+    'transaction_type_investment': '🔵 Investment',
     'share': 'Share',
     'ai_analysis': 'AI Analysis',
     'weekly_meme': 'Weekly Meme',

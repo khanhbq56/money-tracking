@@ -991,9 +991,9 @@ async function deleteTransaction() {
                     
                     closeTransactionDetailsModal();
                     
-                    // Show success message
-                    if (window.showToast) {
-                        window.showToast(successMsg, 'success');
+                    // Show success message using toast notification
+                    if (window.app && typeof window.app.showNotification === 'function') {
+                        window.app.showNotification(successMsg, 'success');
                     } else if (window.showAlertDialog) {
                         window.showAlertDialog(successMsg, { type: 'success' });
                     } else {
@@ -1015,7 +1015,9 @@ async function deleteTransaction() {
                 const errorMsg = language === 'vi' 
                     ? 'Có lỗi xảy ra khi xóa giao dịch!'
                     : 'Error deleting transaction!';
-                if (window.showAlertDialog) {
+                if (window.app && typeof window.app.showNotification === 'function') {
+                    window.app.showNotification(errorMsg, 'error');
+                } else if (window.showAlertDialog) {
                     window.showAlertDialog(errorMsg, { type: 'error' });
                 } else {
                     alert(errorMsg);
@@ -1169,7 +1171,7 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng điền đầy đủ thông tin!'
             : 'Please fill in all required fields!';
-        if (window.app && window.app.showNotification) {
+        if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });
@@ -1185,7 +1187,7 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng chọn danh mục chi tiêu!'
             : 'Please select expense category!';
-        if (window.app && window.app.showNotification) {
+        if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });
@@ -1222,8 +1224,8 @@ async function saveTransaction() {
             
             closeTransactionFormModal();
             
-            // Show success notification
-            if (window.app && window.app.showNotification) {
+            // Show success message using toast notification
+            if (window.app && typeof window.app.showNotification === 'function') {
                 window.app.showNotification(successMsg, 'success');
             } else if (window.showAlertDialog) {
                 window.showAlertDialog(successMsg, { type: 'success' });
@@ -1248,7 +1250,7 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? `Có lỗi xảy ra: ${error.message}`
             : `Error: ${error.message}`;
-        if (window.app && window.app.showNotification) {
+        if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
             window.showAlertDialog(errorMsg, { type: 'error' });

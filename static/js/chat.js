@@ -136,7 +136,7 @@ class AIChat {
                 const confirmText = this.currentLanguage === 'vi' ? '✅ Xác nhận' : '✅ Confirm';
                 const editText = this.currentLanguage === 'vi' ? '✏️ Sửa' : '✏️ Edit';
                 
-                // Create details section with date and category info
+                // Create details section with organized info
                 let categoryInfo = '';
                 if (aiResult.type === 'expense' && aiResult.category) {
                     const categoryNames = {
@@ -165,45 +165,27 @@ class AIChat {
                     };
                     
                     const categoryName = categoryNames[this.currentLanguage]?.[aiResult.category] || aiResult.category;
-                    categoryInfo = `
-                        <div class="text-xs text-gray-600">
-                            <span class="inline-flex items-center">
-                                📂 ${categoryName}
-                            </span>
-                        </div>
-                    `;
+                    categoryInfo = `<span class="inline-flex items-center gap-1">${categoryName}</span>`;
                 }
                 
                 // Format date info
-                let dateInfo = '';
+                let dateText = '';
                 if (aiResult.parsed_date) {
                     const date = new Date(aiResult.parsed_date);
-                    const formattedDate = this.currentLanguage === 'vi' 
+                    dateText = this.currentLanguage === 'vi' 
                         ? date.toLocaleDateString('vi-VN')
                         : date.toLocaleDateString('en-US');
-                    dateInfo = `
-                        <div class="text-xs text-gray-600">
-                            <span class="inline-flex items-center">
-                                📅 ${formattedDate}
-                            </span>
-                        </div>
-                    `;
                 } else {
-                    const todayText = window.i18n ? window.i18n.t('today') : (this.currentLanguage === 'vi' ? 'Hôm nay' : 'Today');
-                    dateInfo = `
-                        <div class="text-xs text-gray-600">
-                            <span class="inline-flex items-center">
-                                📅 ${todayText}
-                            </span>
-                        </div>
-                    `;
+                    dateText = window.i18n ? window.i18n.t('today') : (this.currentLanguage === 'vi' ? 'Hôm nay' : 'Today');
                 }
                 
                 detailsSection = `
-                    <div class="bg-gray-50 rounded-lg p-3 mt-2 border-l-4 border-blue-400">
-                        <div class="space-y-2">
-                            ${dateInfo}
-                            ${categoryInfo}
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mt-3 border border-blue-200">
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="flex items-center gap-2">
+                                <span class="text-blue-600 font-medium">📅 ${dateText}</span>
+                                ${categoryInfo ? `<span class="text-gray-400">•</span><span class="text-green-600 font-medium">${categoryInfo}</span>` : ''}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -332,6 +314,11 @@ class AIChat {
                 : '✅ Transaction added successfully!';
                 
             this.addMessage(successText, 'bot');
+            
+            // Show toast notification
+            if (window.app && typeof window.app.showNotification === 'function') {
+                window.app.showNotification(successText, 'success');
+            }
             
             // Broadcast transaction added event
             if (window.eventBus) {

@@ -218,10 +218,46 @@
         </button>
     </div>
 
+    <!-- Confirmation Dialog Modal -->
+    <div id="confirmation-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[70] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md" onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="bg-gradient-to-r from-red-600 to-pink-600 p-6 text-white rounded-t-2xl">
+                <div class="flex items-center justify-center">
+                    <svg class="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                    </svg>
+                    <h3 class="text-lg font-bold" id="confirmation-title">Xác nhận</h3>
+                </div>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 text-center">
+                <p class="text-gray-700 mb-6" id="confirmation-message">Bạn có chắc chắn không?</p>
+                
+                <div class="flex gap-3 justify-center">
+                    <button 
+                        id="confirmation-cancel-btn"
+                        onclick="closeConfirmationModal()"
+                        class="px-6 py-3 bg-gray-500 text-white rounded-xl font-semibold hover:bg-gray-600 transition-colors"
+                    >
+                        Hủy
+                    </button>
+                    <button 
+                        id="confirmation-confirm-btn"
+                        class="px-6 py-3 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors"
+                    >
+                        Xác nhận
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Chat Modal Overlay -->
     <div id="chat-modal" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden">
         <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[80vh] flex flex-col">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col">
                 <!-- Chat Header -->
                 <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-t-2xl flex items-center justify-between">
                     <div class="flex items-center">
@@ -241,7 +277,7 @@
 
                 <!-- Chat Messages -->
                 <div class="flex-1 p-4 overflow-hidden">
-                    <div id="chat-messages" class="space-y-3 h-64 overflow-y-auto custom-scrollbar">
+                    <div id="chat-messages" class="space-y-3 h-80 overflow-y-auto custom-scrollbar">
                         <!-- Welcome message will be added dynamically by JavaScript -->
                     </div>
                 </div>
@@ -267,11 +303,11 @@
                         </button>
                         <button 
                             onclick="sendMessage()" 
-                            class="px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition text-sm font-medium flex items-center justify-center"
+                            class="px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl hover:from-purple-700 hover:to-pink-700 transition text-sm font-medium flex items-center justify-center min-w-[44px]"
                             title="{% trans 'Gửi tin nhắn' %}"
                         >
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(45deg);">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                             </svg>
                         </button>
                     </div>
@@ -606,5 +642,107 @@
         function showStats() {
             console.log('Show Stats - to be implemented in Phase 10');
         }
+
+        // Confirmation dialog functions
+        function showConfirmationDialog(message, onConfirm, options = {}) {
+            const modal = document.getElementById('confirmation-modal');
+            const titleElement = document.getElementById('confirmation-title');
+            const messageElement = document.getElementById('confirmation-message');
+            const confirmBtn = document.getElementById('confirmation-confirm-btn');
+            const cancelBtn = document.getElementById('confirmation-cancel-btn');
+            
+            if (!modal) return;
+            
+            // Set content
+            const language = window.i18n?.currentLang || 'vi';
+            titleElement.textContent = options.title || (language === 'vi' ? 'Xác nhận' : 'Confirm');
+            messageElement.textContent = message;
+            
+            // Set button text
+            confirmBtn.textContent = options.confirmText || (language === 'vi' ? 'Xác nhận' : 'Confirm');
+            cancelBtn.textContent = options.cancelText || (language === 'vi' ? 'Hủy' : 'Cancel');
+            
+            // Set button styles
+            confirmBtn.className = `px-6 py-3 text-white rounded-xl font-semibold transition-colors ${
+                options.confirmClass || 'bg-red-500 hover:bg-red-600'
+            }`;
+            
+            // Handle confirm click
+            confirmBtn.onclick = () => {
+                closeConfirmationModal();
+                if (typeof onConfirm === 'function') {
+                    onConfirm();
+                }
+            };
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+        
+        function showAlertDialog(message, options = {}) {
+            const modal = document.getElementById('confirmation-modal');
+            const titleElement = document.getElementById('confirmation-title');
+            const messageElement = document.getElementById('confirmation-message');
+            const confirmBtn = document.getElementById('confirmation-confirm-btn');
+            const cancelBtn = document.getElementById('confirmation-cancel-btn');
+            
+            if (!modal) return;
+            
+            // Set content
+            const language = window.i18n?.currentLang || 'vi';
+            const isError = options.type === 'error';
+            const isSuccess = options.type === 'success';
+            
+            titleElement.textContent = options.title || 
+                (isError ? (language === 'vi' ? 'Lỗi' : 'Error') :
+                 isSuccess ? (language === 'vi' ? 'Thành công' : 'Success') :
+                 (language === 'vi' ? 'Thông báo' : 'Notice'));
+                 
+            messageElement.textContent = message;
+            
+            // Hide cancel button for alerts
+            cancelBtn.style.display = 'none';
+            
+            // Set confirm button
+            confirmBtn.textContent = language === 'vi' ? 'Đóng' : 'Close';
+            confirmBtn.className = `px-6 py-3 text-white rounded-xl font-semibold transition-colors ${
+                isError ? 'bg-red-500 hover:bg-red-600' :
+                isSuccess ? 'bg-green-500 hover:bg-green-600' :
+                'bg-blue-500 hover:bg-blue-600'
+            }`;
+            
+            // Handle close click
+            confirmBtn.onclick = () => {
+                closeConfirmationModal();
+                if (typeof options.onClose === 'function') {
+                    options.onClose();
+                }
+            };
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+        
+        function closeConfirmationModal() {
+            const modal = document.getElementById('confirmation-modal');
+            const cancelBtn = document.getElementById('confirmation-cancel-btn');
+            if (modal) {
+                modal.classList.add('hidden');
+                // Show cancel button again for future confirmations
+                cancelBtn.style.display = 'block';
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('confirmation-modal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        closeConfirmationModal();
+                    }
+                });
+            }
+        });
     </script>
 {% endblock %} 

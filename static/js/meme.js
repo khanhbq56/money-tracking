@@ -372,7 +372,11 @@ class MemeGenerator {
     
     async shareMeme() {
         if (!this.currentMeme) {
-            alert('Không có meme để chia sẻ!');
+            if (window.showAlertDialog) {
+                window.showAlertDialog('Không có meme để chia sẻ!', { type: 'error' });
+            } else {
+                alert('Không có meme để chia sẻ!');
+            }
             return;
         }
         

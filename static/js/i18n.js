@@ -27,121 +27,38 @@ class I18n {
     }
     
     /**
-     * Get local translations (fallback for Phase 3)
+     * Get local translations (using separate translation files)
      */
     getLocalTranslations(lang) {
-        const translations = {
+        // Use translations from separate files if available
+        if (lang === 'vi' && window.viTranslations) {
+            return window.viTranslations;
+        }
+        if (lang === 'en' && window.enTranslations) {
+            return window.enTranslations;
+        }
+        
+        // Fallback to basic translations if files not loaded
+        const fallbackTranslations = {
             'vi': {
                 'expense': 'Chi Tiêu',
                 'saving': 'Tiết Kiệm', 
                 'investment': 'Đầu Tư',
-                'monthly_total': 'Tổng Tháng',
-                'this_month': 'Tháng này',
-                'net_amount': 'Số dư ròng',
                 'send': 'Gửi',
                 'today': 'Hôm Nay',
-                'ai_assistant': 'AI Assistant',
-                'enter_transaction': 'VD: coffee 25k, tiết kiệm 200k...',
-                'welcome_message': 'Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: "ăn trưa 50k"',
-                'lunch': 'Ăn trưa',
-                'quick_actions': 'Thao Tác Nhanh',
-                'future_me': 'Future Me Simulator',
-                'generate_meme': 'Tạo Meme',
-                'statistics': 'Thống Kê',
-                'today_total': 'Tổng hôm nay:',
-                'all': 'Tất cả',
-                'smart_financial_management': 'Quản lý tài chính thông minh',
-                'calendar_coming_soon': 'Lịch sẽ được triển khai ở Phase 4',
-                'calendar_description': 'Calendar tương tác với hiển thị giao dịch theo ngày',
-                'online': 'Online',
-                'tieng_viet': 'Tiếng Việt',
-                'english': 'English',
-                'expense_tracker': 'Theo Dõi Chi Tiêu',
-                'financial_calendar': 'Lịch Tài Chính',
-                'total_transactions': 'Tổng giao dịch',
-                'transaction_details': 'Chi tiết giao dịch',
-                'description': 'Mô tả',
-                'amount': 'Số tiền',
-                'type': 'Loại',
-                'date': 'Ngày',
-                'edit': 'Sửa',
-                'delete': 'Xóa',
-                'add_transaction': 'Thêm giao dịch',
-                'save': 'Lưu',
-                'cancel': 'Hủy',
-                'close': 'Đóng',
-                'add_first_transaction': 'Thêm giao dịch đầu tiên',
-                'no_transactions_day': 'Chưa có giao dịch nào trong ngày này',
-                'generate_new': 'Tạo mới',
-                'share': 'Chia sẻ',
-                'ai_analysis': 'Phân tích AI',
-                'weekly_meme': 'Meme tuần',
-                // Days of week
-                'monday': 'Thứ 2',
-                'tuesday': 'Thứ 3',
-                'wednesday': 'Thứ 4',
-                'thursday': 'Thứ 5',
-                'friday': 'Thứ 6',
-                'saturday': 'Thứ 7',
-                'sunday': 'CN'
+                'ai_assistant': 'AI Assistant'
             },
             'en': {
                 'expense': 'Expense',
                 'saving': 'Saving',
-                'investment': 'Investment', 
-                'monthly_total': 'Monthly Total',
-                'this_month': 'This month',
-                'net_amount': 'Net amount',
+                'investment': 'Investment',
                 'send': 'Send',
                 'today': 'Today',
-                'ai_assistant': 'AI Assistant',
-                'enter_transaction': 'e.g: coffee 25k, saving 200k...',
-                'welcome_message': 'Hello! Tell me about your transaction. e.g: "lunch 50k"',
-                'lunch': 'Lunch',
-                'quick_actions': 'Quick Actions',
-                'future_me': 'Future Me Simulator',
-                'generate_meme': 'Generate Meme',
-                'statistics': 'Statistics',
-                'today_total': 'Today total:',
-                'all': 'All',
-                'smart_financial_management': 'Smart financial management',
-                'calendar_coming_soon': 'Calendar will be implemented in Phase 4',
-                'calendar_description': 'Interactive calendar with daily transaction display',
-                'online': 'Online',
-                'tieng_viet': 'Tiếng Việt',
-                'english': 'English',
-                'expense_tracker': 'Expense Tracker',
-                'financial_calendar': 'Financial Calendar',
-                'total_transactions': 'Total Transactions',
-                'transaction_details': 'Transaction Details',
-                'description': 'Description',
-                'amount': 'Amount',
-                'type': 'Type',
-                'date': 'Date',
-                'edit': 'Edit',
-                'delete': 'Delete',
-                'add_transaction': 'Add Transaction',
-                'save': 'Save',
-                'cancel': 'Cancel',
-                'close': 'Close',
-                'add_first_transaction': 'Add First Transaction',
-                'no_transactions_day': 'No transactions for this day',
-                'generate_new': 'Generate New',
-                'share': 'Share',
-                'ai_analysis': 'AI Analysis',
-                'weekly_meme': 'Weekly Meme',
-                // Days of week
-                'monday': 'Mon',
-                'tuesday': 'Tue',
-                'wednesday': 'Wed',
-                'thursday': 'Thu',
-                'friday': 'Fri',
-                'saturday': 'Sat',
-                'sunday': 'Sun'
+                'ai_assistant': 'AI Assistant'
             }
         };
         
-        return translations[lang] || translations['vi'];
+        return fallbackTranslations[lang] || fallbackTranslations['vi'];
     }
     
     /**

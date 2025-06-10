@@ -537,11 +537,11 @@ def get_daily_summary(request, date):
 def get_monthly_totals(request):
     """Get monthly totals for dashboard display"""
     try:
-        from transactions.monthly_service import get_current_month_totals
+        from transactions.monthly_service import MonthlyTotalService
         from datetime import datetime
         
         # Get current month totals
-        totals = get_current_month_totals()
+        totals = MonthlyTotalService.get_current_month_totals()
         
         # Format for display
         formatted_totals = {

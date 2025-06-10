@@ -10,8 +10,8 @@ router.register(r'transactions', views.TransactionViewSet, basename='transaction
 app_name = 'transactions_api'
 
 urlpatterns = [
-    # ViewSet URLs (includes CRUD operations) - DO NOT include at root
-    path('transactions/', include(router.urls)),
+    # ViewSet URLs (includes CRUD operations) - Include router at root level
+    path('', include(router.urls)),
     
     # Calendar data endpoint
     path('calendar-data/', views.calendar_data, name='calendar-data'),

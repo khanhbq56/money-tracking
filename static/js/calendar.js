@@ -973,7 +973,8 @@ async function deleteTransaction() {
             ? 'Bạn có chắc chắn muốn xóa giao dịch này?'
             : 'Are you sure you want to delete this transaction?';
             
-        if (confirm(confirmMsg)) {
+        // Use confirmation dialog instead of confirm()
+        window.showConfirmationDialog(confirmMsg, async () => {
             try {
                 const response = await fetch(`/api/transactions/${window.calendar.currentTransaction.id}/`, {
                     method: 'DELETE',
@@ -993,6 +994,8 @@ async function deleteTransaction() {
                     // Show success message
                     if (window.showToast) {
                         window.showToast(successMsg, 'success');
+                    } else if (window.showAlertDialog) {
+                        window.showAlertDialog(successMsg, { type: 'success' });
                     } else {
                         alert(successMsg);
                     }
@@ -1012,9 +1015,17 @@ async function deleteTransaction() {
                 const errorMsg = language === 'vi' 
                     ? 'Có lỗi xảy ra khi xóa giao dịch!'
                     : 'Error deleting transaction!';
-                alert(errorMsg);
+                if (window.showAlertDialog) {
+                    window.showAlertDialog(errorMsg, { type: 'error' });
+                } else {
+                    alert(errorMsg);
+                }
             }
-        }
+        }, {
+            title: language === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction',
+            confirmText: language === 'vi' ? 'Xóa' : 'Delete',
+            cancelText: language === 'vi' ? 'Hủy' : 'Cancel'
+        });
     }
 }
 
@@ -1126,7 +1137,11 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng điền đầy đủ thông tin!'
             : 'Please fill in all required fields!';
-        alert(errorMsg);
+        if (window.showAlertDialog) {
+            window.showAlertDialog(errorMsg, { type: 'error' });
+        } else {
+            alert(errorMsg);
+        }
         return;
     }
     
@@ -1136,7 +1151,11 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? 'Vui lòng chọn danh mục chi tiêu!'
             : 'Please select expense category!';
-        alert(errorMsg);
+        if (window.showAlertDialog) {
+            window.showAlertDialog(errorMsg, { type: 'error' });
+        } else {
+            alert(errorMsg);
+        }
         return;
     }
     
@@ -1170,6 +1189,8 @@ async function saveTransaction() {
             // Show success message
             if (window.showToast) {
                 window.showToast(successMsg, 'success');
+            } else if (window.showAlertDialog) {
+                window.showAlertDialog(successMsg, { type: 'success' });
             } else {
                 alert(successMsg);
             }
@@ -1191,7 +1212,11 @@ async function saveTransaction() {
         const errorMsg = language === 'vi' 
             ? `Có lỗi xảy ra: ${error.message}`
             : `Error: ${error.message}`;
-        alert(errorMsg);
+        if (window.showAlertDialog) {
+            window.showAlertDialog(errorMsg, { type: 'error' });
+        } else {
+            alert(errorMsg);
+        }
     }
 }
 

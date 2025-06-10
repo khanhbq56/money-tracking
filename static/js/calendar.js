@@ -986,8 +986,8 @@ async function deleteTransaction() {
                 
                 if (response.ok) {
                     const successMsg = language === 'vi' 
-                        ? 'Đã xóa giao dịch thành công!'
-                        : 'Transaction deleted successfully!';
+                        ? '✅ Đã xóa giao dịch thành công!'
+                        : '✅ Transaction deleted successfully!';
                     
                     closeTransactionDetailsModal();
                     
@@ -1013,8 +1013,8 @@ async function deleteTransaction() {
             } catch (error) {
                 console.error('Error deleting transaction:', error);
                 const errorMsg = language === 'vi' 
-                    ? 'Có lỗi xảy ra khi xóa giao dịch!'
-                    : 'Error deleting transaction!';
+                    ? '❌ Có lỗi xảy ra khi xóa giao dịch!'
+                    : '❌ Error deleting transaction!';
                 if (window.app && typeof window.app.showNotification === 'function') {
                     window.app.showNotification(errorMsg, 'error');
                 } else if (window.showAlertDialog) {
@@ -1169,8 +1169,8 @@ async function saveTransaction() {
     if (!data.description || !data.amount || !data.transaction_type || !data.date) {
         const language = window.i18n?.currentLang || 'vi';
         const errorMsg = language === 'vi' 
-            ? 'Vui lòng điền đầy đủ thông tin!'
-            : 'Please fill in all required fields!';
+            ? '❌ Vui lòng điền đầy đủ thông tin!'
+            : '❌ Please fill in all required fields!';
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1185,8 +1185,8 @@ async function saveTransaction() {
     if (data.transaction_type === 'expense' && !data.expense_category) {
         const language = window.i18n?.currentLang || 'vi';
         const errorMsg = language === 'vi' 
-            ? 'Vui lòng chọn danh mục chi tiêu!'
-            : 'Please select expense category!';
+            ? '❌ Vui lòng chọn danh mục chi tiêu!'
+            : '❌ Please select expense category!';
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1219,8 +1219,8 @@ async function saveTransaction() {
         if (response.ok) {
             const language = window.i18n?.currentLang || 'vi';
             const successMsg = language === 'vi' 
-                ? (mode === 'edit' ? 'Đã cập nhật giao dịch thành công!' : 'Đã thêm giao dịch thành công!')
-                : (mode === 'edit' ? 'Transaction updated successfully!' : 'Transaction added successfully!');
+                ? (mode === 'edit' ? '✅ Đã cập nhật giao dịch thành công!' : '✅ Đã thêm giao dịch thành công!')
+                : (mode === 'edit' ? '✅ Transaction updated successfully!' : '✅ Transaction added successfully!');
             
             closeTransactionFormModal();
             
@@ -1248,8 +1248,8 @@ async function saveTransaction() {
         console.error('Error saving transaction:', error);
         const language = window.i18n?.currentLang || 'vi';
         const errorMsg = language === 'vi' 
-            ? `Có lỗi xảy ra: ${error.message}`
-            : `Error: ${error.message}`;
+            ? `❌ Có lỗi xảy ra: ${error.message}`
+            : `❌ Error: ${error.message}`;
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {

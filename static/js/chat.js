@@ -136,36 +136,63 @@ class AIChat {
                 const confirmText = this.currentLanguage === 'vi' ? '✅ Xác nhận' : '✅ Confirm';
                 const editText = this.currentLanguage === 'vi' ? '✏️ Sửa' : '✏️ Edit';
                 
-                // Create details section with organized info
-                let categoryInfo = '';
-                if (aiResult.type === 'expense' && aiResult.category) {
-                    const categoryNames = {
-                        'vi': {
-                            'food': '🍜 Ăn uống',
-                            'coffee': '☕ Coffee',
-                            'transport': '🚗 Di chuyển',
-                            'shopping': '🛒 Mua sắm',
-                            'entertainment': '🎬 Giải trí',
-                            'health': '🏥 Sức khỏe',
-                            'education': '📚 Giáo dục',
-                            'utilities': '⚡ Tiện ích',
-                            'other': '📦 Khác'
-                        },
-                        'en': {
-                            'food': '🍜 Food & Dining',
-                            'coffee': '☕ Coffee',
-                            'transport': '🚗 Transportation',
-                            'shopping': '🛒 Shopping',
-                            'entertainment': '🎬 Entertainment',
-                            'health': '🏥 Healthcare',
-                            'education': '📚 Education',
-                            'utilities': '⚡ Utilities',
-                            'other': '📦 Other'
-                        }
-                    };
-                    
-                    const categoryName = categoryNames[this.currentLanguage]?.[aiResult.category] || aiResult.category;
-                    categoryInfo = `<span class="inline-flex items-center gap-1">${categoryName}</span>`;
+                // Format transaction info for display
+                const typeNames = {
+                    'vi': {
+                        'expense': 'Chi tiêu',
+                        'saving': 'Tiết kiệm',
+                        'investment': 'Đầu tư'
+                    },
+                    'en': {
+                        'expense': 'Expense',
+                        'saving': 'Saving',
+                        'investment': 'Investment'
+                    }
+                };
+                
+                const categoryNames = {
+                    'vi': {
+                        'food': 'ăn uống',
+                        'coffee': 'coffee',
+                        'transport': 'di chuyển',
+                        'shopping': 'mua sắm',
+                        'entertainment': 'giải trí',
+                        'health': 'sức khỏe',
+                        'education': 'giáo dục',
+                        'utilities': 'tiện ích',
+                        'other': 'khác'
+                    },
+                    'en': {
+                        'food': 'food & dining',
+                        'coffee': 'coffee',
+                        'transport': 'transportation',
+                        'shopping': 'shopping',
+                        'entertainment': 'entertainment',
+                        'health': 'healthcare',
+                        'education': 'education',
+                        'utilities': 'utilities',
+                        'other': 'other'
+                    }
+                };
+                
+                const typeName = typeNames[this.currentLanguage]?.[aiResult.type] || aiResult.type;
+                const categoryName = aiResult.category ? categoryNames[this.currentLanguage]?.[aiResult.category] : null;
+                const formattedAmount = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(aiResult.amount);
+                
+                // Create formatted summary
+                let summary = '';
+                if (this.currentLanguage === 'vi') {
+                    summary = `Phân loại: ${typeName}`;
+                    if (categoryName) {
+                        summary += ` - ${categoryName}`;
+                    }
+                    summary += ` (${formattedAmount})`;
+                } else {
+                    summary = `Category: ${typeName}`;
+                    if (categoryName) {
+                        summary += ` - ${categoryName}`;
+                    }
+                    summary += ` (${formattedAmount})`;
                 }
                 
                 // Format date info
@@ -181,12 +208,8 @@ class AIChat {
                 
                 detailsSection = `
                     <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mt-3 border border-blue-200">
-                        <div class="flex items-center justify-between text-sm">
-                            <div class="flex items-center gap-2">
-                                <span class="text-blue-600 font-medium">📅 ${dateText}</span>
-                                ${categoryInfo ? `<span class="text-gray-400">•</span><span class="text-green-600 font-medium">${categoryInfo}</span>` : ''}
-                            </div>
-                        </div>
+                        <div class="text-sm font-medium text-gray-800 mb-1">${this.escapeHtml(summary)}</div>
+                        <div class="text-xs text-blue-600">📅 ${dateText}</div>
                     </div>
                 `;
                 
@@ -214,8 +237,7 @@ class AIChat {
                     <div class="flex items-start gap-2">
                         <span class="text-lg">🤖</span>
                         <div class="flex-1">
-                            <p class="leading-relaxed text-gray-800 mb-2">${this.escapeHtml(text)}</p>
-                            ${detailsSection}
+                            ${data && data.ai_result ? detailsSection : `<p class="leading-relaxed text-gray-800 mb-2">${this.escapeHtml(text)}</p>`}
                             ${actionButtons}
                         </div>
                     </div>

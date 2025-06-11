@@ -265,14 +265,24 @@
                         <h3 class="font-bold text-white" data-i18n="ai_assistant">{% trans "AI Assistant" %}</h3>
                         <span class="ml-2 px-2 py-1 text-xs bg-white/20 text-white rounded-full backdrop-blur" data-i18n="online">{% trans "Online" %}</span>
                     </div>
-                    <button 
-                        onclick="toggleChatModal()"
-                        class="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
-                    >
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <!-- Auto-confirm Toggle -->
+                        <div class="flex items-center gap-2">
+                            <label class="relative inline-flex items-center cursor-pointer" title="" id="auto-confirm-label">
+                                <input type="checkbox" id="auto-confirm-toggle" class="sr-only peer" onchange="toggleAutoConfirm()">
+                                <div class="w-9 h-5 bg-white/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-500"></div>
+                            </label>
+                            <span class="text-white text-xs hidden sm:inline" data-i18n="auto_confirm">{% trans "Auto Confirm" %}</span>
+                        </div>
+                        <button 
+                            onclick="toggleChatModal()"
+                            class="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                        >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Chat Messages -->
@@ -757,9 +767,55 @@
             }
         });
 
+        // Auto-confirm functions
+        function toggleAutoConfirm() {
+            const toggle = document.getElementById('auto-confirm-toggle');
+            const isEnabled = toggle.checked;
+            
+            // Save to localStorage
+            localStorage.setItem('chat-auto-confirm', isEnabled.toString());
+            
+            // Update tooltip
+            updateAutoConfirmTooltip(isEnabled);
+            
+            // Show notification
+            const message = isEnabled ? 
+                window.i18n.t('auto_confirm_enabled') : 
+                window.i18n.t('auto_confirm_disabled');
+                
+            if (window.app && typeof window.app.showNotification === 'function') {
+                window.app.showNotification(message, isEnabled ? 'success' : 'info');
+            }
+        }
+        
+        function updateAutoConfirmTooltip(isEnabled) {
+            const label = document.getElementById('auto-confirm-label');
+            if (label) {
+                const tooltip = isEnabled ? 
+                    window.i18n.t('auto_confirm_enabled') : 
+                    window.i18n.t('auto_confirm_disabled');
+                label.title = tooltip;
+            }
+        }
+        
+        function initializeAutoConfirm() {
+            const toggle = document.getElementById('auto-confirm-toggle');
+            if (toggle) {
+                // Load saved setting
+                const saved = localStorage.getItem('chat-auto-confirm');
+                const isEnabled = saved === 'true';
+                toggle.checked = isEnabled;
+                updateAutoConfirmTooltip(isEnabled);
+            }
+        }
+        
+        // Make functions globally accessible
+        window.updateAutoConfirmTooltip = updateAutoConfirmTooltip;
+
         // Initialize UI Components on page load
         document.addEventListener('DOMContentLoaded', function() {
             initializeUIComponents();
+            initializeAutoConfirm();
         });
 
         function initializeUIComponents() {

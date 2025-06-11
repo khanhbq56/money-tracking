@@ -130,6 +130,12 @@ const viTranslations = {
     'lunch_sample': 'ăn trưa 50k',
     'saving_sample': 'tiết kiệm 200k',
     
+    // Auto-confirm settings
+    'auto_confirm': 'Tự động xác nhận',
+    'auto_confirm_desc': 'Tự động xác nhận giao dịch mà không cần nhấn nút',
+    'auto_confirm_enabled': '✅ Tự động xác nhận đã BẬT',
+    'auto_confirm_disabled': '❌ Tự động xác nhận đã TẮT',
+    
     // Future Me Simulator
     'future_me_subtitle': 'Dự báo tài chính thông minh dựa trên dữ liệu thực',
     'analyzing_financial_data': 'Đang phân tích dữ liệu tài chính...',

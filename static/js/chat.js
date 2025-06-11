@@ -13,6 +13,87 @@ class AIChat {
         this.initializeChat();
     }
     
+    /**
+     * Check if auto-confirm is enabled
+     */
+    isAutoConfirmEnabled() {
+        return localStorage.getItem('chat-auto-confirm') === 'true';
+    }
+    
+    /**
+     * Start auto-confirm countdown
+     */
+    startAutoConfirmCountdown(data, totalMs) {
+        let remainingMs = totalMs;
+        const intervalMs = 100; // Update every 100ms for smooth countdown
+        const countdownElement = document.getElementById(`auto-confirm-countdown-${data.chat_id}`);
+        
+        const countdownInterval = setInterval(() => {
+            remainingMs -= intervalMs;
+            const remainingSeconds = Math.ceil(remainingMs / 1000);
+            
+            if (countdownElement) {
+                const text = remainingSeconds > 0 ? 
+                    `${window.i18n.t('auto_confirm')} (${remainingSeconds}s)` : 
+                    `${window.i18n.t('auto_confirm')} ✓`;
+                countdownElement.querySelector('span:last-child').textContent = text;
+            }
+            
+            if (remainingMs <= 0) {
+                clearInterval(countdownInterval);
+                this.confirmTransaction(data);
+            }
+        }, intervalMs);
+        
+        // Store interval ID in case we need to cancel it
+        data.countdownInterval = countdownInterval;
+    }
+    
+    /**
+     * Cancel auto-confirm countdown
+     */
+    cancelAutoConfirm(data) {
+        // Clear countdown interval
+        if (data.countdownInterval) {
+            clearInterval(data.countdownInterval);
+            data.countdownInterval = null;
+        }
+        
+        // Convert to manual confirmation mode
+        this.convertToManualConfirm(data);
+    }
+    
+    /**
+     * Convert auto-confirm UI to manual confirm UI
+     */
+    convertToManualConfirm(data) {
+        const confirmText = window.i18n.t('confirm');
+        const editText = window.i18n.t('edit');
+        
+        // Find the action buttons container for this message
+        const countdownElement = document.getElementById(`auto-confirm-countdown-${data.chat_id}`);
+        if (countdownElement) {
+            const container = countdownElement.parentElement;
+            if (container) {
+                // Replace with manual confirmation buttons
+                container.innerHTML = `
+                    <button 
+                        onclick="window.aiChat.confirmTransaction(${this.escapeJson(data)})" 
+                        class="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-xs hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                        ${confirmText}
+                    </button>
+                    <button 
+                        onclick="window.aiChat.editTransaction(${this.escapeJson(data)})" 
+                        class="px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl text-xs hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                    >
+                        ${editText}
+                    </button>
+                `;
+            }
+        }
+    }
+    
     initializeChat() {
         // Set up event listeners
         if (this.chatInput) {
@@ -209,22 +290,52 @@ class AIChat {
                     </div>
                 `;
                 
-                actionButtons = `
-                    <div class="flex flex-wrap gap-2 mt-3">
-                        <button 
-                            onclick="window.aiChat.confirmTransaction(${this.escapeJson(data)})" 
-                            class="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-xs hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
-                        >
-                            ${confirmText}
-                        </button>
-                        <button 
-                            onclick="window.aiChat.editTransaction(${this.escapeJson(data)})" 
-                            class="px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl text-xs hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
-                        >
-                            ${editText}
-                        </button>
-                    </div>
-                `;
+                // Check if auto-confirm is enabled
+                if (this.isAutoConfirmEnabled()) {
+                    // Auto-confirm: show countdown and action buttons
+                    actionButtons = `
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <div id="auto-confirm-countdown-${data.chat_id}" class="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-xs font-medium shadow-md flex items-center gap-1">
+                                <span>⚡</span>
+                                <span>${window.i18n.t('auto_confirm')} (3s)</span>
+                            </div>
+                            <button 
+                                onclick="window.aiChat.cancelAutoConfirm(${this.escapeJson(data)})" 
+                                class="px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl text-xs hover:from-red-600 hover:to-red-700 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                                title="${window.i18n.t('cancel')}"
+                            >
+                                ✋
+                            </button>
+                            <button 
+                                onclick="window.aiChat.editTransaction(${this.escapeJson(data)})" 
+                                class="px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl text-xs hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                            >
+                                ${editText}
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Start countdown and auto-confirm
+                    this.startAutoConfirmCountdown(data, 3000); // 3 second countdown
+                } else {
+                    // Manual confirm: show both buttons
+                    actionButtons = `
+                        <div class="flex flex-wrap gap-2 mt-3">
+                            <button 
+                                onclick="window.aiChat.confirmTransaction(${this.escapeJson(data)})" 
+                                class="px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl text-xs hover:from-green-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                            >
+                                ${confirmText}
+                            </button>
+                            <button 
+                                onclick="window.aiChat.editTransaction(${this.escapeJson(data)})" 
+                                class="px-3 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl text-xs hover:from-yellow-600 hover:to-orange-600 transition-all duration-300 font-medium shadow-md hover:shadow-lg hover:scale-105"
+                            >
+                                ${editText}
+                            </button>
+                        </div>
+                    `;
+                }
             }
             
             messageDiv.className = 'chat-bubble animate-fadeInUp flex justify-start';
@@ -318,6 +429,20 @@ class AIChat {
     
     async confirmTransaction(data) {
         try {
+            // Check if this transaction is already confirmed to prevent double-confirmation
+            if (data.confirmed) {
+                return;
+            }
+            
+            // Mark as being confirmed
+            data.confirmed = true;
+            
+            // Clear countdown interval if running
+            if (data.countdownInterval) {
+                clearInterval(data.countdownInterval);
+                data.countdownInterval = null;
+            }
+            
             const payload = {
                 chat_id: data.chat_id,
                 transaction_data: data.ai_result,
@@ -372,6 +497,9 @@ class AIChat {
         } catch (error) {
             console.error('Confirmation error:', error);
             
+            // Reset confirmation status on error
+            data.confirmed = false;
+            
             const errorText = window.i18n.t('transaction_confirm_error');
                 
             this.addMessage(errorText, 'bot');
@@ -379,6 +507,12 @@ class AIChat {
     }
     
     editTransaction(data) {
+        // Cancel auto-confirm countdown if running
+        if (data.countdownInterval) {
+            clearInterval(data.countdownInterval);
+            data.countdownInterval = null;
+        }
+        
         // Open transaction form with pre-filled data instead of re-chatting
         const aiResult = data.ai_result;
         
@@ -468,6 +602,13 @@ class AIChat {
         // Clear existing messages and add new welcome message
         this.clearChat();
         this.addWelcomeMessage();
+        
+        // Update auto-confirm tooltip
+        if (window.updateAutoConfirmTooltip) {
+            const toggle = document.getElementById('auto-confirm-toggle');
+            const isEnabled = toggle ? toggle.checked : false;
+            window.updateAutoConfirmTooltip(isEnabled);
+        }
     }
     
     clearChat() {

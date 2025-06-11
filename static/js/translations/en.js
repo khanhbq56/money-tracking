@@ -130,6 +130,12 @@ const enTranslations = {
     'lunch_sample': 'lunch 50k',
     'saving_sample': 'saving 200k',
     
+    // Auto-confirm settings
+    'auto_confirm': 'Auto Confirm',
+    'auto_confirm_desc': 'Automatically confirm transactions without clicking button',
+    'auto_confirm_enabled': '✅ Auto confirm is ON',
+    'auto_confirm_disabled': '❌ Auto confirm is OFF',
+    
     // Future Me Simulator
     'future_me_subtitle': 'Smart financial forecasting based on real data',
     'analyzing_financial_data': 'Analyzing financial data...',

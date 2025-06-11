@@ -311,11 +311,11 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="quickAdd('coffee 25k')" class="px-3 py-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition">☕ Coffee</button>
-                        <button onclick="quickAdd('ăn trưa 50k')" class="px-3 py-2 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition" data-i18n="lunch">🍜 {% trans "Ăn trưa" %}</button>
-                        <button onclick="quickAdd('tiết kiệm 200k')" class="px-3 py-2 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition" data-i18n="saving">💰 {% trans "Tiết Kiệm" %}</button>
-                    </div>
+                                          <div class="flex flex-wrap gap-2">
+                          <button onclick="quickAddLocalized('coffee_sample')" class="px-3 py-2 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-lg transition">☕ Coffee</button>
+                          <button onclick="quickAddLocalized('lunch_sample')" class="px-3 py-2 text-xs bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded-lg transition" data-i18n="lunch">🍜 {% trans "Ăn trưa" %}</button>
+                          <button onclick="quickAddLocalized('saving_sample')" class="px-3 py-2 text-xs bg-green-100 hover:bg-green-200 text-green-700 rounded-lg transition" data-i18n="saving">💰 {% trans "Tiết Kiệm" %}</button>
+                      </div>
                 </div>
             </div>
         </div>
@@ -323,9 +323,9 @@
 
     <!-- Day Details Modal -->
     <div id="day-details-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" onclick="closeDayDetailsModal()">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden" onclick="event.stopPropagation()">
-            <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col" onclick="event.stopPropagation()">
+            <!-- Modal Header - Fixed at top -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white rounded-t-2xl flex-shrink-0">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-xl font-bold" id="day-modal-title">📅 Chi tiết ngày</h3>
@@ -333,7 +333,7 @@
                     </div>
                     <button 
                         onclick="closeDayDetailsModal()"
-                        class="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                        class="text-white hover:bg-white/20 rounded-full p-2 transition-colors z-10 relative"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -342,8 +342,8 @@
                 </div>
             </div>
 
-            <!-- Modal Content -->
-            <div class="p-6 max-h-[calc(90vh-200px)] overflow-y-auto">
+            <!-- Modal Content - Scrollable body -->
+            <div class="p-6 overflow-y-auto flex-1 custom-scrollbar">
                 <!-- Summary Stats -->
                 <div class="grid grid-cols-3 gap-4 mb-6">
                     <div class="bg-red-50 rounded-xl p-4 text-center border border-red-200">
@@ -387,8 +387,8 @@
                 </div>
             </div>
 
-            <!-- Modal Footer -->
-            <div class="bg-gray-50 px-6 py-4 flex justify-between items-center">
+            <!-- Modal Footer - Fixed at bottom -->
+            <div class="bg-gray-50 px-6 py-4 flex justify-between items-center rounded-b-2xl flex-shrink-0">
                 <button 
                     onclick="showAddTransactionForDay()"
                     class="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-600 transition-all duration-300 flex items-center gap-2"
@@ -641,6 +641,14 @@
         // Placeholder functions for features to be implemented in later phases
         function showStats() {
             console.log('Show Stats - to be implemented in Phase 10');
+        }
+        
+        // Quick add function with localization support
+        function quickAddLocalized(translationKey) {
+            const message = window.i18n ? window.i18n.t(translationKey) : translationKey;
+            if (window.aiChat) {
+                window.aiChat.quickAdd(message);
+            }
         }
 
         // Confirmation dialog functions

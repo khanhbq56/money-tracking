@@ -123,7 +123,56 @@ const viTranslations = {
     // Alert dialog titles
     'error_title': 'Lỗi',
     'success_title': 'Thành công', 
-    'notice_title': 'Thông báo'
+    'notice_title': 'Thông báo',
+    
+    // Sample messages for quick actions
+    'coffee_sample': 'coffee 25k',
+    'lunch_sample': 'ăn trưa 50k',
+    'saving_sample': 'tiết kiệm 200k',
+    
+    // Future Me Simulator
+    'future_me_subtitle': 'Dự báo tài chính thông minh dựa trên dữ liệu thực',
+    'analyzing_financial_data': 'Đang phân tích dữ liệu tài chính...',
+    'please_wait': 'Vui lòng chờ trong giây lát',
+    'select_forecast_period': 'Chọn khoảng thời gian dự báo',
+    'one_month': '1 tháng',
+    'five_years': '5 năm',
+    'months': 'tháng',
+    'years': 'năm',
+    'expected_expense': 'Chi Tiêu Dự Kiến',
+    'expected_saving': 'Tiết Kiệm Dự Kiến',
+    'expected_investment': 'Đầu Tư Dự Kiến',
+    'expected_total': 'Tổng Dự Kiến',
+    'scenarios_what_if': 'Scenarios "What if" - Các kịch bản tối ưu',
+    'goal_calculator': 'Goal Calculator - Máy tính mục tiêu',
+    'goal_calculator_desc': 'Với tốc độ tiết kiệm hiện tại, bạn có thể đạt được:',
+    'error_occurred_title': 'Oops! Có lỗi xảy ra',
+    'try_again': 'Thử lại',
+    'check_connection': 'Nếu lỗi vẫn tiếp tục, hãy kiểm tra kết nối mạng',
+    'per_month': '/tháng',
+
+    // Future Me Scenarios
+    'scenario_reduce_coffee': 'Nếu bớt coffee 1 ly/ngày',
+    'scenario_reduce_coffee_desc': 'Giảm 1 ly coffee mỗi ngày (30k/ly)',
+    'scenario_cook_at_home': 'Nếu ăn nhà thêm 2 bữa/tuần',
+    'scenario_cook_at_home_desc': 'Giảm 30% chi phí ăn uống bằng cách nấu ăn tại nhà',
+    'scenario_increase_investment': 'Nếu đầu tư thêm 500k/tháng',
+    'scenario_increase_investment_desc': 'Tăng đầu tư thêm 500,000₫ mỗi tháng',
+    'scenario_reduce_transport': 'Nếu đi xe máy/đi bộ nhiều hơn',
+    'scenario_reduce_transport_desc': 'Giảm 25% chi phí đi lại',
+
+    // Future Me Goals
+    'goal_iphone_16_pro_max': 'iPhone 16 Pro Max',
+    'goal_honda_wave': 'Honda Wave RSX',
+    'goal_dalat_trip': 'Du lịch Đà Lạt',
+    'goal_emergency_fund': 'Quỹ khẩn cấp (6 tháng)',
+    'goal_laptop_macbook': 'MacBook Air M3',
+    'goal_motorbike_upgrade': 'Upgrade xe máy',
+    'goal_time_under_1_month': 'Dưới 1 tháng',
+    'goal_time_months_only': '{months} tháng',
+    'goal_time_years_only': '{years} năm', 
+    'goal_time_years_months': '{years} năm {months} tháng',
+    'goal_time_not_achievable': 'Không thể đạt được với mô hình chi tiêu hiện tại'
 };
 
 // Export for use in i18n.js

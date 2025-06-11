@@ -186,6 +186,27 @@ class MemeGenerator {
             case 'expanding_brain':
                 memeHTML = this.createExpandingBrainTemplate(text, personality);
                 break;
+            case 'distracted_boyfriend':
+                memeHTML = this.createDistractedBoyfriendTemplate(text, personality);
+                break;
+            case 'two_buttons':
+                memeHTML = this.createTwoButtonsTemplate(text, personality);
+                break;
+            case 'change_my_mind':
+                memeHTML = this.createChangeMyMindTemplate(text, personality);
+                break;
+            case 'woman_yelling_cat':
+                memeHTML = this.createWomanYellingCatTemplate(text, personality);
+                break;
+            case 'stonks':
+                memeHTML = this.createStonksTemplate(text, personality);
+                break;
+            case 'panik_kalm':
+                memeHTML = this.createPanikKalmTemplate(text, personality);
+                break;
+            case 'galaxy_brain':
+                memeHTML = this.createGalaxyBrainTemplate(text, personality);
+                break;
             default:
                 memeHTML = this.createFallbackTemplate(text, personality);
         }
@@ -320,6 +341,170 @@ class MemeGenerator {
                 </div>
                 <div class="absolute top-2 right-2">
                     <span class="px-2 py-1 bg-gray-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createDistractedBoyfriendTemplate(text, personality) {
+        const { boyfriend, girlfriend, other_woman } = text;
+        return `
+            <div class="relative bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg p-6">
+                <div class="grid grid-cols-3 gap-4 text-center items-center">
+                    <div>
+                        <div class="text-4xl mb-2">👨</div>
+                        <p class="text-xs font-semibold text-gray-700">${boyfriend}</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl mb-2">😠👩</div>
+                        <p class="text-xs font-semibold text-gray-700">${girlfriend}</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl mb-2">😍👩</div>
+                        <p class="text-xs font-semibold text-gray-700">${other_woman}</p>
+                    </div>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-pink-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createTwoButtonsTemplate(text, personality) {
+        const { button1, button2 } = text;
+        return `
+            <div class="relative bg-gradient-to-br from-red-100 to-blue-100 rounded-lg p-6">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">😰</div>
+                    <div class="space-y-3">
+                        <button class="w-full p-3 bg-red-400 text-white rounded-lg font-semibold text-sm">
+                            ${button1}
+                        </button>
+                        <button class="w-full p-3 bg-blue-400 text-white rounded-lg font-semibold text-sm">
+                            ${button2}
+                        </button>
+                    </div>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-yellow-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createChangeMyMindTemplate(text, personality) {
+        return `
+            <div class="relative bg-gradient-to-br from-cyan-100 to-blue-100 rounded-lg p-6">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🪑☕</div>
+                    <div class="bg-white p-4 rounded-lg border-2 border-gray-300 transform -rotate-1">
+                        <p class="text-sm font-bold text-gray-800">${text}</p>
+                        <p class="text-xs text-gray-600 mt-2 italic">Change My Mind</p>
+                    </div>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-cyan-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createWomanYellingCatTemplate(text, personality) {
+        const { woman, cat } = text;
+        return `
+            <div class="relative bg-gradient-to-br from-yellow-100 to-orange-100 rounded-lg p-6">
+                <div class="grid grid-cols-2 gap-4 items-center">
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">😡👩</div>
+                        <p class="text-xs font-semibold text-gray-700">${woman}</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl mb-2">😐🐱</div>
+                        <p class="text-xs font-semibold text-gray-700">${cat}</p>
+                    </div>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-yellow-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createStonksTemplate(text, personality) {
+        return `
+            <div class="relative bg-gradient-to-br from-green-100 to-emerald-100 rounded-lg p-6">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">📈🤓</div>
+                    <p class="text-xl font-bold text-green-800">${text}</p>
+                    <p class="text-sm text-green-600 mt-2 italic">STONKS ↗️</p>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-green-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createPanikKalmTemplate(text, personality) {
+        const { panik1, kalm, panik2 } = text;
+        return `
+            <div class="relative bg-gradient-to-br from-red-100 via-green-100 to-red-100 rounded-lg p-6">
+                <div class="space-y-4 text-center">
+                    <div class="bg-red-200 p-3 rounded-lg">
+                        <div class="text-2xl mb-1">😱</div>
+                        <p class="text-xs font-bold text-red-800">PANIK</p>
+                        <p class="text-xs text-red-700">${panik1}</p>
+                    </div>
+                    <div class="bg-green-200 p-3 rounded-lg">
+                        <div class="text-2xl mb-1">😌</div>
+                        <p class="text-xs font-bold text-green-800">KALM</p>
+                        <p class="text-xs text-green-700">${kalm}</p>
+                    </div>
+                    <div class="bg-red-200 p-3 rounded-lg">
+                        <div class="text-2xl mb-1">😱</div>
+                        <p class="text-xs font-bold text-red-800">PANIK</p>
+                        <p class="text-xs text-red-700">${panik2}</p>
+                    </div>
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-purple-400 text-black text-xs rounded-full font-bold">
+                        ${this.getPersonalityIcon(personality)}
+                    </span>
+                </div>
+            </div>
+        `;
+    }
+    
+    createGalaxyBrainTemplate(text, personality) {
+        const levels = text.levels || text || ['Level 1', 'Level 2', 'Level 3', 'Level 4'];
+        const brainEmojis = ['🧠', '💫', '🌟', '🌌'];
+        const glowLevels = ['text-gray-700', 'text-blue-700', 'text-purple-700', 'text-pink-700'];
+        
+        return `
+            <div class="relative bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg p-6">
+                <div class="space-y-3">
+                    ${levels.map((level, index) => `
+                        <div class="flex items-center space-x-3 ${index === levels.length - 1 ? 'font-bold ' + glowLevels[index] : 'text-gray-700'}">
+                            <div class="text-2xl">${brainEmojis[index] || '🧠'}</div>
+                            <p class="text-sm flex-1">${level}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="absolute top-2 right-2">
+                    <span class="px-2 py-1 bg-indigo-400 text-black text-xs rounded-full font-bold">
                         ${this.getPersonalityIcon(personality)}
                     </span>
                 </div>

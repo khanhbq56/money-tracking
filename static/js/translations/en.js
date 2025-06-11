@@ -123,7 +123,56 @@ const enTranslations = {
     // Alert dialog titles
     'error_title': 'Error',
     'success_title': 'Success',
-    'notice_title': 'Notice'
+    'notice_title': 'Notice',
+    
+    // Sample messages for quick actions
+    'coffee_sample': 'coffee 25k',
+    'lunch_sample': 'lunch 50k',
+    'saving_sample': 'saving 200k',
+    
+    // Future Me Simulator
+    'future_me_subtitle': 'Smart financial forecasting based on real data',
+    'analyzing_financial_data': 'Analyzing financial data...',
+    'please_wait': 'Please wait a moment',
+    'select_forecast_period': 'Select forecast period',
+    'one_month': '1 month',
+    'five_years': '5 years',
+    'months': 'months',
+    'years': 'years',
+    'expected_expense': 'Expected Expense',
+    'expected_saving': 'Expected Saving',
+    'expected_investment': 'Expected Investment',
+    'expected_total': 'Expected Total',
+    'scenarios_what_if': 'What if scenarios - Optimization scenarios',
+    'goal_calculator': 'Goal Calculator',
+    'goal_calculator_desc': 'With your current saving rate, you can achieve:',
+    'error_occurred_title': 'Oops! An error occurred',
+    'try_again': 'Try again',
+    'check_connection': 'If the error persists, please check your network connection',
+    'per_month': '/month',
+
+    // Future Me Scenarios
+    'scenario_reduce_coffee': 'If reduce coffee 1 cup/day',
+    'scenario_reduce_coffee_desc': 'Reduce 1 cup of coffee daily (30k/cup)',
+    'scenario_cook_at_home': 'If cook at home 2 more meals/week',
+    'scenario_cook_at_home_desc': 'Reduce 30% food expenses by cooking at home',
+    'scenario_increase_investment': 'If invest extra 500k/month',
+    'scenario_increase_investment_desc': 'Increase investment by 500,000₫ per month',
+    'scenario_reduce_transport': 'If walk/bike more often',
+    'scenario_reduce_transport_desc': 'Reduce 25% transport costs',
+
+    // Future Me Goals
+    'goal_iphone_16_pro_max': 'iPhone 16 Pro Max',
+    'goal_honda_wave': 'Honda Wave RSX',
+    'goal_dalat_trip': 'Dalat Trip',
+    'goal_emergency_fund': 'Emergency Fund (6 months)',
+    'goal_laptop_macbook': 'MacBook Air M3',
+    'goal_motorbike_upgrade': 'Motorbike Upgrade',
+    'goal_time_under_1_month': 'Under 1 month',
+    'goal_time_months_only': '{months} months',
+    'goal_time_years_only': '{years} years',
+    'goal_time_years_months': '{years} years {months} months',
+    'goal_time_not_achievable': 'Not achievable with current spending pattern'
 };
 
 // Export for use in i18n.js

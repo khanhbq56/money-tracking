@@ -168,8 +168,8 @@ class FutureProjectionCalculator:
         coffee_total_savings = coffee_savings_per_month * months
         scenarios.append({
             'name': 'reduce_coffee',
-            'title': 'Nếu bớt coffee 1 ly/ngày',
-            'description': 'Giảm 1 ly coffee mỗi ngày (30k/ly)',
+            'title_key': 'scenario_reduce_coffee',
+            'description_key': 'scenario_reduce_coffee_desc',
             'savings_per_month': coffee_savings_per_month,
             'total_savings': coffee_total_savings,
             'formatted': f"+{coffee_total_savings:,.0f}₫",
@@ -182,8 +182,8 @@ class FutureProjectionCalculator:
         home_cooking_savings = food_reduction * months
         scenarios.append({
             'name': 'cook_at_home',
-            'title': 'Nếu ăn nhà thêm 2 bữa/tuần',
-            'description': 'Giảm 30% chi phí ăn uống bằng cách nấu ăn tại nhà',
+            'title_key': 'scenario_cook_at_home',
+            'description_key': 'scenario_cook_at_home_desc',
             'savings_per_month': food_reduction,
             'total_savings': home_cooking_savings,
             'formatted': f"+{home_cooking_savings:,.0f}₫",
@@ -195,8 +195,8 @@ class FutureProjectionCalculator:
         investment_increase = extra_investment * months
         scenarios.append({
             'name': 'increase_investment',
-            'title': 'Nếu đầu tư thêm 500k/tháng',
-            'description': 'Tăng đầu tư thêm 500,000₫ mỗi tháng',
+            'title_key': 'scenario_increase_investment',
+            'description_key': 'scenario_increase_investment_desc',
             'savings_per_month': extra_investment,
             'total_savings': investment_increase,
             'formatted': f"+{investment_increase:,.0f}₫",
@@ -209,8 +209,8 @@ class FutureProjectionCalculator:
         transport_savings = transport_reduction * months
         scenarios.append({
             'name': 'reduce_transport',
-            'title': 'Nếu đi xe máy/đi bộ nhiều hơn',
-            'description': 'Giảm 25% chi phí đi lại',
+            'title_key': 'scenario_reduce_transport',
+            'description_key': 'scenario_reduce_transport_desc',
             'savings_per_month': transport_reduction,
             'total_savings': transport_savings,
             'formatted': f"+{transport_savings:,.0f}₫",
@@ -225,12 +225,12 @@ class FutureProjectionCalculator:
         monthly_net = monthly_avg['saving'] + monthly_avg['investment'] - monthly_avg['expense']
         
         goals = [
-            {'name': 'iphone_16_pro_max', 'title': 'iPhone 16 Pro Max', 'price': 34000000, 'icon': '📱'},
-            {'name': 'honda_wave', 'title': 'Honda Wave RSX', 'price': 18000000, 'icon': '🏍️'},
-            {'name': 'dalat_trip', 'title': 'Du lịch Đà Lạt', 'price': 5000000, 'icon': '🏔️'},
-            {'name': 'emergency_fund', 'title': 'Quỹ khẩn cấp (6 tháng)', 'price': abs(monthly_avg['expense']) * 6, 'icon': '🚨'},
-            {'name': 'laptop_macbook', 'title': 'MacBook Air M3', 'price': 28000000, 'icon': '💻'},
-            {'name': 'motorbike_upgrade', 'title': 'Upgrade xe máy', 'price': 45000000, 'icon': '🏍️'}
+            {'name': 'iphone_16_pro_max', 'title_key': 'goal_iphone_16_pro_max', 'price': 34000000, 'icon': '📱'},
+            {'name': 'honda_wave', 'title_key': 'goal_honda_wave', 'price': 18000000, 'icon': '🏍️'},
+            {'name': 'dalat_trip', 'title_key': 'goal_dalat_trip', 'price': 5000000, 'icon': '🏔️'},
+            {'name': 'emergency_fund', 'title_key': 'goal_emergency_fund', 'price': abs(monthly_avg['expense']) * 6, 'icon': '🚨'},
+            {'name': 'laptop_macbook', 'title_key': 'goal_laptop_macbook', 'price': 28000000, 'icon': '💻'},
+            {'name': 'motorbike_upgrade', 'title_key': 'goal_motorbike_upgrade', 'price': 45000000, 'icon': '🏍️'}
         ]
         
         goal_results = []
@@ -241,27 +241,33 @@ class FutureProjectionCalculator:
                 months_remainder = int(months_needed % 12)
                 
                 if months_needed < 1:
-                    time_text = "Dưới 1 tháng"
+                    time_text_key = "goal_time_under_1_month"
+                    time_text_data = {}
                 elif months_needed < 12:
-                    time_text = f"{int(months_needed)} tháng"
+                    time_text_key = "goal_time_months_only"
+                    time_text_data = {"months": int(months_needed)}
                 elif years > 0 and months_remainder > 0:
-                    time_text = f"{years} năm {months_remainder} tháng"
+                    time_text_key = "goal_time_years_months"
+                    time_text_data = {"years": years, "months": months_remainder}
                 else:
-                    time_text = f"{years} năm"
+                    time_text_key = "goal_time_years_only"
+                    time_text_data = {"years": years}
                     
                 achievable = months_needed <= 60  # Reasonable timeframe
             else:
-                time_text = "Không thể đạt được với mô hình chi tiêu hiện tại"
+                time_text_key = "goal_time_not_achievable"
+                time_text_data = {}
                 achievable = False
                 months_needed = float('inf')
             
             goal_results.append({
                 'name': goal['name'],
-                'title': goal['title'],
+                'title_key': goal['title_key'],
                 'price': goal['price'],
                 'icon': goal['icon'],
                 'months_needed': float(months_needed) if months_needed != float('inf') else None,
-                'time_text': time_text,
+                'time_text_key': time_text_key,
+                'time_text_data': time_text_data,
                 'achievable': achievable,
                 'formatted_price': f"{goal['price']:,.0f}₫"
             })
@@ -273,15 +279,16 @@ class FutureProjectionCalculator:
     
     def _format_timeline_display(self, months: int) -> str:
         """Format timeline display text"""
+        # This will be handled by frontend i18n system now
         if months < 12:
-            return f"{months} tháng"
+            return f"{months}"  # Frontend will add "months"
         else:
             years = months // 12
             remaining_months = months % 12
             if remaining_months == 0:
-                return f"{years} năm"
+                return f"{years}"  # Frontend will add "years"
             else:
-                return f"{years} năm {remaining_months} tháng"
+                return f"{years}:{remaining_months}"  # Frontend will format as "X years Y months"
     
     def get_monthly_analysis(self, year: int, month: int) -> Dict[str, Any]:
         """Get detailed analysis for a specific month"""

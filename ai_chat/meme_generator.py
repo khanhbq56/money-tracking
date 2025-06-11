@@ -61,6 +61,83 @@ class MemeGenerator:
                     'saving_master': 2,
                     'balanced_spender': 3
                 }
+            },
+            'distracted_boyfriend': {
+                'name': 'Distracted Boyfriend',
+                'image': 'distracted_boyfriend.jpg',
+                'format': 'temptation',
+                'personality_weights': {
+                    'coffee_addict': 3,
+                    'foodie_explorer': 3,
+                    'saving_master': 1,
+                    'balanced_spender': 2
+                }
+            },
+            'two_buttons': {
+                'name': 'Two Buttons',
+                'image': 'two_buttons.jpg',
+                'format': 'dilemma',
+                'personality_weights': {
+                    'coffee_addict': 2,
+                    'foodie_explorer': 2,
+                    'saving_master': 3,
+                    'balanced_spender': 3
+                }
+            },
+            'change_my_mind': {
+                'name': 'Change My Mind',
+                'image': 'change_my_mind.jpg',
+                'format': 'statement',
+                'personality_weights': {
+                    'coffee_addict': 2,
+                    'foodie_explorer': 2,
+                    'saving_master': 3,
+                    'balanced_spender': 2
+                }
+            },
+            'woman_yelling_cat': {
+                'name': 'Woman Yelling at Cat',
+                'image': 'woman_yelling_cat.jpg',
+                'format': 'confrontation',
+                'personality_weights': {
+                    'coffee_addict': 3,
+                    'foodie_explorer': 2,
+                    'saving_master': 1,
+                    'balanced_spender': 2
+                }
+            },
+            'stonks': {
+                'name': 'Stonks',
+                'image': 'stonks.jpg',
+                'format': 'trend',
+                'personality_weights': {
+                    'coffee_addict': 1,
+                    'foodie_explorer': 1,
+                    'saving_master': 3,
+                    'balanced_spender': 2
+                }
+            },
+            'panik_kalm': {
+                'name': 'Panik Kalm',
+                'image': 'panik_kalm.jpg',
+                'format': 'emotional_journey',
+                'personality_weights': {
+                    'coffee_addict': 2,
+                    'foodie_explorer': 2,
+                    'saving_master': 2,
+                    'balanced_spender': 3
+                }
+            },
+            'galaxy_brain': {
+                'name': 'Galaxy Brain',
+                'image': 'galaxy_brain.jpg',
+                'format': 'enlightenment',
+                'personality_weights': {
+                    'coffee_addict': 3,
+                    'foodie_explorer': 3,
+                    'saving_master': 2,
+                    'balanced_spender': 2
+                }
             }
         }
         
@@ -79,6 +156,32 @@ class MemeGenerator:
                         'Coffee premium 35k/ly', 
                         'Coffee + bánh 50k',
                         'Coffee shop hopping 400k/tuần'
+                    ],
+                    'distracted_boyfriend': {
+                        'boyfriend': 'Tôi',
+                        'girlfriend': 'Kế hoạch tiết kiệm',
+                        'other_woman': 'Coffee mới ra'
+                    },
+                    'two_buttons': {
+                        'button1': 'Tiết kiệm tiền',
+                        'button2': 'Uống coffee 5 ly/ngày'
+                    },
+                    'change_my_mind': 'Coffee không phải chi phí, đó là đầu tư năng suất',
+                    'woman_yelling_cat': {
+                        'woman': 'BẠN ĐÃ CHI BAO NHIÊU CHO COFFEE?!',
+                        'cat': '...chỉ 375k thôi mà'
+                    },
+                    'stonks': 'Coffee addiction 📈',
+                    'panik_kalm': {
+                        'panik1': 'Nhìn bill coffee tuần này',
+                        'kalm': 'Nhớ ra mình làm việc hiệu quả hơn',
+                        'panik2': 'Bill tuần sau sẽ cao hơn'
+                    },
+                    'galaxy_brain': [
+                        'Uống coffee để tỉnh táo',
+                        'Uống coffee để networking',
+                        'Uống coffee để sống còn',
+                        'Coffee = oxygen'
                     ]
                 },
                 'foodie_explorer': {
@@ -93,6 +196,32 @@ class MemeGenerator:
                         'Thử món mới',
                         'Check-in quán trendy',
                         'Food tour cuối tuần'
+                    ],
+                    'distracted_boyfriend': {
+                        'boyfriend': 'Tôi',
+                        'girlfriend': 'Ngân sách ăn uống',
+                        'other_woman': 'Quán mới viral'
+                    },
+                    'two_buttons': {
+                        'button1': 'Nấu ăn tại nhà',
+                        'button2': 'Thử quán mới mỗi ngày'
+                    },
+                    'change_my_mind': 'Ăn ngon là đầu tư cho hạnh phúc tinh thần',
+                    'woman_yelling_cat': {
+                        'woman': 'SAO LẠI CHI 1.2M CHO ĂN UỐNG?!',
+                        'cat': '...nhưng mà ngon lắm'
+                    },
+                    'stonks': 'Food exploration 📈',
+                    'panik_kalm': {
+                        'panik1': 'Check bill ăn uống tuần này',
+                        'kalm': 'Nhớ ra mình đã ăn những món ngon tuyệt vời',
+                        'panik2': 'Tuần sau có thêm 5 quán mới'
+                    },
+                    'galaxy_brain': [
+                        'Ăn để sống',
+                        'Ăn để trải nghiệm',
+                        'Ăn để check-in',
+                        'Ăn = nghệ thuật sống'
                     ]
                 },
                 'saving_master': {
@@ -107,6 +236,32 @@ class MemeGenerator:
                         'Tiết kiệm 300k/tuần',
                         'Tiết kiệm 500k/tuần',
                         'Tiết kiệm = life goal'
+                    ],
+                    'distracted_boyfriend': {
+                        'boyfriend': 'Tôi',
+                        'girlfriend': 'Chi tiêu hợp lý',
+                        'other_woman': 'Tiết kiệm tối đa'
+                    },
+                    'two_buttons': {
+                        'button1': 'Mua đồ cần thiết',
+                        'button2': 'Tiết kiệm thêm 100k nữa'
+                    },
+                    'change_my_mind': 'Tiết kiệm 50% thu nhập là bình thường',
+                    'woman_yelling_cat': {
+                        'woman': 'BẠN PHẢI SỐNG CUỘC SỐNG!',
+                        'cat': '...nhưng mà tiết kiệm được 800k'
+                    },
+                    'stonks': 'Saving rate 📈',
+                    'panik_kalm': {
+                        'panik1': 'Nhìn người khác chi tiêu',
+                        'kalm': 'Nhớ ra mình đã tiết kiệm được 80%',
+                        'panik2': 'Họ sẽ nghĩ mình keo kiệt'
+                    },
+                    'galaxy_brain': [
+                        'Tiết kiệm để mua nhà',
+                        'Tiết kiệm để an toàn tài chính',
+                        'Tiết kiệm để tự do tài chính',
+                        'Tiết kiệm = tối cao'
                     ]
                 },
                 'balanced_spender': {
@@ -121,6 +276,32 @@ class MemeGenerator:
                         'Theo dõi từng giao dịch',
                         'Phân bố ngân sách',
                         'Zen master của tài chính'
+                    ],
+                    'distracted_boyfriend': {
+                        'boyfriend': 'Tôi',
+                        'girlfriend': 'Ngân sách cân bằng',
+                        'other_woman': 'Sale 50% off'
+                    },
+                    'two_buttons': {
+                        'button1': 'Chi tiêu theo kế hoạch',
+                        'button2': 'Linh hoạt với ngân sách'
+                    },
+                    'change_my_mind': 'Cân bằng thu chi là chìa khóa hạnh phúc',
+                    'woman_yelling_cat': {
+                        'woman': 'BẠN QUẢN LÝ TIỀN NHƯ THẾ NÀO?',
+                        'cat': '...vừa phải thôi'
+                    },
+                    'stonks': 'Financial balance 📊',
+                    'panik_kalm': {
+                        'panik1': 'Tháng này chi nhiều quá',
+                        'kalm': 'Nhưng vẫn trong kế hoạch',
+                        'panik2': 'Tháng sau phải cân bằng lại'
+                    },
+                    'galaxy_brain': [
+                        'Chi tiêu có kế hoạch',
+                        'Tiết kiệm có mục tiêu',
+                        'Đầu tư có chiến lược',
+                        'Tài chính = zen'
                     ]
                 }
             },
@@ -179,6 +360,32 @@ class MemeGenerator:
                         'Track every transaction',
                         'Budget allocation',
                         'Financial zen master'
+                    ],
+                    'distracted_boyfriend': {
+                        'boyfriend': 'Me',
+                        'girlfriend': 'Balanced budget',
+                        'other_woman': '50% off sale'
+                    },
+                    'two_buttons': {
+                        'button1': 'Spend according to plan',
+                        'button2': 'Be flexible with budget'
+                    },
+                    'change_my_mind': 'Balanced income-expense is the key to happiness',
+                    'woman_yelling_cat': {
+                        'woman': 'HOW DO YOU MANAGE YOUR MONEY?',
+                        'cat': '...just moderate'
+                    },
+                    'stonks': 'Financial balance 📊',
+                    'panik_kalm': {
+                        'panik1': 'Spent too much this month',
+                        'kalm': 'But still within plan',
+                        'panik2': 'Need to rebalance next month'
+                    },
+                    'galaxy_brain': [
+                        'Plan expenses',
+                        'Save with goals',
+                        'Invest with strategy',
+                        'Finance = zen'
                     ]
                 }
             }

@@ -560,7 +560,7 @@ class MemeGenerator {
             if (window.showAlertDialog) {
                 window.showAlertDialog('Không có meme để chia sẻ!', { type: 'error' });
             } else {
-                alert('Không có meme để chia sẻ!');
+                showAlertDialog(window.i18n.t('no_meme_to_share'), { type: 'error' });
             }
             return;
         }

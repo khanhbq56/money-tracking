@@ -233,9 +233,7 @@ class VoiceInput {
     }
     
     showSendConfirmation(transcript) {
-        const message = window.i18n ? 
-            window.i18n.t('voice_recorded_message', {transcript: transcript}) :
-            `Đã ghi nhận: "${transcript}". Nhấn Gửi để xử lý.`;
+        const message = window.i18n.t('voice_recorded_message', {transcript: transcript});
         
         this.showVoiceMessage(message, 'info');
     }
@@ -266,14 +264,12 @@ class VoiceInput {
                 errorKey = 'voice_error';
         }
         
-        const errorMessage = window.i18n ? window.i18n.t(errorKey) : 'Lỗi voice recognition. Hãy thử lại.';
+        const errorMessage = window.i18n.t(errorKey);
         this.showVoiceError(errorMessage);
     }
     
     showBrowserNotSupported() {
-        const message = window.i18n ? 
-            window.i18n.t('voice_not_supported') :
-            'Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge.';
+        const message = window.i18n.t('voice_not_supported');
         
         this.showVoiceError(message);
         
@@ -291,7 +287,7 @@ class VoiceInput {
         if (isListening) {
             voiceBtn.classList.add('listening', 'bg-red-500', 'hover:bg-red-600');
             voiceBtn.classList.remove('bg-orange-500', 'hover:bg-orange-600');
-            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
+            const listeningText = window.i18n.t('voice_listening');
             voiceBtn.innerHTML = `🎤 ${listeningText}`;
             voiceBtn.disabled = false;
         } else {
@@ -310,7 +306,7 @@ class VoiceInput {
             indicator.id = 'voice-listening-indicator';
             indicator.className = 'fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 flex items-center space-x-2';
             
-            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
+            const listeningText = window.i18n.t('voice_listening');
             indicator.innerHTML = `
                 <div class="w-3 h-3 bg-white rounded-full animate-pulse"></div>
                 <span>${listeningText}</span>
@@ -325,7 +321,7 @@ class VoiceInput {
         const chatInput = document.getElementById('chat-input');
         if (chatInput) {
             chatInput.classList.add('border-red-500', 'ring-2', 'ring-red-200');
-            const listeningText = window.i18n ? window.i18n.t('voice_listening') : 'Đang nghe...';
+            const listeningText = window.i18n.t('voice_listening');
             chatInput.placeholder = listeningText;
         }
     }
@@ -343,9 +339,7 @@ class VoiceInput {
             chatInput.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
             
             // Use translation system for placeholder
-            const placeholder = window.i18n ? 
-                window.i18n.t('enter_transaction') : 
-                'VD: coffee 25k, tiết kiệm 200k...';
+            const placeholder = window.i18n.t('enter_transaction');
             chatInput.placeholder = placeholder;
         }
     }
@@ -391,7 +385,15 @@ class VoiceInput {
     }
     
     showVoiceError(message) {
-        this.showVoiceMessage(message, 'error');
+        // Use toast notification instead of bottom message
+        if (window.app && typeof window.app.showNotification === 'function') {
+            window.app.showNotification(message, 'error');
+        } else if (window.showAlertDialog) {
+            window.showAlertDialog(message, { type: 'error' });
+        } else {
+            // Fallback to old method if neither is available
+            this.showVoiceMessage(message, 'error');
+        }
     }
     
     // Public methods for external use

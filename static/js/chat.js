@@ -176,12 +176,12 @@ class AIChat {
         const locale = localeMap[this.currentLanguage] || 'en-US';
                     dateText = date.toLocaleDateString(locale);
                 } else {
-                    dateText = window.i18n ? window.i18n.t('today') : 'Hôm nay';
+                    dateText = window.i18n.t('today');
                 }
                 
                 // Get transaction type display
                 const typeDisplayKey = `transaction_type_${aiResult.type}`;
-                const typeDisplay = window.i18n ? window.i18n.t(typeDisplayKey) : aiResult.type;
+                const typeDisplay = window.i18n.t(typeDisplayKey);
                 
                 // Format amount
                 const formattedAmount = new Intl.NumberFormat('vi-VN').format(Math.abs(aiResult.amount)) + '₫';
@@ -233,7 +233,7 @@ class AIChat {
             let messageContent = '';
             if (data && data.ai_result) {
                 // Only show simple confirmation message for AI results since details are shown below
-                const confirmationText = window.i18n ? window.i18n.t('chat_analysis_message') : 'I have analyzed your transaction:';
+                const confirmationText = window.i18n.t('chat_analysis_message');
                 messageContent = `<p class="leading-relaxed text-gray-800 mb-2">${confirmationText}</p>`;
             } else {
                 // For regular messages, show the full text
@@ -340,7 +340,7 @@ class AIChat {
             const result = await response.json();
             
             // Success message
-            const successText = window.i18n ? window.i18n.t('transaction_confirm_success') : 'Transaction confirmed successfully!';
+            const successText = window.i18n.t('transaction_confirm_success');
                 
             this.addMessage(successText, 'bot');
             
@@ -372,7 +372,7 @@ class AIChat {
         } catch (error) {
             console.error('Confirmation error:', error);
             
-            const errorText = window.i18n ? window.i18n.t('transaction_confirm_error') : 'Error confirming transaction. Please try again!';
+            const errorText = window.i18n.t('transaction_confirm_error');
                 
             this.addMessage(errorText, 'bot');
         }
@@ -406,7 +406,7 @@ class AIChat {
             this.chatInput.value = editText;
             this.chatInput.focus();
             
-            const helpText = window.i18n ? window.i18n.t('chat_edit_help') : 'Please edit and send again!';
+            const helpText = window.i18n.t('chat_edit_help');
                 
             this.addMessage(helpText, 'bot');
         }

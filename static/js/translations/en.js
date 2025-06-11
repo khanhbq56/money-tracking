@@ -150,6 +150,23 @@ const enTranslations = {
     'try_again': 'Try again',
     'check_connection': 'If the error persists, please check your network connection',
     'per_month': '/month',
+    'no_meme_to_share': 'No meme to share!',
+
+    // Transaction form options
+    'select_type': '-- Select type --',
+    'select_category': '-- Select category --',
+    'expense_category': 'Expense category',
+    
+    // Expense categories
+    'food': '🍜 Food & Dining',
+    'coffee': '☕ Coffee',
+    'transport': '🚗 Transportation',
+    'shopping': '🛒 Shopping',
+    'entertainment': '🎬 Entertainment',
+    'health': '🏥 Health',
+    'education': '📚 Education',
+    'utilities': '⚡ Utilities',
+    'other': '📦 Other',
 
     // Future Me Scenarios
     'scenario_reduce_coffee': 'If reduce coffee 1 cup/day',

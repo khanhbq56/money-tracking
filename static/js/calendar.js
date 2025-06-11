@@ -606,7 +606,7 @@ class ExpenseCalendar {
         const dayModalDate = document.getElementById('day-modal-date');
         
         if (dayModalTitle) {
-            const titleText = window.i18n ? window.i18n.t('dialog_day_details') : '📅 Chi tiết ngày';
+            const titleText = window.i18n.t('dialog_day_details');
             dayModalTitle.textContent = titleText;
         }
         
@@ -699,7 +699,7 @@ class ExpenseCalendar {
         const dayModalDate = document.getElementById('day-modal-date');
         
         if (dayModalTitle) {
-            const titleText = window.i18n ? window.i18n.t('dialog_day_details') : '📅 Chi tiết ngày';
+            const titleText = window.i18n.t('dialog_day_details');
             dayModalTitle.textContent = titleText;
         }
         
@@ -980,7 +980,7 @@ function showEditTransactionForm() {
 
 async function deleteTransaction() {
     if (window.calendar && window.calendar.currentTransaction) {
-        const confirmMsg = window.i18n ? window.i18n.t('confirm_delete_transaction') : 'Are you sure you want to delete this transaction?';
+        const confirmMsg = window.i18n.t('confirm_delete_transaction');
             
         // Use confirmation dialog instead of confirm()
         window.showConfirmationDialog(confirmMsg, async () => {
@@ -994,7 +994,7 @@ async function deleteTransaction() {
                 });
                 
                 if (response.ok) {
-                    const successMsg = window.i18n ? window.i18n.t('transaction_deleted_success') : 'Transaction deleted successfully!';
+                    const successMsg = window.i18n.t('transaction_deleted_success');
                     
                     closeTransactionDetailsModal();
                     
@@ -1019,7 +1019,7 @@ async function deleteTransaction() {
                 }
             } catch (error) {
                 console.error('Error deleting transaction:', error);
-                const errorMsg = window.i18n ? window.i18n.t('transaction_delete_error') : 'Error deleting transaction!';
+                const errorMsg = window.i18n.t('transaction_delete_error');
                 if (window.app && typeof window.app.showNotification === 'function') {
                     window.app.showNotification(errorMsg, 'error');
                 } else if (window.showAlertDialog) {
@@ -1029,9 +1029,9 @@ async function deleteTransaction() {
                 }
             }
         }, {
-            title: window.i18n ? window.i18n.t('dialog_delete_transaction') : 'Xóa giao dịch',
-            confirmText: window.i18n ? window.i18n.t('button_delete') : 'Xóa',
-            cancelText: window.i18n ? window.i18n.t('button_cancel') : 'Hủy'
+            title: window.i18n.t('dialog_delete_transaction'),
+            confirmText: window.i18n.t('button_delete'),
+            cancelText: window.i18n.t('button_cancel')
         });
     }
 }
@@ -1051,12 +1051,12 @@ function showTransactionForm(mode, transaction, date) {
     
     // Update UI based on mode
     if (mode === 'edit') {
-        title.textContent = window.i18n ? window.i18n.t('edit_transaction') : 'Sửa giao dịch';
-        saveButton.textContent = window.i18n ? window.i18n.t('button_update') : 'Cập nhật';
+        title.textContent = window.i18n.t('edit_transaction');
+        saveButton.textContent = window.i18n.t('button_update');
         populateFormWithTransaction(transaction, date);
     } else {
-        title.textContent = window.i18n ? window.i18n.t('add_transaction') : 'Thêm giao dịch';
-        saveButton.textContent = window.i18n ? window.i18n.t('save') : 'Lưu';
+        title.textContent = window.i18n.t('add_transaction');
+        saveButton.textContent = window.i18n.t('save');
         
         // Check if transaction contains AI data (from chat edit)
         if (transaction && (transaction.description || transaction.amount || transaction.transaction_type)) {
@@ -1171,7 +1171,7 @@ async function saveTransaction() {
     
     // Validate form
     if (!data.description || !data.amount || !data.transaction_type || !data.date) {
-        const errorMsg = window.i18n ? window.i18n.t('validation_required_fields') : 'Please fill in all required fields!';
+        const errorMsg = window.i18n.t('validation_required_fields');
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1184,7 +1184,7 @@ async function saveTransaction() {
     
     // Validate expense category
     if (data.transaction_type === 'expense' && !data.expense_category) {
-        const errorMsg = window.i18n ? window.i18n.t('validation_expense_category') : 'Please select expense category!';
+        const errorMsg = window.i18n.t('validation_expense_category');
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {
@@ -1216,7 +1216,7 @@ async function saveTransaction() {
         
         if (response.ok) {
             const successMsgKey = mode === 'edit' ? 'transaction_updated_success' : 'transaction_added_success';
-            const successMsg = window.i18n ? window.i18n.t(successMsgKey) : (mode === 'edit' ? 'Transaction updated successfully!' : 'Transaction added successfully!');
+            const successMsg = window.i18n.t(successMsgKey);
             
             closeTransactionFormModal();
             
@@ -1243,7 +1243,7 @@ async function saveTransaction() {
     } catch (error) {
         console.error('Error saving transaction:', error);
         const errorMsgKey = mode === 'edit' ? 'transaction_update_error' : 'transaction_add_error';
-        const errorMsg = window.i18n ? window.i18n.t(errorMsgKey) : `Error: ${error.message}`;
+        const errorMsg = window.i18n.t(errorMsgKey);
         if (window.app && typeof window.app.showNotification === 'function') {
             window.app.showNotification(errorMsg, 'error');
         } else if (window.showAlertDialog) {

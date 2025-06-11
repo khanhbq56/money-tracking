@@ -1,0 +1,91 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Professional UI Component Standards
+
+## Context
+
+- Apply to all UI components in Django + JavaScript money tracking app
+- Enforce professional design system using CSS custom properties and BEM methodology
+- Use UIComponents library for consistent component creation
+- Required for maintaining scalable, maintainable, and professional UI architecture
+
+## Critical Rules
+
+### 📦 Component Creation Standards
+- **ALWAYS** use `UIComponents` library instead of hardcoded HTML/CSS
+- **ALWAYS** use CSS custom properties from `ui-components.css`
+- **ALWAYS** follow BEM naming convention for custom CSS classes
+- **NEVER** create inline styles or ad-hoc CSS classes
+
+### 🔘 Button Standards  
+- **ALWAYS** use `UIComponents.createButton(text, type, onclick, options)`
+- **TYPES**: 'primary', 'success', 'warning', 'danger', 'neutral'
+- **OPTIONS**: { fullWidth: boolean, small: boolean, icon: string }
+- **CSS CLASSES**: Use `.btn`, `.btn--variant`, `.btn--size` pattern
+- **NEVER** create custom button styling outside the design system
+
+### 🔔 Notification Standards
+- **NEVER** use alert(), confirm(), or browser notifications
+- **ALWAYS** use showAlertDialog() for simple messages
+- **ALWAYS** use showConfirmationDialog() for user confirmations
+- **SUCCESS/ERROR** types must use options.type parameter
+- **ALWAYS** include emoji icons: ✅ success, ❌ error, ⚠️ warning, ℹ️ info
+
+### 🔲 Modal/Dialog Standards
+- **ALWAYS** use `fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[50] hidden` for overlay
+- **ALWAYS** include close on ESC key and outside click functionality
+- **ALWAYS** use gradient headers: `bg-gradient-to-r from-[color]-600 to-[color]-600`
+- **ALWAYS** include proper z-index hierarchy: confirmation=70, modals=50, chat=40
+- **REPLACE** alert() calls with showAlertDialog() function
+
+### 🎚️ Slider Standards  
+- **ALWAYS** use custom styling: `.slider` class with webkit/moz prefixes
+- **ALWAYS** include: `bg-purple-200 rounded-lg appearance-none cursor-pointer`
+- **THUMB**: `bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg`
+- **ALWAYS** add labels showing current value dynamically
+
+### 🎨 Color Coding Standards
+- **RED**: Expenses (🔴) - `red-600`, `red-50` backgrounds
+- **GREEN**: Savings (🟢) - `green-600`, `green-50` backgrounds  
+- **BLUE**: Investments (🔵) - `blue-600`, `blue-50` backgrounds
+- **PURPLE**: Totals/Combined (📊) - `purple-600`, `purple-50` backgrounds
+
+## Examples
+
+<example>
+  // ✅ CORRECT: Using UIComponents for button creation
+  const saveBtn = UIComponents.createButton(window.i18n.t('save'), 'primary', handleSave, { fullWidth: true });
+  
+  // ✅ CORRECT: Using UIComponents for modal creation
+  const modal = UIComponents.createModal('edit-modal', window.i18n.t('edit_transaction'), content);
+  
+  // ✅ CORRECT: Using standard notification
+  showAlertDialog(window.i18n.t('transaction_added_success'), { type: 'success' });
+  
+  // ✅ CORRECT: Using CSS custom properties
+  .custom-component {
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    transition: all var(--transition-normal);
+  }
+</example>
+
+<example type="invalid">
+  // ❌ FORBIDDEN: Hardcoded button HTML
+  <button class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500">Save</button>
+  
+  // ❌ FORBIDDEN: Custom styling without design tokens
+  <button style="background: #8b5cf6; padding: 12px 24px;">Submit</button>
+  
+  // ❌ FORBIDDEN: Browser alerts
+  alert('Transaction saved!');
+  
+  // ❌ FORBIDDEN: Magic numbers in CSS
+  .my-component { margin: 16px; border-radius: 12px; }
+</example>
+
+

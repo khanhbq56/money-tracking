@@ -15,7 +15,9 @@ alwaysApply: true
 ## Critical Rules
 
 - **NEVER** use `if language == 'vi'` or `currentLang === 'vi'` conditionals
+- **NEVER** use fallback patterns: `window.i18n ? window.i18n.t('key') : 'fallback'`
 - **ALWAYS** use translation functions: `_('key')` (Python) or `window.i18n.t('key')` (JS)
+- **ALWAYS** assume i18n system is available and loaded
 - **REPLACE** ternary language checks with language-mapped objects: `const map = {'vi': 'text1', 'en': 'text2'}`
 - **USE** snake_case for all translation keys consistently
 - **ADD** new keys to BOTH Django .po files AND JavaScript translation files
@@ -24,21 +26,24 @@ alwaysApply: true
 ## Examples
 
 <example>
-  // ✅ CORRECT: Language-mapped object
-  const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
-  const locale = localeMap[currentLang] || 'en-US';
-  
-  // ✅ CORRECT: Translation function
+  // ✅ CORRECT: Clean translation function
   const title = window.i18n.t('delete_transaction');
   
   // ✅ CORRECT: Django translation
   from django.utils.translation import gettext as _
   message = _('transaction_saved_success')
+  
+  // ✅ CORRECT: Language-mapped object for technical purposes
+  const localeMap = { 'vi': 'vi-VN', 'en': 'en-US' };
+  const locale = localeMap[currentLang] || 'en-US';
 </example>
 
 <example type="invalid">
   // ❌ FORBIDDEN: Hardcoded language conditional
   const title = currentLang === 'vi' ? 'Xóa giao dịch' : 'Delete Transaction';
+  
+  // ❌ FORBIDDEN: Fallback pattern bloating code
+  const message = window.i18n ? window.i18n.t('error_msg') : 'Error occurred';
   
   // ❌ FORBIDDEN: Language if-else
   if (language == 'vi') {

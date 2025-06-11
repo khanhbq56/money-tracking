@@ -140,6 +140,13 @@ class I18n {
             element.placeholder = this.t(key);
         });
         
+        // Update dropdown options
+        document.querySelectorAll('option[data-i18n]').forEach(option => {
+            const key = option.getAttribute('data-i18n');
+            const translatedText = this.t(key);
+            option.textContent = translatedText;
+        });
+        
         // Update title if needed
         if (document.title.includes('Expense Tracker') || document.title.includes('Theo Dõi Chi Tiêu')) {
             document.title = this.t('expense_tracker') + ' - ' + this.t('ai_assistant');

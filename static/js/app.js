@@ -407,7 +407,7 @@ window.eventBus.on('transactionAdded', (data) => {
     
     // Show success notification (unless explicitly skipped)
     if (!data.skipNotification && window.app && typeof window.app.showNotification === 'function') {
-        const message = window.i18n ? window.i18n.t('transaction_added_success') : '✅ Transaction added successfully!';
+        const message = window.i18n.t('transaction_added_success');
         window.app.showNotification(message, 'success');
     }
 });

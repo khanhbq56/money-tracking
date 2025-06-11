@@ -37,7 +37,7 @@ class FutureMe {
     
     createModal() {
         // Get current language translations
-        const t = (key, fallback) => window.i18n ? window.i18n.t(key) : fallback;
+        const t = (key) => window.i18n.t(key);
         
         const modalHTML = `
             <!-- Future Me Modal -->
@@ -251,13 +251,13 @@ class FutureMe {
         const display = document.getElementById('timeline-display');
         
         if (months < 12) {
-            const monthsText = window.i18n ? window.i18n.t('months') : 'tháng';
+            const monthsText = window.i18n.t('months');
             display.textContent = `${months} ${monthsText}`;
         } else {
             const years = Math.floor(months / 12);
             const remainingMonths = months % 12;
-            const yearsText = window.i18n ? window.i18n.t('years') : 'năm';
-            const monthsText = window.i18n ? window.i18n.t('months') : 'tháng';
+            const yearsText = window.i18n.t('years');
+            const monthsText = window.i18n.t('months');
             
             if (remainingMonths === 0) {
                 display.textContent = `${years} ${yearsText}`;
@@ -280,7 +280,7 @@ class FutureMe {
     
     updateProjectionCards(projections) {
         // Get translation for "month"
-        const monthText = window.i18n ? window.i18n.t('per_month') : '/tháng';
+        const monthText = window.i18n.t('per_month');
         
         // Expense
         document.getElementById('future-expense').textContent = projections.expense.formatted;
@@ -323,8 +323,8 @@ class FutureMe {
             const impactColor = scenario.impact === 'investment' ? 'text-blue-600' : 'text-green-600';
             
             // Get translated text
-            const title = window.i18n ? window.i18n.t(scenario.title_key) : scenario.title_key;
-            const description = window.i18n ? window.i18n.t(scenario.description_key) : scenario.description_key;
+            const title = window.i18n.t(scenario.title_key);
+            const description = window.i18n.t(scenario.description_key);
             
             scenarioElement.innerHTML = `
                 <div class="flex justify-between items-start">
@@ -355,9 +355,9 @@ class FutureMe {
             const bgColor = goal.achievable ? 'bg-green-50' : 'bg-red-50';
             
             // Get translated text with substitutions
-            const title = window.i18n ? window.i18n.t(goal.title_key) : goal.title_key;
+            const title = window.i18n.t(goal.title_key);
             let timeText = '';
-            if (window.i18n && goal.time_text_key) {
+            if (goal.time_text_key) {
                 if (goal.time_text_data && Object.keys(goal.time_text_data).length > 0) {
                     // Use interpolation for time text with data
                     timeText = window.i18n.t(goal.time_text_key, goal.time_text_data);
@@ -365,7 +365,7 @@ class FutureMe {
                     timeText = window.i18n.t(goal.time_text_key);
                 }
             } else {
-                timeText = goal.time_text_key || '';
+                timeText = '';
             }
             
             goalElement.innerHTML = `
@@ -423,21 +423,29 @@ class FutureMe {
     }
 
     showError(message) {
-        const content = document.getElementById('future-content');
-        content.innerHTML = `
-            <div class="text-center py-16">
-                <div class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto">
-                    <div class="text-6xl mb-6">😔</div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="error_occurred_title">Oops! Có lỗi xảy ra</h3>
-                    <p class="text-gray-600 mb-6 leading-relaxed">${message}</p>
-                    <button onclick="window.futureMe.updateProjection()" 
-                            class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg">
-                        🔄 <span data-i18n="try_again">Thử lại</span>
-                    </button>
-                    <p class="text-xs text-gray-500 mt-4" data-i18n="check_connection">Nếu lỗi vẫn tiếp tục, hãy kiểm tra kết nối mạng</p>
+        // Use toast notification instead of showing error in modal content
+        if (window.app && typeof window.app.showNotification === 'function') {
+            window.app.showNotification(message, 'error');
+        } else if (window.showAlertDialog) {
+            window.showAlertDialog(message, { type: 'error' });
+        } else {
+            // Fallback to showing error in modal content
+            const content = document.getElementById('future-content');
+            content.innerHTML = `
+                <div class="text-center py-16">
+                    <div class="bg-red-50 border border-red-200 rounded-2xl p-8 max-w-md mx-auto">
+                        <div class="text-6xl mb-6">😔</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3" data-i18n="error_occurred_title">Oops! Có lỗi xảy ra</h3>
+                        <p class="text-gray-600 mb-6 leading-relaxed">${message}</p>
+                        <button onclick="window.futureMe.updateProjection()" 
+                                class="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg">
+                            🔄 <span data-i18n="try_again">Thử lại</span>
+                        </button>
+                        <p class="text-xs text-gray-500 mt-4" data-i18n="check_connection">Nếu lỗi vẫn tiếp tục, hãy kiểm tra kết nối mạng</p>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
+        }
     }
 }
 

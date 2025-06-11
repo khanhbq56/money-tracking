@@ -150,6 +150,23 @@ const viTranslations = {
     'try_again': 'Thử lại',
     'check_connection': 'Nếu lỗi vẫn tiếp tục, hãy kiểm tra kết nối mạng',
     'per_month': '/tháng',
+    'no_meme_to_share': 'Không có meme để chia sẻ!',
+
+    // Transaction form options
+    'select_type': '-- Chọn loại --',
+    'select_category': '-- Chọn danh mục --',
+    'expense_category': 'Danh mục chi tiêu',
+    
+    // Expense categories
+    'food': '🍜 Ăn uống',
+    'coffee': '☕ Cafe',
+    'transport': '🚗 Di chuyển',
+    'shopping': '🛒 Mua sắm',
+    'entertainment': '🎬 Giải trí',
+    'health': '🏥 Sức khỏe',
+    'education': '📚 Giáo dục',
+    'utilities': '⚡ Tiện ích',
+    'other': '📦 Khác',
 
     // Future Me Scenarios
     'scenario_reduce_coffee': 'Nếu bớt coffee 1 ly/ngày',

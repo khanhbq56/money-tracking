@@ -41,10 +41,16 @@ uv run python manage.py makemigrations --verbosity=2
 echo "🗄️ Running database migrations..."
 uv run python manage.py migrate --verbosity=2 --run-syncdb
 
-# If migrations fail, try alternative approach
+# If migrations fail, try reset approach
 if [ $? -ne 0 ]; then
-    echo "⚠️ Standard migration failed, trying alternative approach..."
-    uv run bash scripts/migrate.sh
+    echo "⚠️ Standard migration failed, trying reset approach..."
+    if [ -f "scripts/reset_migrations.sh" ]; then
+        chmod +x scripts/reset_migrations.sh
+        uv run bash scripts/reset_migrations.sh
+    else
+        echo "🔄 Fallback to migrate script..."
+        uv run bash scripts/migrate.sh
+    fi
 fi
 
 # Show migration status

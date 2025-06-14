@@ -9,21 +9,7 @@ if ! command -v uv &> /dev/null; then
     pip install uv
 fi
 
-# CRITICAL: Ensure migrations are run before starting server
-echo "🔄 Checking database migrations..."
-if [ ! -z "$DATABASE_URL" ]; then
-    echo "📡 PostgreSQL detected, ensuring migrations..."
-    uv run python manage.py migrate --verbosity=1 || {
-        echo "⚠️ Standard migration failed, trying manual approach..."
-        chmod +x migrate.sh
-        uv run bash migrate.sh
-    }
-    echo "✅ Database migrations completed"
-else
-    echo "⚠️ No DATABASE_URL found, skipping migrations"
-fi
-
-# Start the application with gunicorn via UV
+# Build script handles all migrations, so just start the server
 echo "🌐 Starting gunicorn server..."
 uv run gunicorn expense_tracker.wsgi:application \
     --bind 0.0.0.0:${PORT:-8000} \

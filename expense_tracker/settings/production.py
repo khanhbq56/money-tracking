@@ -39,10 +39,6 @@ if DATABASE_URL and dj_database_url:
     }
     # Connection pooling for multi-user
     DATABASES['default']['CONN_MAX_AGE'] = 300
-    DATABASES['default']['OPTIONS'] = {
-        'MAX_CONNS': 20,
-        'CONN_HEALTH_CHECKS': True,
-    }
 else:
     # Fallback to SQLite for development/testing
     DATABASES = {

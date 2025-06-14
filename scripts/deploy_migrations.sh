@@ -27,12 +27,6 @@ else:
     print('✅ Superuser already exists')
 "
 
-# Force apply authentication migrations if needed
-echo "🔧 Checking and fixing authentication migrations..."
-python manage.py force_auth_migration --force || {
-    echo "⚠️ Force auth migration failed, continuing with fallback..."
-}
-
 # Verify multi-user setup
 echo "🔍 Verifying multi-user setup..."
 python manage.py shell -c "
@@ -43,26 +37,22 @@ from authentication.models import User
 # Check User model custom fields
 user_has_google_id = hasattr(User, 'google_id')
 user_has_demo_flag = hasattr(User, 'is_demo_user')
-print(f'User.google_id field: {'✅' if user_has_google_id else '❌'}')
-print(f'User.is_demo_user field: {'✅' if user_has_demo_flag else '❌'}')
+print(f'User.google_id field: {"✅" if user_has_google_id else "❌"}')
+print(f'User.is_demo_user field: {"✅" if user_has_demo_flag else "❌"}')
 
 # Check Transaction model
 tx_has_user = hasattr(Transaction._meta.get_field('user'), 'related_model')
-print(f'Transaction.user field: {'✅' if tx_has_user else '❌'}')
+print(f'Transaction.user field: {"✅" if tx_has_user else "❌"}')
 
 # Check MonthlyTotal model  
 mt_has_user = hasattr(MonthlyTotal._meta.get_field('user'), 'related_model')
-print(f'MonthlyTotal.user field: {'✅' if mt_has_user else '❌'}')
+print(f'MonthlyTotal.user field: {"✅" if mt_has_user else "❌"}')
 
 # Check ChatMessage model
 cm_has_user = hasattr(ChatMessage._meta.get_field('user'), 'related_model')
-print(f'ChatMessage.user field: {'✅' if cm_has_user else '❌'}')
+print(f'ChatMessage.user field: {"✅" if cm_has_user else "❌"}')
 
-print('✅ Multi-user setup verified')
+print('🎉 Multi-user deployment verification complete!')
 "
 
-# Collect static files
-echo "📁 Collecting static files..."
-python manage.py collectstatic --no-input
-
-echo "🎉 Multi-user deployment completed successfully!" 
+echo "✅ Multi-user deployment migrations completed successfully!" 

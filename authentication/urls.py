@@ -11,11 +11,6 @@ urlpatterns = [
     # Demo account
     path('demo/login/', views.DemoLoginView.as_view(), name='demo_login'),
     
-    # Debug and fix endpoints for production
-    path('debug/health/', views.debug_health_check, name='debug_health'),
-    path('admin/fix-database/', views.fix_database_schema, name='fix_database'),
-    path('admin/run-migrations/', views.run_migrations, name='run_migrations'),
-    
     # Logout
     path('logout/', views.logout_view, name='logout'),
     

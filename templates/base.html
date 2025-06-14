@@ -76,15 +76,8 @@
             const cookieLang = getCookie('django_language');
             const localStorageLang = localStorage.getItem('language');
             
-            console.log('Language sync check:', { 
-                django: currentDjangoLang, 
-                cookie: cookieLang, 
-                localStorage: localStorageLang 
-            });
-            
             // Priority: Django session > Cookie > localStorage
             if (currentDjangoLang && currentDjangoLang !== cookieLang) {
-                console.log('Syncing cookie with Django session');
                 setCookie('django_language', currentDjangoLang, 365);
                 localStorage.setItem('language', currentDjangoLang);
                 
@@ -94,7 +87,6 @@
                 }
             } else if (!cookieLang && localStorageLang) {
                 // Migrate from localStorage to cookie
-                console.log('Migrating language from localStorage to cookie');
                 setCookie('django_language', localStorageLang, 365);
             } else if (!cookieLang && !localStorageLang) {
                 // Set default language

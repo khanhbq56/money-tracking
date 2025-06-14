@@ -441,10 +441,6 @@ class ExpenseCalendar {
         
         const filtered = transactions.filter(t => t.transaction_type === this.currentFilter);
         
-        // Debug logging
-        if (transactions.length > 0) {
-        }
-        
         return filtered;
     }
     

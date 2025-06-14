@@ -35,6 +35,7 @@ class ExpenseTrackerApp {
             
         } catch (error) {
             console.error('❌ Error initializing app:', error);
+            showAlertDialog(window.i18n.t('app_init_error'), { type: 'error' });
         }
     }
     
@@ -68,14 +69,23 @@ class ExpenseTrackerApp {
      */
     async loadInitialData() {
         try {
-            // For Phase 3, we'll use mock data
-            // In later phases, this will fetch from APIs
-            this.currentData = this.getMockData();
-
+            // Load user data if authenticated
+            if (window.isAuthenticated) {
+                await loadUserData();
+            }
+            
+            // Load dashboard data
+            if (typeof window.dashboard !== 'undefined' && window.dashboard.loadData) {
+                await window.dashboard.loadData();
+            }
+            
+            // Load calendar data if calendar exists
+            if (typeof window.calendar !== 'undefined' && window.calendar.loadTransactions) {
+                await window.calendar.loadTransactions();
+            }
+            
         } catch (error) {
             console.error('Error loading initial data:', error);
-            // Use fallback data
-            this.currentData = this.getFallbackData();
         }
     }
     
@@ -451,15 +461,11 @@ window.showAlertDialog = function(message, options = {}) {
 };
 
 window.showConfirmationDialog = function(message, options = {}) {
-    console.log('🔄 showConfirmationDialog called with:', { message, options });
-    
     return new Promise((resolve) => {
         const type = options.type || 'info';
         const title = options.title || 'Xác nhận';
         const confirmText = options.confirmText || (window.i18n ? window.i18n.t('confirm') : 'Xác nhận');
         const cancelText = options.cancelText || (window.i18n ? window.i18n.t('cancel') : 'Hủy');
-        
-        console.log('📝 Modal config:', { type, title, confirmText, cancelText });
         
         // Remove any existing modals
         const existingModals = document.querySelectorAll('[id^="confirm-modal"]');
@@ -493,7 +499,6 @@ window.showConfirmationDialog = function(message, options = {}) {
         `;
         
         document.body.appendChild(modal);
-        console.log('✅ Modal added to DOM');
         
         // Add event listeners
         const cancelBtn = document.getElementById(`${modalId}-cancel`);
@@ -501,26 +506,21 @@ window.showConfirmationDialog = function(message, options = {}) {
         
         if (cancelBtn) {
             cancelBtn.addEventListener('click', () => {
-                console.log('❌ User clicked Cancel');
                 modal.remove();
                 resolve(false);
             });
-            console.log('✅ Cancel button event listener added');
         }
         
         if (confirmBtn) {
             confirmBtn.addEventListener('click', () => {
-                console.log('✅ User clicked Confirm');
                 modal.remove();
                 resolve(true);
             });
-            console.log('✅ Confirm button event listener added');
         }
         
         // Handle outside click
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
-                console.log('❌ User clicked outside');
                 modal.remove();
                 resolve(false);
             }
@@ -529,15 +529,12 @@ window.showConfirmationDialog = function(message, options = {}) {
         // Handle ESC key
         const handleEsc = (e) => {
             if (e.key === 'Escape') {
-                console.log('❌ User pressed ESC');
                 modal.remove();
                 document.removeEventListener('keydown', handleEsc);
                 resolve(false);
             }
         };
         document.addEventListener('keydown', handleEsc);
-        
-        console.log('🎉 showConfirmationDialog setup complete');
     });
 };
 

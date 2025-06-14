@@ -256,67 +256,44 @@ window.addEventListener('scroll', function() {
 
 // Language dropdown functionality
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Legal page: Language dropdown script loaded');
     const switcher = document.getElementById('language-switcher');
     const dropdown = document.getElementById('language-dropdown');
     
-    console.log('Legal page: Elements found', { switcher: !!switcher, dropdown: !!dropdown });
-    
     if (switcher && dropdown) {
-        // Toggle dropdown on click
         switcher.addEventListener('click', function(e) {
             e.preventDefault();
-            e.stopPropagation();
-            console.log('Legal page: Language switcher clicked');
             dropdown.classList.toggle('hidden');
-            console.log('Legal page: Dropdown hidden state:', dropdown.classList.contains('hidden'));
         });
         
-        // Handle language selection
-        const languageOptions = dropdown.querySelectorAll('.language-option');
-        console.log('Legal page: Language options found:', languageOptions.length);
-        
+        // Handle language option clicks
+        const languageOptions = dropdown.querySelectorAll('a[data-lang]');
         languageOptions.forEach(option => {
             option.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Legal page: Language option clicked:', this.getAttribute('href'));
+                const selectedLang = this.getAttribute('data-lang');
                 
-                // Extract language from href (e.g., "?lang=vi" -> "vi")
-                const href = this.getAttribute('href');
-                const langMatch = href.match(/lang=([a-z]{2})/);
-                if (langMatch) {
-                    const selectedLang = langMatch[1];
-                    
-                    // Update cookie to sync with main app (same as i18n.js)
-                    const expires = new Date();
-                    expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
-                    document.cookie = `django_language=${selectedLang};expires=${expires.toUTCString()};path=/`;
-                    
-                    // Update localStorage for backward compatibility
-                    localStorage.setItem('language', selectedLang);
-                    console.log('Legal page: Updated cookie and localStorage language to:', selectedLang);
-                }
+                // Set cookie for Django
+                document.cookie = `django_language=${selectedLang}; path=/; max-age=31536000; SameSite=Lax`;
                 
-                // Navigate to the URL
-                window.location.href = href;
+                // Set localStorage for JavaScript
+                localStorage.setItem('language', selectedLang);
+                
+                // Redirect to current page with new language
+                const currentPath = window.location.pathname;
+                const newPath = selectedLang === 'vi' ? 
+                    currentPath.replace(/^\/en\//, '/') : 
+                    `/en${currentPath}`;
+                
+                window.location.href = newPath;
             });
         });
         
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!switcher.contains(event.target) && !dropdown.contains(event.target)) {
+        document.addEventListener('click', function(e) {
+            if (!switcher.contains(e.target)) {
                 dropdown.classList.add('hidden');
             }
         });
-        
-        // Close dropdown on Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape') {
-                dropdown.classList.add('hidden');
-            }
-        });
-    } else {
-        console.error('Legal page: Language switcher elements not found!');
     }
 });
 </script> 

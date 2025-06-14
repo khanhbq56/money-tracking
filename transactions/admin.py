@@ -52,15 +52,15 @@ class TransactionAdmin(admin.ModelAdmin):
 @admin.register(MonthlyTotal)
 class MonthlyTotalAdmin(admin.ModelAdmin):
     list_display = [
-        'year', 'month', 'total_expense', 'total_saving', 
+        'user', 'year', 'month', 'total_expense', 'total_saving', 
         'total_investment', 'net_total', 'last_updated'
     ]
-    list_filter = ['year', 'month']
+    list_filter = ['user', 'year', 'month']  # Added user filter
     ordering = ['-year', '-month']
     
     fieldsets = (
-        (_('Period'), {
-            'fields': ('year', 'month')
+        (_('User & Period'), {
+            'fields': ('user', 'year', 'month')
         }),
         (_('Totals'), {
             'fields': ('total_expense', 'total_saving', 'total_investment', 'net_total')
@@ -78,7 +78,11 @@ class MonthlyTotalAdmin(admin.ModelAdmin):
         return True  # Allow manual creation for testing
     
     def get_queryset(self, request):
-        return super().get_queryset(request)
+        """Filter by user for non-superusers"""
+        qs = super().get_queryset(request)
+        if not request.user.is_superuser:
+            qs = qs.filter(user=request.user)
+        return qs
 
 
 # Customize admin site

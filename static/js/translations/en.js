@@ -221,6 +221,11 @@ const enTranslations = {
     'oauth_not_configured_notice': 'Google OAuth not configured. Please use demo account.',
     'login_error': 'Login error. Please try again.',
     'demo_expires_in': 'Demo account expires in {time}',
+    'demo_session_expired': 'Demo session has expired. Please login again.',
+    'oauth_state_mismatch_error': 'OAuth security error. Please try again.',
+    'oauth_callback_error': 'OAuth authentication error. Please try again.',
+    'session_expired': 'Session has expired. Please login again.',
+    'network_error': 'Network error. Please check your connection.',
     
     // Login benefits
     'login_benefits_title': 'Why sign in?',
@@ -284,6 +289,12 @@ const enTranslations = {
     // Logout
     'logout': 'Logout',
     'confirm_logout': 'Are you sure you want to logout?',
+    'logout_warning': 'You will need to login again to continue using the application.',
+    
+    // Session monitoring
+    'session_timeout_warning': 'Your session will expire in {minutes} minutes due to inactivity. Do you want to extend your session?',
+    'extend_session': 'Extend Session',
+    'logout_now': 'Logout Now',
 
     // Terms of Service content
     'terms_agreement_text': 'By accessing and using Money Tracker ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.',

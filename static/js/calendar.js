@@ -138,7 +138,7 @@ class ExpenseCalendar {
         try {
             
             const response = await fetch(
-                `/api/ai_chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`,
+                `/api/chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`,
                 {
                     method: 'GET',
                     headers: {
@@ -590,7 +590,7 @@ class ExpenseCalendar {
         
         try {
             // Load detailed day data from API
-            const response = await fetch(`/api/ai_chat/daily-summary/${dateStr}/`);
+            const response = await fetch(`/api/chat/daily-summary/${dateStr}/`);
             if (response.ok) {
                 const detailedData = await response.json();
                 this.showDayDetails(date, detailedData);

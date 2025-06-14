@@ -162,7 +162,12 @@ class GoogleOAuthCallbackView(View):
         user.last_name = user_info.get('family_name', user.last_name) 
         user.profile_picture = user_info.get('picture', user.profile_picture)
         user.last_login_ip = self.get_client_ip(request)
-        user.save()
+        
+        # Accept legal terms if not already accepted
+        if not (user.privacy_policy_accepted and user.terms_accepted):
+            user.accept_legal_terms(self.get_client_ip(request))
+        else:
+            user.save()
         
         return user
     

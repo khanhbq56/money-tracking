@@ -221,6 +221,11 @@ const viTranslations = {
     'oauth_not_configured_notice': 'Google OAuth chưa được cấu hình. Vui lòng sử dụng tài khoản demo.',
     'login_error': 'Lỗi đăng nhập. Vui lòng thử lại.',
     'demo_expires_in': 'Tài khoản demo sẽ hết hạn trong {time}',
+    'demo_session_expired': 'Phiên demo đã hết hạn. Vui lòng đăng nhập lại.',
+    'oauth_state_mismatch_error': 'Lỗi bảo mật OAuth. Vui lòng thử lại.',
+    'oauth_callback_error': 'Lỗi xác thực OAuth. Vui lòng thử lại.',
+    'session_expired': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+    'network_error': 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.',
     
     // Login benefits
     'login_benefits_title': 'Tại sao nên đăng nhập?',
@@ -264,6 +269,12 @@ const viTranslations = {
     // Logout
     'logout': 'Đăng xuất',
     'confirm_logout': 'Bạn có chắc chắn muốn đăng xuất?',
+    'logout_warning': 'Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng ứng dụng.',
+    
+    // Session monitoring
+    'session_timeout_warning': 'Phiên của bạn sẽ hết hạn trong {minutes} phút do không hoạt động. Bạn có muốn gia hạn phiên?',
+    'extend_session': 'Gia hạn phiên',
+    'logout_now': 'Đăng xuất ngay',
 
     // Terms of Service content
     'terms_agreement_text': 'Bằng cách truy cập và sử dụng Money Tracker ("Dịch vụ"), bạn chấp nhận và đồng ý bị ràng buộc bởi các điều khoản và điều kiện của thỏa thuận này. Nếu bạn không đồng ý tuân thủ những điều trên, vui lòng không sử dụng dịch vụ này.',

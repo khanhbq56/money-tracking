@@ -1,11 +1,20 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 
 class ChatMessage(models.Model):
     """
     Enhanced AI chat model with voice support and date parsing.
     """
+    # User relationship - link chat messages to users
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='chat_messages',
+        verbose_name=_('User')
+    )
+    
     user_message = models.TextField(
         verbose_name=_('User Message')
     )

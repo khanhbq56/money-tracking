@@ -59,8 +59,6 @@ class Transaction(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        null=True,  # Allow existing data migration
-        blank=True,
         related_name='transactions',
         verbose_name=_('User')
     )
@@ -119,6 +117,14 @@ class Transaction(models.Model):
 
 class MonthlyTotal(models.Model):
     """Track monthly totals for dashboard"""
+    # User relationship - CRITICAL FIX
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='monthly_totals',
+        verbose_name=_('User')
+    )
+    
     year = models.IntegerField(verbose_name=_('Year'))
     month = models.IntegerField(verbose_name=_('Month'))
     
@@ -153,10 +159,14 @@ class MonthlyTotal(models.Model):
     )
     
     class Meta:
-        unique_together = ['year', 'month']
+        unique_together = ['user', 'year', 'month']  # CRITICAL: Updated constraint
         verbose_name = _('Monthly Total')
         verbose_name_plural = _('Monthly Totals')
         ordering = ['-year', '-month']
+        indexes = [
+            models.Index(fields=['user', 'year', 'month']),  # Performance index
+            models.Index(fields=['user', '-year', '-month']),  # For ordering
+        ]
     
     def __str__(self):
-        return f"{self.year}/{self.month:02d} - Net: {self.net_total:,}₫" 
+        return f"{self.user.email} - {self.year}/{self.month:02d} - Net: {self.net_total:,}₫" 

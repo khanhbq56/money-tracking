@@ -1,5 +1,6 @@
 """
 Production settings for expense_tracker project.
+Multi-user support enabled for production deployment.
 """
 import os
 from .base import *
@@ -19,6 +20,15 @@ ALLOWED_HOSTS = config(
     cast=lambda v: [s.strip() for s in v.split(',')]
 )
 
+# Multi-user configuration for production
+ENABLE_MULTI_USER = config('ENABLE_MULTI_USER', default=True, cast=bool)
+DEFAULT_USER_LIMIT = config('DEFAULT_USER_LIMIT', default=1000, cast=int)
+
+# Enhanced user session settings for multi-user
+SESSION_COOKIE_AGE = 86400 * 7  # 1 week for better UX
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_SAVE_EVERY_REQUEST = True
+
 # Database - use Railway's PostgreSQL if available, otherwise SQLite
 DATABASE_URL = config('DATABASE_URL', default=None)
 
@@ -26,6 +36,12 @@ if DATABASE_URL and dj_database_url:
     # Use PostgreSQL from Railway
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL)
+    }
+    # Connection pooling for multi-user
+    DATABASES['default']['CONN_MAX_AGE'] = 300
+    DATABASES['default']['OPTIONS'] = {
+        'MAX_CONNS': 20,
+        'CONN_HEALTH_CHECKS': True,
     }
 else:
     # Fallback to SQLite for development/testing
@@ -74,14 +90,26 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Cache configuration for production
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+# Cache configuration for production with Redis support
+CACHE_URL = config('REDIS_URL', default=None)
+if CACHE_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': CACHE_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
 
-# Performance optimizations
+# Performance optimizations for multi-user
 CONN_MAX_AGE = 60  # Keep database connections alive for 60 seconds
 
 # Compression for better performance  
@@ -95,13 +123,20 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
-# Logging configuration for production
+# Enhanced logging configuration for production multi-user
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
         },
     },
     'root': {
@@ -112,6 +147,21 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'level': 'WARNING',
+            'propagate': False,
+        },
+        'transactions': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'ai_chat': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        'authentication': {
+            'handlers': ['console'],
+            'level': 'INFO',
             'propagate': False,
         },
     },

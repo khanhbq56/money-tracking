@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from rest_framework import viewsets, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.utils.translation import gettext as _, get_language
 from django.utils import timezone
@@ -34,13 +36,24 @@ def placeholder_view(request):
 class ChatMessageViewSet(viewsets.ModelViewSet):
     """
     ViewSet for ChatMessage CRUD operations.
+    User authentication required and filters by current user.
     """
-    queryset = ChatMessage.objects.all()
     serializer_class = ChatMessageSerializer
+    permission_classes = [IsAuthenticated]
     ordering = ['-created_at']
+    
+    def get_queryset(self):
+        """Filter chat messages by current user"""
+        return ChatMessage.objects.filter(user=self.request.user)
+        
+    def perform_create(self, serializer):
+        """Create chat message with user context"""
+        serializer.save(user=self.request.user)
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def process_chat_message(request):
     """
     Process user chat message with AI analysis using Gemini.
@@ -69,8 +82,9 @@ def process_chat_message(request):
             gemini = GeminiService(language)
             ai_result = gemini.categorize_transaction(user_message, has_voice)
         
-        # Save chat message
+        # Save chat message with user context
         chat_message = ChatMessage.objects.create(
+            user=request.user,  # CRITICAL FIX: Add user context
             user_message=user_message,
             ai_response=json.dumps(ai_result),
             has_voice_input=has_voice,
@@ -103,6 +117,7 @@ def process_chat_message(request):
         ai_result['parsed_date'] = date.today().isoformat()
         
         chat_message = ChatMessage.objects.create(
+            user=request.user,  # CRITICAL FIX: Add user context
             user_message=user_message,
             ai_response=json.dumps(ai_result),
             has_voice_input=has_voice,
@@ -125,6 +140,8 @@ def process_chat_message(request):
 
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def confirm_transaction(request):
     """
     Confirm and save transaction from AI suggestion.
@@ -149,8 +166,9 @@ def confirm_transaction(request):
         else:
             transaction_date = timezone.now().date()
         
-        # Create transaction
+        # Create transaction with user context
         transaction = Transaction.objects.create(
+            user=request.user,  # CRITICAL FIX: Add user context
             transaction_type=transaction_data['type'],
             amount=abs(float(transaction_data['amount'])),  # Model will handle sign
             description=transaction_data['description'],
@@ -366,15 +384,18 @@ def _generate_response_text(ai_result, language):
 
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_calendar_data(request, year, month):
-    """Get calendar data for specific month with transaction summaries"""
+    """Get calendar data for specific month with transaction summaries (user-specific)"""
     try:
         from transactions.models import Transaction
         from datetime import date, timedelta
         import calendar
         
-        # Get all transactions for the month
+        # Get all transactions for the month filtered by current user
         transactions = Transaction.objects.filter(
+            user=request.user,  # CRITICAL FIX: Filter by user
             date__year=year,
             date__month=month
         ).select_related().order_by('date')
@@ -437,8 +458,10 @@ def get_calendar_data(request, year, month):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_daily_summary(request, date):
-    """Get detailed summary for a specific date"""
+    """Get detailed summary for a specific date (user-specific)"""
     try:
         from transactions.models import Transaction
         from datetime import datetime
@@ -446,8 +469,9 @@ def get_daily_summary(request, date):
         # Parse date
         target_date = datetime.strptime(date, '%Y-%m-%d').date()
         
-        # Get transactions for the date
+        # Get transactions for the date filtered by current user
         transactions = Transaction.objects.filter(
+            user=request.user,  # CRITICAL FIX: Filter by user
             date=target_date
         ).order_by('created_at')
         
@@ -499,13 +523,16 @@ def get_daily_summary(request, date):
 
 @api_view(['GET'])
 def get_monthly_totals(request):
-    """Get monthly totals for dashboard display"""
+    """Get monthly totals for dashboard display (user-specific)"""
+    if not request.user.is_authenticated:
+        return Response({'error': 'Authentication required'}, status=401)
+        
     try:
         from transactions.monthly_service import MonthlyTotalService
         from datetime import datetime
         
-        # Get current month totals
-        totals = MonthlyTotalService.get_current_month_totals()
+        # Get current month totals for authenticated user
+        totals = MonthlyTotalService.get_current_month_totals(request.user)
         
         # Format for display
         formatted_totals = {
@@ -626,6 +653,8 @@ def get_translations(request, language):
 # =====================
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def generate_weekly_meme(request):
     """Generate a weekly meme based on user's spending patterns"""
     try:
@@ -653,6 +682,8 @@ def generate_weekly_meme(request):
         }, status=500)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_meme_analysis(request):
     """Get detailed spending analysis for meme generation"""
     try:
@@ -678,6 +709,8 @@ def get_meme_analysis(request):
         }, status=500)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def share_meme(request):
     """Handle meme sharing functionality"""
     try:

@@ -29,11 +29,13 @@ class AuthenticationMiddleware(MiddlewareMixin):
                 if request.user.is_demo_expired():
                     logout(request)
                     # For AJAX requests, return JSON response
-                    if request.headers.get('Content-Type') == 'application/json':
+                    if request.headers.get('Content-Type') == 'application/json' or \
+                       request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                         from django.http import JsonResponse
+                        from django.utils.translation import gettext as _
                         return JsonResponse({
                             'error': 'demo_expired',
-                            'message': 'Demo session has expired. Please login again.'
+                            'message': _('Demo session has expired. Please login again.')
                         }, status=401)
                     # For regular requests, redirect to home with error
                     return redirect('/?demo_expired=true')

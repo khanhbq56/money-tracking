@@ -571,7 +571,7 @@ msgstr "Bạn phải chấp nhận các điều khoản và chính sách bảo m
 
 #: .\authentication\views.py:209
 msgid "Demo account created successfully"
-msgstr ""
+msgstr "Tài khoản demo đã được tạo thành công"
 
 #: .\authentication\views.py:221
 msgid "Failed to create demo account"
@@ -579,7 +579,7 @@ msgstr "Không thể tạo tài khoản demo"
 
 #: .\authentication\views.py:235
 msgid "Demo User"
-msgstr ""
+msgstr "Người dùng Demo"
 
 #: .\authentication\views.py:254
 
@@ -605,7 +605,7 @@ msgstr "Đầu tư"
 
 #: .\authentication\views.py:326
 msgid "Logged out successfully"
-msgstr ""
+msgstr "Đăng xuất thành công"
 
 # Languages
 #: .\expense_tracker\settings\base.py:112

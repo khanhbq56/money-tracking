@@ -14,7 +14,8 @@ class FutureProjectionCalculator:
     and provide scenario analysis for future planning.
     """
     
-    def __init__(self):
+    def __init__(self, user=None):
+        self.user = user  # CRITICAL: Add user context
         self.analysis_months = 3  # Analyze last 3 months by default
         self.current_date = timezone.now().date()
     
@@ -55,10 +56,14 @@ class FutureProjectionCalculator:
     
     def _analyze_spending_patterns(self) -> Dict[str, Any]:
         """Analyze spending patterns from the last 3 months"""
+        if self.user is None:
+            raise ValueError("User is required for analysis")
+            
         end_date = self.current_date
         start_date = end_date - timedelta(days=90)  # Last 3 months
         
         transactions = Transaction.objects.filter(
+            user=self.user,  # CRITICAL: Filter by user
             date__gte=start_date,
             date__lte=end_date
         )
@@ -67,6 +72,7 @@ class FutureProjectionCalculator:
         if transactions.count() == 0:
             start_date = end_date - timedelta(days=180)
             transactions = Transaction.objects.filter(
+                user=self.user,  # CRITICAL: Filter by user
                 date__gte=start_date,
                 date__lte=end_date
             )
@@ -292,7 +298,11 @@ class FutureProjectionCalculator:
     
     def get_monthly_analysis(self, year: int, month: int) -> Dict[str, Any]:
         """Get detailed analysis for a specific month"""
+        if self.user is None:
+            raise ValueError("User is required for analysis")
+            
         transactions = Transaction.objects.filter(
+            user=self.user,  # CRITICAL: Filter by user
             date__year=year,
             date__month=month
         )

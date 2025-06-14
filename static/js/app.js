@@ -451,29 +451,93 @@ window.showAlertDialog = function(message, options = {}) {
 };
 
 window.showConfirmationDialog = function(message, options = {}) {
+    console.log('🔄 showConfirmationDialog called with:', { message, options });
+    
     return new Promise((resolve) => {
         const type = options.type || 'info';
-        const title = options.title || 'Confirm';
+        const title = options.title || 'Xác nhận';
+        const confirmText = options.confirmText || (window.i18n ? window.i18n.t('confirm') : 'Xác nhận');
+        const cancelText = options.cancelText || (window.i18n ? window.i18n.t('cancel') : 'Hủy');
         
-        const confirmModal = UIComponents.createModal('confirm-modal', title, `
-            <div class="text-center py-4">
-                <div class="mb-4 text-4xl">
-                    ${type === 'warning' ? '⚠️' : type === 'danger' ? '🚨' : '❓'}
-                </div>
-                <p class="text-gray-700 mb-6">${message}</p>
-                <div class="flex space-x-3 justify-center">
-                    <button onclick="window.confirmResolve(false); UIComponents.closeModal('confirm-modal')" class="btn btn--neutral">
-                        ${window.i18n ? window.i18n.t('cancel') : 'Cancel'}
-                    </button>
-                    <button onclick="window.confirmResolve(true); UIComponents.closeModal('confirm-modal')" class="btn btn--${type === 'danger' ? 'danger' : 'primary'}">
-                        ${window.i18n ? window.i18n.t('confirm') : 'Confirm'}
-                    </button>
+        console.log('📝 Modal config:', { type, title, confirmText, cancelText });
+        
+        // Remove any existing modals
+        const existingModals = document.querySelectorAll('[id^="confirm-modal"]');
+        existingModals.forEach(modal => modal.remove());
+        
+        // Create simple modal manually
+        const modalId = 'confirm-modal-' + Date.now();
+        const modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-[70] flex items-center justify-center';
+        modal.style.display = 'flex';
+        
+        modal.innerHTML = `
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6" onclick="event.stopPropagation()">
+                <div class="text-center">
+                    <div class="mb-4 text-4xl">
+                        ${type === 'warning' ? '⚠️' : type === 'danger' ? '🚨' : '❓'}
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">${title}</h3>
+                    <p class="text-gray-700 mb-6">${message}</p>
+                    <div class="flex space-x-3 justify-center">
+                        <button id="${modalId}-cancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
+                            ${cancelText}
+                        </button>
+                        <button id="${modalId}-confirm" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                            ${confirmText}
+                        </button>
+                    </div>
                 </div>
             </div>
-        `);
+        `;
         
-        window.confirmResolve = resolve;
-        confirmModal.show();
+        document.body.appendChild(modal);
+        console.log('✅ Modal added to DOM');
+        
+        // Add event listeners
+        const cancelBtn = document.getElementById(`${modalId}-cancel`);
+        const confirmBtn = document.getElementById(`${modalId}-confirm`);
+        
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                console.log('❌ User clicked Cancel');
+                modal.remove();
+                resolve(false);
+            });
+            console.log('✅ Cancel button event listener added');
+        }
+        
+        if (confirmBtn) {
+            confirmBtn.addEventListener('click', () => {
+                console.log('✅ User clicked Confirm');
+                modal.remove();
+                resolve(true);
+            });
+            console.log('✅ Confirm button event listener added');
+        }
+        
+        // Handle outside click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                console.log('❌ User clicked outside');
+                modal.remove();
+                resolve(false);
+            }
+        });
+        
+        // Handle ESC key
+        const handleEsc = (e) => {
+            if (e.key === 'Escape') {
+                console.log('❌ User pressed ESC');
+                modal.remove();
+                document.removeEventListener('keydown', handleEsc);
+                resolve(false);
+            }
+        };
+        document.addEventListener('keydown', handleEsc);
+        
+        console.log('🎉 showConfirmationDialog setup complete');
     });
 };
 

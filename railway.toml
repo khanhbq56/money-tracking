@@ -1,8 +1,8 @@
 [build]
-command = "chmod +x build.sh && ./build.sh"
+command = "chmod +x scripts/build.sh && ./scripts/build.sh"
 
 [deploy]
-startCommand = "chmod +x start.sh && ./start.sh"
+startCommand = "chmod +x scripts/start.sh && ./scripts/start.sh"
 healthcheckPath = "/health/"
 healthcheckTimeout = 300
 restartPolicyType = "ON_FAILURE"
@@ -10,4 +10,7 @@ restartPolicyMaxRetries = 10
 
 [env]
 DJANGO_SETTINGS_MODULE = "expense_tracker.settings.production"
-PYTHONPATH = "." 
+PYTHONPATH = "."
+# Multi-user deployment settings
+ENABLE_MULTI_USER = "true"
+DEFAULT_USER_LIMIT = "1000" 

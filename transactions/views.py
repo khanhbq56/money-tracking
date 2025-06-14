@@ -101,13 +101,14 @@ class TransactionViewSet(viewsets.ModelViewSet):
         # Update monthly totals for both old and new dates
         update_monthly_totals_on_transaction_change(transaction)
         if old_date != transaction.date:
-            MonthlyTotalService.update_monthly_totals(old_date.year, old_date.month)
+            MonthlyTotalService.update_monthly_totals(self.request.user, old_date.year, old_date.month)
     
     def perform_destroy(self, instance):
         """Delete transaction and update monthly totals"""
         transaction_date = instance.date
+        user = instance.user
         instance.delete()
-        MonthlyTotalService.update_monthly_totals(transaction_date.year, transaction_date.month)
+        MonthlyTotalService.update_monthly_totals(user, transaction_date.year, transaction_date.month)
     
     @action(detail=False, methods=['get'])
     def statistics(self, request):
@@ -240,9 +241,15 @@ def calendar_data(request):
 @api_view(['GET'])
 def monthly_totals(request):
     """
-    Get monthly totals for dashboard.
+    Get monthly totals for dashboard (user-specific).
     Query params: year (optional), month (optional)
     """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     year = request.GET.get('year')
     month = request.GET.get('month')
     
@@ -250,7 +257,7 @@ def monthly_totals(request):
         try:
             year = int(year)
             month = int(month)
-            totals = MonthlyTotalService.update_monthly_totals(year, month)
+            totals = MonthlyTotalService.update_monthly_totals(request.user, year, month)
             serializer = MonthlyTotalSerializer(totals)
         except (ValueError, TypeError):
             return Response(
@@ -258,9 +265,9 @@ def monthly_totals(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
     else:
-        # Get current month totals
-        totals_dict = MonthlyTotalService.get_current_month_totals()
-        formatted = MonthlyTotalService.get_formatted_totals()
+        # Get current month totals for authenticated user
+        totals_dict = MonthlyTotalService.get_current_month_totals(request.user)
+        formatted = MonthlyTotalService.get_formatted_totals(request.user)
         
         return Response({
             'monthly_totals': totals_dict,
@@ -275,8 +282,15 @@ def monthly_totals(request):
 @api_view(['PUT'])
 def refresh_monthly_totals(request):
     """
-    Force refresh of all monthly totals.
+    Force refresh of all monthly totals (admin only).
     """
+    # Only allow superusers to refresh all monthly totals
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return Response(
+            {'error': _('Admin access required')},
+            status=status.HTTP_403_FORBIDDEN
+        )
+        
     try:
         updated_count = MonthlyTotalService.refresh_all_monthly_totals()
         return Response({
@@ -294,9 +308,15 @@ def refresh_monthly_totals(request):
 @api_view(['GET'])
 def monthly_breakdown(request):
     """
-    Get detailed monthly breakdown with categories.
+    Get detailed monthly breakdown with categories (user-specific).
     Query params: year, month
     """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     try:
         year = int(request.GET.get('year', datetime.now().year))
         month = int(request.GET.get('month', datetime.now().month))
@@ -306,7 +326,7 @@ def monthly_breakdown(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    breakdown = MonthlyTotalService.get_monthly_breakdown(year, month)
+    breakdown = MonthlyTotalService.get_monthly_breakdown(request.user, year, month)
     
     return Response({
         'year': year,
@@ -318,10 +338,19 @@ def monthly_breakdown(request):
 @api_view(['GET'])
 def today_summary(request):
     """
-    Get summary of today's transactions.
+    Get summary of today's transactions (user-specific).
     """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     today = date.today()
-    transactions = Transaction.objects.filter(date=today)
+    transactions = Transaction.objects.filter(
+        user=request.user,  # CRITICAL: Filter by user
+        date=today
+    )
     
     # Calculate totals
     total_expense = abs(transactions.filter(transaction_type='expense').aggregate(
@@ -352,9 +381,15 @@ def today_summary(request):
 @api_view(['GET'])
 def future_projection(request):
     """
-    Get future financial projections with scenario analysis.
+    Get future financial projections with scenario analysis (user-specific).
     Query params: months (required, 1-60)
     """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     try:
         months = int(request.GET.get('months', 12))
     except (ValueError, TypeError):
@@ -380,7 +415,7 @@ def future_projection(request):
                 cursor.execute("SELECT COUNT(*) FROM transactions_transaction LIMIT 1")
             
             # Initialize calculator if table exists
-            calculator = FutureProjectionCalculator()
+            calculator = FutureProjectionCalculator(user=request.user)
             projection_data = calculator.calculate_projection(months)
             
         except OperationalError:
@@ -415,9 +450,15 @@ def future_projection(request):
 @api_view(['GET'])
 def monthly_analysis(request):
     """
-    Get detailed analysis for a specific month.
+    Get detailed analysis for a specific month (user-specific).
     Query params: year (required), month (required)
     """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+        
     try:
         year = int(request.GET.get('year'))
         month = int(request.GET.get('month'))
@@ -441,9 +482,9 @@ def monthly_analysis(request):
     
     try:
         # Initialize calculator
-        calculator = FutureProjectionCalculator()
+        calculator = FutureProjectionCalculator(user=request.user)
         
-        # Get monthly analysis
+        # Get monthly analysis  
         analysis_data = calculator.get_monthly_analysis(year, month)
         
         return Response({

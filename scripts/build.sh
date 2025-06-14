@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Starting Railway build process..."
+echo "🚀 Starting Railway build process with multi-user support..."
 
 # Check if UV is installed, install if not
 if ! command -v uv &> /dev/null; then
@@ -44,7 +44,7 @@ uv run python manage.py migrate --verbosity=2 --run-syncdb
 # If migrations fail, try alternative approach
 if [ $? -ne 0 ]; then
     echo "⚠️ Standard migration failed, trying alternative approach..."
-    uv run bash migrate.sh
+    uv run bash scripts/migrate.sh
 fi
 
 # Show migration status
@@ -67,6 +67,31 @@ with connection.cursor() as cursor:
         print(f'  ✅ {table[0]}')
 "
 
+# Run multi-user deployment verification
+echo "🔐 Running multi-user deployment verification..."
+if [ -f "scripts/deploy_migrations.sh" ]; then
+    chmod +x scripts/deploy_migrations.sh
+    uv run bash scripts/deploy_migrations.sh
+else
+    echo "⚠️ Multi-user deployment script not found, running basic setup..."
+    
+    # Create superuser if needed
+    echo "👤 Setting up admin user..."
+    uv run python manage.py shell -c "
+from authentication.models import User
+if not User.objects.filter(is_superuser=True).exists():
+    User.objects.create_superuser(
+        email='admin@money-tracking.app',
+        password='admin123',
+        first_name='Admin',
+        last_name='User'
+    )
+    print('✅ Superuser created')
+else:
+    print('✅ Superuser already exists')
+"
+fi
+
 # Create cache table
 echo "💾 Creating cache table..."
 uv run python manage.py createcachetable
@@ -75,4 +100,4 @@ uv run python manage.py createcachetable
 echo "🌍 Compiling translation messages..."
 uv run python manage.py compilemessages
 
-echo "🎉 Build completed successfully!" 
+echo "🎉 Multi-user build completed successfully!" 

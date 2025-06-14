@@ -50,16 +50,16 @@ class AuthenticationManager {
             
             switch (error) {
                 case 'oauth_state_mismatch':
-                    errorMessage = 'OAuth state mismatch. Please try again.';
+                    errorMessage = window.i18n.t('oauth_state_mismatch_error');
                     break;
                 case 'oauth_callback_failed':
-                    errorMessage = 'OAuth callback failed. Please try again.';
+                    errorMessage = window.i18n.t('oauth_callback_error');
                     break;
                 case 'oauth_not_configured':
                     errorMessage = window.i18n.t('oauth_not_configured_notice');
                     break;
                 case 'demo_expired':
-                    errorMessage = 'Demo session expired. Please login again.';
+                    errorMessage = window.i18n.t('demo_session_expired');
                     break;
             }
             
@@ -71,7 +71,7 @@ class AuthenticationManager {
         
         // Check for demo expiration
         if (urlParams.has('demo_expired')) {
-            showAlertDialog(window.i18n.t('demo_expires_in').replace('{time}', '0 minutes'), { type: 'warning' });
+            showAlertDialog(window.i18n.t('demo_session_expired'), { type: 'warning' });
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }
@@ -226,7 +226,7 @@ class AuthenticationManager {
                 <!-- Legal Acceptance -->
                 <div class="space-y-4">
                     <label class="flex items-start space-x-2 text-sm text-gray-600 cursor-pointer hover:text-gray-800 transition-colors">
-                        <input type="checkbox" id="legal-acceptance" class="mt-1 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2">
+                        <input type="checkbox" id="legal-acceptance" class="mt-1 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2" checked>
                         <span class="leading-relaxed text-left">
                             ${window.i18n.t('legal_acceptance')
                                 .replace('{terms}', `<a href="/auth/terms/" target="_blank" class="text-purple-600 hover:text-purple-800 font-semibold underline decoration-2 decoration-purple-200 hover:decoration-purple-400 transition-all">${window.i18n.t('terms_of_service')}</a>`)
@@ -266,7 +266,7 @@ class AuthenticationManager {
             () => this.handleGoogleLogin(),
             { 
                 fullWidth: true,
-                disabled: true // Initially disabled until legal acceptance
+                disabled: false // Enabled by default since legal checkbox is checked
             }
         );
         
@@ -287,7 +287,7 @@ class AuthenticationManager {
             () => this.handleDemoLogin(),
             { 
                 fullWidth: true,
-                disabled: true // Initially disabled until legal acceptance
+                disabled: false // Enabled by default since legal checkbox is checked
             }
         );
         
@@ -321,11 +321,11 @@ class AuthenticationManager {
                 }
             });
             
-            // Initially disable buttons
-            googleBtn.disabled = true;
-            demoBtn.disabled = true;
-            googleBtn.classList.add('opacity-50', 'cursor-not-allowed');
-            demoBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            // Since checkbox is now checked by default, enable buttons initially
+            googleBtn.disabled = false;
+            demoBtn.disabled = false;
+            googleBtn.classList.add('hover:scale-105');
+            demoBtn.classList.add('hover:scale-105');
         }
     }
 
@@ -370,7 +370,16 @@ class AuthenticationManager {
             
         } catch (error) {
             console.error('Demo login error:', error);
-            showAlertDialog(window.i18n.t('login_error'), { type: 'error' });
+            
+            // Better error handling based on error type
+            let errorMessage = window.i18n.t('login_error');
+            if (error.name === 'TypeError' && !navigator.onLine) {
+                errorMessage = window.i18n.t('network_error');
+            } else if (error.message && error.message.includes('expired')) {
+                errorMessage = window.i18n.t('session_expired');
+            }
+            
+            showAlertDialog(errorMessage, { type: 'error' });
             this.hideLoadingState();
         }
     }
@@ -416,6 +425,11 @@ class AuthenticationManager {
     }
 
     addLogoutButton() {
+        // Check if logout button already exists
+        if (document.querySelector('.logout-btn')) {
+            return;
+        }
+        
         // Find a good place to add logout button (e.g., header)
         const header = document.querySelector('.header') || document.querySelector('nav') || document.body;
         
@@ -427,18 +441,32 @@ class AuthenticationManager {
         );
         
         logoutBtn.classList.add('logout-btn', 'fixed', 'top-4', 'right-4', 'z-40');
+        logoutBtn.style.backgroundColor = '#ef4444';
+        logoutBtn.style.color = 'white';
+        
         header.appendChild(logoutBtn);
+        console.log('✅ Logout button added successfully');
     }
 
     async handleLogout() {
-        const confirmed = await showConfirmationDialog(
-            window.i18n.t('confirm_logout'),
-            { type: 'warning' }
+        console.log('🔓 Logout button clicked');
+        console.log('🔍 window.showConfirmationDialog:', window.showConfirmationDialog);
+        
+        // Create our own simple confirmation dialog
+        const confirmed = await this.createSimpleConfirmDialog(
+            window.i18n.t('confirm_logout')
         );
+        
+        console.log('📝 User confirmation result:', confirmed);
 
-        if (!confirmed) return;
+        if (!confirmed) {
+            console.log('❌ User cancelled logout');
+            return;
+        }
 
         try {
+            console.log('🔄 Sending logout request...');
+            
             const response = await fetch('/auth/logout/', {
                 method: 'POST',
                 headers: {
@@ -447,22 +475,38 @@ class AuthenticationManager {
                 }
             });
 
+            console.log('📡 Logout response status:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
+            console.log('📋 Logout response data:', data);
 
             if (data.success) {
                 showAlertDialog(data.message, { type: 'success' });
                 
                 // Refresh page to load unauthenticated state
+                console.log('🔄 Refreshing page in 1 second...');
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
             } else {
-                throw new Error('Logout failed');
+                throw new Error(data.error || 'Logout failed');
             }
             
         } catch (error) {
-            console.error('Logout error:', error);
-            showAlertDialog('Logout failed. Please try again.', { type: 'error' });
+            console.error('❌ Logout error:', error);
+            
+            let errorMessage = window.i18n.t('login_error') || 'Logout failed. Please try again.';
+            if (error.name === 'TypeError' && !navigator.onLine) {
+                errorMessage = window.i18n.t('network_error') || 'Network error. Please check your connection.';
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            showAlertDialog(errorMessage, { type: 'error' });
         }
     }
 
@@ -534,6 +578,108 @@ class AuthenticationManager {
     getCSRFToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
                document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    }
+    
+    createSimpleConfirmDialog(message) {
+        return new Promise((resolve) => {
+            console.log('🔄 Creating logout confirmation dialog...');
+            
+            // Use UIComponents pattern like other dialogs in the app
+            const modalId = 'logout-confirm-modal';
+            
+            // Remove existing modal if any
+            UIComponents.closeModal(modalId);
+            const existingModal = document.getElementById(modalId);
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Create modal content with better styling
+            const modalContent = document.createElement('div');
+            modalContent.innerHTML = `
+                <div class="text-center py-8 px-6">
+                    <!-- Icon Section -->
+                    <div class="mb-6">
+                        <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-red-200 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                            <i class="fas fa-sign-out-alt text-red-600 text-3xl"></i>
+                        </div>
+                        <h4 class="text-xl font-semibold text-gray-800 mb-2">${window.i18n.t('logout')}</h4>
+                    </div>
+                    
+                    <!-- Message Section -->
+                    <div class="mb-8">
+                        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <p class="text-yellow-800 text-sm">
+                                <i class="fas fa-info-circle mr-2"></i>
+                                ${window.i18n.t('logout_warning')}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Button Section -->
+                    <div class="flex space-x-4 justify-center">
+                        <button id="logout-cancel-btn" class="btn btn--neutral btn--large flex items-center">
+                            <i class="fas fa-times mr-2"></i>
+                            ${window.i18n.t('cancel')}
+                        </button>
+                        <button id="logout-confirm-btn" class="btn btn--danger btn--large flex items-center shadow-lg">
+                            <i class="fas fa-sign-out-alt mr-2"></i>
+                            ${window.i18n.t('logout')}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Create modal using UIComponents with larger size
+            const modal = UIComponents.createModal(
+                modalId, 
+                `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`, 
+                modalContent,
+                { 
+                    showCloseButton: false,
+                    size: 'medium',
+                    maxWidth: 'max-w-lg'
+                }
+            );
+            
+            // Customize header styling for logout
+            setTimeout(() => {
+                const header = modal.querySelector('.modal__header');
+                if (header) {
+                    header.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                    header.style.color = 'white';
+                    const title = header.querySelector('.modal__title');
+                    if (title) {
+                        title.style.color = 'white';
+                    }
+                }
+            }, 10);
+            
+            // Add event listeners after modal is created
+            setTimeout(() => {
+                const cancelBtn = document.getElementById('logout-cancel-btn');
+                const confirmBtn = document.getElementById('logout-confirm-btn');
+                
+                if (cancelBtn) {
+                    cancelBtn.addEventListener('click', () => {
+                        console.log('❌ User clicked Cancel');
+                        UIComponents.closeModal(modalId);
+                        resolve(false);
+                    });
+                }
+                
+                if (confirmBtn) {
+                    confirmBtn.addEventListener('click', () => {
+                        console.log('✅ User clicked Confirm');
+                        UIComponents.closeModal(modalId);
+                        resolve(true);
+                    });
+                }
+            }, 50);
+            
+            modal.show();
+            console.log('✅ Logout confirmation dialog shown');
+        });
     }
 }
 

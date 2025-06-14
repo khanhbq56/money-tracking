@@ -10,19 +10,21 @@ class MonthlyTotalService:
     """
     
     @staticmethod
-    def update_monthly_totals(year, month):
+    def update_monthly_totals(user, year, month):
         """
-        Update monthly totals for given year/month.
+        Update monthly totals for given user, year/month.
         
         Args:
+            user: User instance
             year (int): Year to update
             month (int): Month to update (1-12)
             
         Returns:
-            dict: Updated monthly totals
+            MonthlyTotal: Updated monthly totals instance
         """
-        # Get all transactions for the month
+        # Get all transactions for the user and month
         transactions = Transaction.objects.filter(
+            user=user,  # CRITICAL: Filter by user
             date__year=year,
             date__month=month
         )
@@ -43,33 +45,62 @@ class MonthlyTotalService:
         # Calculate net total (tổng của tất cả loại giao dịch)
         net_total = expense_total + saving_total + investment_total
         
-        return {
-            'expense': expense_total,
-            'saving': saving_total,
-            'investment': investment_total,
-            'net_total': net_total
-        }
+        # Create or update MonthlyTotal record
+        monthly_total, created = MonthlyTotal.objects.get_or_create(
+            user=user,
+            year=year,
+            month=month,
+            defaults={
+                'total_expense': expense_total,
+                'total_saving': saving_total,
+                'total_investment': investment_total,
+                'net_total': net_total
+            }
+        )
+        
+        # Update if exists
+        if not created:
+            monthly_total.total_expense = expense_total
+            monthly_total.total_saving = saving_total
+            monthly_total.total_investment = investment_total
+            monthly_total.net_total = net_total
+            monthly_total.save()
+        
+        return monthly_total
     
     @staticmethod
-    def get_current_month_totals():
+    def get_current_month_totals(user):
         """
-        Get current month totals for dashboard.
+        Get current month totals for specific user.
         
+        Args:
+            user: User instance
+            
         Returns:
             dict: Current month totals
         """
         now = datetime.now()
-        return MonthlyTotalService.update_monthly_totals(now.year, now.month)
+        monthly_total = MonthlyTotalService.update_monthly_totals(user, now.year, now.month)
+        
+        return {
+            'expense': monthly_total.total_expense,
+            'saving': monthly_total.total_saving,
+            'investment': monthly_total.total_investment,
+            'net_total': monthly_total.net_total
+        }
     
     @staticmethod
-    def get_formatted_totals():
+    def get_formatted_totals(user):
         """
-        Get current month totals with Vietnamese formatting.
+        Get current month totals with Vietnamese formatting for specific user.
         
+        Args:
+            user: User instance
+            
         Returns:
             dict: Formatted totals for display
         """
-        totals = MonthlyTotalService.get_current_month_totals()
+        totals = MonthlyTotalService.get_current_month_totals(user)
         
         return {
             'expense': f"-{totals['expense']:,.0f}₫",
@@ -87,22 +118,31 @@ class MonthlyTotalService:
         Returns:
             int: Number of monthly totals updated
         """
-        # Get all unique year-month combinations from transactions
-        date_combinations = Transaction.objects.dates('date', 'month')
+        from authentication.models import User
+        
+        # Get all users who have transactions
+        users_with_transactions = User.objects.filter(
+            transactions__isnull=False
+        ).distinct()
         
         updated_count = 0
-        for date in date_combinations:
-            MonthlyTotalService.update_monthly_totals(date.year, date.month)
-            updated_count += 1
+        for user in users_with_transactions:
+            # Get all unique year-month combinations for this user
+            user_date_combinations = Transaction.objects.filter(user=user).dates('date', 'month')
+            
+            for date in user_date_combinations:
+                MonthlyTotalService.update_monthly_totals(user, date.year, date.month)
+                updated_count += 1
         
         return updated_count
     
     @staticmethod
-    def get_monthly_breakdown(year, month):
+    def get_monthly_breakdown(user, year, month):
         """
-        Get detailed breakdown for a specific month.
+        Get detailed breakdown for a specific month and user.
         
         Args:
+            user: User instance
             year (int): Year
             month (int): Month
             
@@ -110,6 +150,7 @@ class MonthlyTotalService:
             dict: Detailed breakdown with categories
         """
         transactions = Transaction.objects.filter(
+            user=user,  # CRITICAL: Filter by user
             date__year=year,
             date__month=month
         )
@@ -152,10 +193,17 @@ def update_monthly_totals_on_transaction_change(transaction):
         transaction (Transaction): Transaction that was created/updated/deleted
     """
     MonthlyTotalService.update_monthly_totals(
+        transaction.user,  # CRITICAL: Pass user
         transaction.date.year,
         transaction.date.month
     )
 
-def get_month_totals(year, month):
-    """Get totals for specific month"""
-    return MonthlyTotalService.update_monthly_totals(year, month) 
+def get_month_totals(user, year, month):
+    """Get totals for specific month and user"""
+    monthly_total = MonthlyTotalService.update_monthly_totals(user, year, month)
+    return {
+        'expense': monthly_total.total_expense,
+        'saving': monthly_total.total_saving,
+        'investment': monthly_total.total_investment,
+        'net_total': monthly_total.net_total
+    } 

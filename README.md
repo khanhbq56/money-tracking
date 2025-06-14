@@ -1,51 +1,48 @@
-# 💰 Expense Tracker Web Application
+# 💰 Money Tracking Web Application
 
 A modern multi-user web application for personal finance tracking that replaces traditional Excel spreadsheets with AI-powered categorization and beautiful calendar visualization.
 
-## 🌟 Features
+## 🌟 Key Features
 
-### Core Functionality
-- **👥 Multi-User Support**: Complete user isolation with secure authentication
-- **📊 3-Type Transaction System**: Expenses (🔴), Savings (🟢), Investments (🔵)
-- **📅 Calendar-Based Interface**: FullCalendar.js integration with color-coded transactions
-- **🤖 AI-Powered Categorization**: Google Gemini API for automatic transaction categorization
-- **🌍 Multi-Language Support**: Vietnamese and English localization
-- **📱 Mobile-First Design**: Responsive design with Tailwind CSS
-
-### Advanced Features
-- **🎯 Future Me Simulator**: Project your financial future with interactive scenarios
-- **📈 Investment Portfolio Tracking**: Track assets, P&L, and performance
-- **🎨 AI Meme Generator**: Weekly personalized financial memes
-- **🗣️ Voice Input**: Speech-to-text for quick transaction entry
-- **📊 Analytics Dashboard**: Charts and insights for spending patterns
-- **🔐 Secure Authentication**: Google OAuth + Demo accounts with legal consent
-
-### Multi-User Architecture
+### 👥 Multi-User Architecture
 - **Complete Data Isolation**: Users only see their own transactions and data
-- **Secure API Endpoints**: All APIs protected with authentication
-- **User-Scoped Filtering**: Database queries automatically filtered by user
+- **Secure Authentication**: Google OAuth + Demo accounts with legal consent
 - **Scalable Design**: Supports thousands of concurrent users
+- **User-Scoped APIs**: All endpoints filtered by authenticated user
 
-## 🛠 Tech Stack
+### 💡 Smart Finance Management
+- **📊 3-Type Transaction System**: Expenses (🔴), Savings (🟢), Investments (🔵)
+- **🤖 AI-Powered Categorization**: Google Gemini API for automatic transaction categorization
+- **📅 Calendar Interface**: FullCalendar.js integration with color-coded transactions
+- **🎯 Future Projection**: Interactive scenarios and financial planning
+- **🗣️ Voice Input**: Speech-to-text for quick transaction entry
+
+### 🌍 User Experience
+- **Multi-Language Support**: Vietnamese and English localization
+- **📱 Mobile-First Design**: Responsive design with Tailwind CSS
+- **🎨 AI Meme Generator**: Weekly personalized financial memes
+- **📊 Analytics Dashboard**: Charts and insights for spending patterns
+
+## 🛠 Technology Stack
 
 - **Backend**: Django 5.x + Django REST Framework
-- **Frontend**: Django Templates + HTMx + Tailwind CSS
+- **Package Manager**: UV (ultrafast Python package installer)
+- **Frontend**: Django Templates + Tailwind CSS + JavaScript
 - **Database**: PostgreSQL (production) / SQLite (development)
 - **AI**: Google Gemini API
 - **Calendar**: FullCalendar.js
 - **Charts**: Chart.js
-- **Background Tasks**: Celery + Redis
-- **Deployment**: Railway / PythonAnywhere
 - **Authentication**: Google OAuth + Custom Demo System
+- **Deployment**: Railway.app
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.11+
+- Python 3.11+ 
+- UV package manager
 - PostgreSQL (production) or SQLite (development)
-- Redis (for background tasks)
 - Google Gemini API key
-- Google OAuth credentials (optional for OAuth login)
+- Google OAuth credentials (optional)
 
 ### Installation
 
@@ -55,15 +52,21 @@ git clone https://github.com/yourusername/money-tracking.git
 cd money-tracking
 ```
 
-2. **Create virtual environment**
+2. **Install UV (if not already installed)**
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+# On macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows
+powershell -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or via pip
+pip install uv
 ```
 
-3. **Install dependencies**
+3. **Install dependencies with UV**
 ```bash
-pip install -r requirements.txt
+uv sync
 ```
 
 4. **Environment setup**
@@ -74,119 +77,130 @@ cp env.example .env
 
 5. **Database setup**
 ```bash
-python manage.py migrate
-python manage.py createsuperuser
+uv run python manage.py migrate
+uv run python manage.py createsuperuser
 ```
 
 6. **Run development server**
 ```bash
-python manage.py runserver
+uv run python manage.py runserver
 ```
+
+Visit `http://localhost:8000` to access the application.
 
 ### Environment Variables
 
 Create a `.env` file in the project root:
 
 ```env
+# Basic Configuration
 DEBUG=True
-SECRET_KEY=your-secret-key
-DATABASE_URL=postgresql://user:pass@localhost:5432/expense_tracker
-GEMINI_API_KEY=your-gemini-api-key
-REDIS_URL=redis://localhost:6379/0
+SECRET_KEY=your-secret-key-here
 LANGUAGE_CODE=vi
 TIME_ZONE=Asia/Ho_Chi_Minh
 
-# Multi-user settings
+# Database (PostgreSQL for production, SQLite for development)
+DATABASE_URL=postgresql://user:pass@localhost:5432/expense_tracker
+
+# AI Integration
+GEMINI_API_KEY=your-gemini-api-key
+
+# Multi-user Settings
 ENABLE_MULTI_USER=True
 DEFAULT_USER_LIMIT=1000
 
-# Google OAuth (optional)
+# Google OAuth (Optional)
 GOOGLE_OAUTH_CLIENT_ID=your-google-client-id
 GOOGLE_OAUTH_CLIENT_SECRET=your-google-client-secret
+
+# Cache (Optional - Redis for production)
+REDIS_URL=redis://localhost:6379/0
 ```
 
 ## 📊 Project Structure
 
 ```
 money-tracking/
-├── docs/                   # Documentation files
+├── docs/                           # 📖 Documentation
+│   ├── CHANGELOG.md               # Version history
 │   ├── MULTI_USER_MIGRATION_PLAN.md
 │   ├── LOGIN_IMPLEMENTATION_PLAN.md
 │   └── GOOGLE_OAUTH_SETUP.md
-├── scripts/                # Deployment and utility scripts
-│   ├── build.sh           # Railway build script
-│   ├── start.sh           # Railway start script
-│   ├── migrate.sh         # Migration script
-│   └── deploy_migrations.sh # Multi-user deployment
-├── expense_tracker/        # Django configuration
+├── scripts/                        # 🔧 Deployment Scripts
+│   ├── build.sh                   # Railway build script
+│   ├── start.sh                   # Railway start script
+│   ├── migrate.sh                 # Database migration
+│   └── deploy_migrations.sh       # Multi-user deployment
+├── expense_tracker/                # ⚙️ Django Configuration
 │   ├── settings/
-│   │   ├── base.py
-│   │   ├── development.py
-│   │   └── production.py
-│   ├── urls.py
-│   └── wsgi.py
-├── authentication/        # User management and OAuth
-├── transactions/          # Transaction models and APIs
-├── ai_chat/              # AI integration and chat
-├── static/               # CSS, JS, images
-├── templates/            # Django templates
-├── locale/               # Translation files
-├── staticfiles/          # Collected static files (production)
-├── requirements.txt
-├── railway.toml          # Railway deployment config
-└── README.md
+│   │   ├── base.py               # Base settings
+│   │   ├── development.py        # Development settings
+│   │   └── production.py         # Production settings
+│   ├── urls.py                   # URL routing
+│   └── wsgi.py                   # WSGI application
+├── authentication/                 # 🔐 User Management
+├── transactions/                   # 💰 Transaction Management
+├── ai_chat/                       # 🤖 AI Integration
+├── static/                        # 🎨 Static Assets
+├── templates/                     # 📄 HTML Templates
+├── locale/                        # 🌍 Translations
+├── staticfiles/                   # 📁 Collected Static Files
+├── requirements.txt               # 📦 Python Dependencies
+├── pyproject.toml                 # 🔧 UV Configuration
+├── railway.toml                   # 🚀 Railway Config
+└── README.md                      # 📋 This File
 ```
 
-## 🔐 Multi-User Architecture
+## 🔐 Multi-User Security
 
-### User Authentication
-- **Google OAuth**: Secure authentication with Google accounts
-- **Demo Accounts**: Temporary accounts for testing (auto-expire)
-- **Legal Consent**: Terms of service and privacy policy acceptance
+### Authentication System
+- **Google OAuth**: Secure login with Google accounts
+- **Demo Accounts**: Temporary accounts for testing (auto-expire in 24 hours)
+- **Legal Consent**: Terms of service and privacy policy acceptance required
 - **Session Management**: Secure session handling with CSRF protection
 
 ### Data Isolation
 ```python
-# All API endpoints filter by current user
+# All database queries are automatically filtered by user
 transactions = Transaction.objects.filter(user=request.user)
 monthly_totals = MonthlyTotal.objects.filter(user=request.user)
 chat_messages = ChatMessage.objects.filter(user=request.user)
 ```
 
 ### Security Features
-- Authentication required for all data access
-- User-scoped database queries
-- CSRF protection on all forms
-- Secure session cookies
-- SQL injection prevention
+- ✅ Authentication required for all data access
+- ✅ User-scoped database queries
+- ✅ CSRF protection on all forms
+- ✅ Secure session cookies
+- ✅ SQL injection prevention
+- ✅ Rate limiting (future enhancement)
 
 ## 🤖 AI Features
 
-### Transaction Categorization
+### Intelligent Transaction Processing
 ```python
-# Example AI input/output
-Input: "ăn trưa 50k"
+# Example AI categorization
+Input: "ăn trưa hôm nay 75k"
 Output: {
     "type": "expense",
     "category": "Ăn uống", 
-    "amount": 50000,
-    "confidence": 0.95,
-    "user_id": "current_user"  # Automatically scoped
+    "amount": 75000,
+    "description": "Ăn trưa",
+    "confidence": 0.95
 }
 ```
 
-### Voice Input
+### Voice Input Support
 - Web Speech API integration
-- Vietnamese language support
+- Vietnamese and English support
 - Real-time transcription
-- User-specific conversation history
+- Hands-free transaction entry
 
-### Future Me Simulator
+### Future Financial Projections
 - Compound interest calculations
-- Investment growth projections
-- Scenario comparisons
-- Goal-based planning
-- Per-user personalized projections
+- Investment growth scenarios
+- Goal-based financial planning
+- Personalized recommendations
 
 ## 🌍 Internationalization
 
@@ -194,28 +208,20 @@ The application supports Vietnamese and English:
 
 ```bash
 # Generate translation files
-python manage.py makemessages -l vi
-python manage.py makemessages -l en
+uv run python manage.py makemessages -l vi
+uv run python manage.py makemessages -l en
 
 # Compile translations
-python manage.py compilemessages
+uv run python manage.py compilemessages
 ```
 
 ## 📱 API Documentation
 
-API documentation is available at `/api/docs/` when running the development server.
+### Authentication Required Endpoints
+All API endpoints require user authentication and return user-scoped data.
 
-### Key Endpoints (All require authentication)
-- `GET /api/transactions/` - List user's transactions
-- `POST /api/transactions/` - Create transaction for current user
-- `GET /api/chat/calendar/{year}/{month}/` - Calendar data for user
-- `POST /api/chat/process/` - AI categorization for user
-- `GET /api/monthly-totals/` - User's monthly totals
-- `POST /api/chat/confirm/` - Confirm AI-suggested transaction
-
-### Authentication
 ```javascript
-// All API calls require CSRF token and authentication
+// Example authenticated API call
 fetch('/api/transactions/', {
     headers: {
         'X-CSRFToken': getCSRFToken(),
@@ -225,92 +231,167 @@ fetch('/api/transactions/', {
 })
 ```
 
+### Key Endpoints
+- `GET /api/transactions/` - List user's transactions
+- `POST /api/transactions/` - Create transaction for current user
+- `GET /api/chat/calendar/{year}/{month}/` - Calendar data for user
+- `POST /api/chat/process/` - AI categorization for user
+- `GET /api/monthly-totals/` - User's monthly totals
+- `POST /api/chat/confirm/` - Confirm AI-suggested transaction
+
 ## 🧪 Testing
 
 ```bash
-# Run tests
-pytest
+# Run all tests
+uv run pytest
 
 # Run with coverage
-pytest --cov=apps
+uv run pytest --cov=.
+
+# Test specific app
+uv run python manage.py test authentication
+uv run python manage.py test transactions
 
 # Test multi-user isolation
-python manage.py test authentication.tests
-python manage.py test transactions.tests
+uv run python manage.py test authentication.tests.MultiUserIsolationTestCase
 ```
 
 ## 🚀 Deployment
 
 ### Railway Deployment (Recommended)
 
-1. **Connect GitHub repository to Railway**
-2. **Set environment variables in Railway dashboard**
-3. **Deploy automatically on push to main branch**
-
-Environment variables for Railway:
-```env
-DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
-DATABASE_URL=postgresql://...  # Provided by Railway
-REDIS_URL=redis://...          # Provided by Railway
-GEMINI_API_KEY=your-key
-ENABLE_MULTI_USER=true
-DEFAULT_USER_LIMIT=1000
-```
+1. **Fork this repository**
+2. **Connect to Railway**
+   - Go to [Railway.app](https://railway.app)
+   - Create new project from GitHub repo
+3. **Set environment variables**:
+   ```env
+   DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
+   GEMINI_API_KEY=your-gemini-key
+   ENABLE_MULTI_USER=true
+   DEFAULT_USER_LIMIT=1000
+   ```
+4. **Deploy automatically** - Railway will use `railway.toml` configuration
 
 ### Manual Production Deployment
 
 ```bash
-# Install production dependencies
-pip install -r requirements.txt
+# Install dependencies
+uv sync --frozen
 
-# Set environment variables
+# Set production environment
 export DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
 
-# Run migrations with multi-user support
+# Run deployment migrations
 chmod +x scripts/deploy_migrations.sh
-./scripts/deploy_migrations.sh
+uv run ./scripts/deploy_migrations.sh
 
 # Collect static files
-python manage.py collectstatic --noinput
+uv run python manage.py collectstatic --noinput
 
 # Start with gunicorn
-gunicorn expense_tracker.wsgi:application
+uv run gunicorn expense_tracker.wsgi:application
 ```
 
-## 🔄 Migration to Multi-User
+### Migration from Single-User Version
 
-If upgrading from single-user version:
+If upgrading from v1.x:
 
-1. **Backup your database**
-2. **Run migration script**:
 ```bash
+# 1. Backup your database
+pg_dump your_database > backup.sql
+
+# 2. Run migration script
 chmod +x scripts/deploy_migrations.sh
-./scripts/deploy_migrations.sh
+uv run ./scripts/deploy_migrations.sh
+
+# 3. Verify data integrity
+uv run python manage.py shell -c "
+from transactions.models import Transaction
+print(f'Total transactions: {Transaction.objects.count()}')
+print(f'Users with transactions: {Transaction.objects.values_list(\"user\", flat=True).distinct().count()}')
+"
 ```
-3. **Verify data integrity**
-4. **Update environment variables**
+
+## 📊 Performance
+
+### Optimizations
+- **Database**: Connection pooling and optimized queries
+- **Caching**: Redis support for production
+- **Static Files**: Whitenoise for efficient serving
+- **Compression**: Gzip compression enabled
+- **Indexes**: Database indexes on user foreign keys
+
+### Monitoring
+```bash
+# Check application health
+curl https://your-app.railway.app/health/
+
+# Monitor logs
+railway logs --tail
+
+# Check database connections
+uv run python manage.py dbshell -c "SELECT count(*) FROM pg_stat_activity;"
+```
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+We welcome contributions! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/amazing-feature
+   ```
+3. **Install development dependencies**
+   ```bash
+   uv sync --dev
+   ```
+4. **Make your changes**
+5. **Run tests**
+   ```bash
+   uv run pytest
+   ```
+6. **Commit your changes**
+   ```bash
+   git commit -m 'Add amazing feature'
+   ```
+7. **Push to your branch**
+   ```bash
+   git push origin feature/amazing-feature
+   ```
+8. **Open a Pull Request**
 
 ### Development Guidelines
 - All new APIs must include authentication
 - Database queries must filter by user
 - Write tests for multi-user scenarios
 - Follow the established security patterns
+- Use UV for dependency management
 
 ## 📋 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙋‍♀️ Support
+## 🙋‍♀️ Support & Community
 
-- 📧 Email: support@money-tracking.app
-- 📖 Documentation: `/docs/`
-- 🐛 Issues: GitHub Issues
-- 💬 Discussions: GitHub Discussions
+- 📧 **Email**: support@money-tracking.app
+- 📖 **Documentation**: Browse the `/docs/` folder
+- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/money-tracking/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/money-tracking/discussions)
+- 🚀 **Feature Requests**: [GitHub Issues](https://github.com/yourusername/money-tracking/issues/new)
+
+## 🏆 Acknowledgments
+
+- **Google Gemini AI** for natural language processing
+- **Railway.app** for seamless deployment
+- **UV** for ultrafast Python package management
+- **Django Community** for the amazing framework
+- **Tailwind CSS** for beautiful styling
+- **FullCalendar.js** for calendar functionality
+
+---
+
+**Made with ❤️ for better personal finance management**
+
+*Transform your financial tracking from spreadsheets to AI-powered insights!*

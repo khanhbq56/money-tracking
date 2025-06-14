@@ -188,7 +188,15 @@ class DemoLoginView(View):
     def post(self, request):
         try:
             # Parse request body
-            data = json.loads(request.body)
+            try:
+                data = json.loads(request.body)
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid JSON in demo login request: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': _('Invalid request format')
+                }, status=400)
+            
             legal_accepted = data.get('legal_accepted', False)
             
             if not legal_accepted:
@@ -198,16 +206,48 @@ class DemoLoginView(View):
                 }, status=400)
             
             # Create or get demo user
-            demo_user = self.create_demo_user(request)
+            try:
+                demo_user = self.create_demo_user(request)
+                logger.info(f"Demo user created: {demo_user.username}")
+            except Exception as e:
+                logger.error(f"Failed to create demo user: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': _('Failed to create demo user account')
+                }, status=500)
             
             # Accept legal terms
-            demo_user.accept_legal_terms(self.get_client_ip(request))
-            demo_user.create_demo_expiration()
+            try:
+                demo_user.accept_legal_terms(self.get_client_ip(request))
+                logger.info(f"Legal terms accepted for demo user: {demo_user.username}")
+            except Exception as e:
+                logger.error(f"Failed to accept legal terms for demo user {demo_user.username}: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': _('Failed to accept legal terms')
+                }, status=500)
+            
+            # Set demo expiration
+            try:
+                demo_user.create_demo_expiration()
+                logger.info(f"Demo expiration set for user: {demo_user.username}")
+            except Exception as e:
+                logger.error(f"Failed to set demo expiration for user {demo_user.username}: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': _('Failed to set demo expiration')
+                }, status=500)
             
             # Log user in
-            login(request, demo_user)
-            
-            logger.info(f"Demo user {demo_user.username} created and logged in")
+            try:
+                login(request, demo_user)
+                logger.info(f"Demo user {demo_user.username} logged in successfully")
+            except Exception as e:
+                logger.error(f"Failed to log in demo user {demo_user.username}: {str(e)}")
+                return JsonResponse({
+                    'success': False,
+                    'error': _('Failed to log in demo user')
+                }, status=500)
             
             return JsonResponse({
                 'success': True,
@@ -220,7 +260,7 @@ class DemoLoginView(View):
             })
             
         except Exception as e:
-            logger.error(f"Demo login error: {str(e)}")
+            logger.error(f"Unexpected error in demo login: {str(e)}", exc_info=True)
             return JsonResponse({
                 'success': False,
                 'error': _('Failed to create demo account')
@@ -229,24 +269,38 @@ class DemoLoginView(View):
     def create_demo_user(self, request):
         """Create a new demo user with sample data"""
         import uuid
+        from django.db import transaction
         
         # Generate unique demo user
         demo_username = f'demo_{uuid.uuid4().hex[:8]}'
         demo_email = f'{demo_username}@demo.local'
         
-        user = User.objects.create_user(
-            username=demo_username,
-            email=demo_email,
-            first_name=_('Demo User'),
-            is_demo_user=True,
-            is_active=True,
-            last_login_ip=self.get_client_ip(request)
-        )
-        
-        # Add sample transaction data
-        self.create_sample_transactions(user)
-        
-        return user
+        try:
+            with transaction.atomic():
+                user = User.objects.create_user(
+                    username=demo_username,
+                    email=demo_email,
+                    first_name=_('Demo User'),
+                    is_demo_user=True,
+                    is_active=True,
+                    last_login_ip=self.get_client_ip(request)
+                )
+                logger.info(f"Created demo user: {user.username}")
+                
+                # Add sample transaction data
+                try:
+                    self.create_sample_transactions(user)
+                    logger.info(f"Created sample transactions for demo user: {user.username}")
+                except Exception as e:
+                    logger.error(f"Failed to create sample transactions for demo user {user.username}: {str(e)}")
+                    # Don't fail the whole process, just skip sample data
+                    pass
+                
+                return user
+                
+        except Exception as e:
+            logger.error(f"Failed to create demo user in database: {str(e)}", exc_info=True)
+            raise
     
     def create_sample_transactions(self, user):
         """Create sample transactions for demo user"""
@@ -275,39 +329,44 @@ class DemoLoginView(View):
         
         base_date = date.today()
         
-        # Create sample expenses
-        for i, expense in enumerate(sample_expenses):
-            Transaction.objects.create(
-                user=user,
-                transaction_type='expense',
-                amount=-abs(expense['amount']),  # Negative for expenses
-                description=expense['description'],
-                expense_category=expense['category'],
-                date=base_date - timedelta(days=random.randint(0, 30)),
-                ai_confidence=0.9
-            )
-        
-        # Create sample savings
-        for i, saving in enumerate(sample_savings):
-            Transaction.objects.create(
-                user=user,
-                transaction_type='saving',
-                amount=saving['amount'],
-                description=saving['description'],
-                date=base_date - timedelta(days=random.randint(0, 15)),
-                ai_confidence=0.9
-            )
-        
-        # Create sample investments
-        for i, investment in enumerate(sample_investments):
-            Transaction.objects.create(
-                user=user,
-                transaction_type='investment',
-                amount=investment['amount'],
-                description=investment['description'],
-                date=base_date - timedelta(days=random.randint(0, 20)),
-                ai_confidence=0.9
-            )
+        try:
+            # Create sample expenses
+            for i, expense in enumerate(sample_expenses):
+                Transaction.objects.create(
+                    user=user,
+                    transaction_type='expense',
+                    amount=-abs(expense['amount']),  # Negative for expenses
+                    description=expense['description'],
+                    expense_category=expense['category'],
+                    date=base_date - timedelta(days=random.randint(0, 30)),
+                    ai_confidence=0.9
+                )
+            
+            # Create sample savings
+            for i, saving in enumerate(sample_savings):
+                Transaction.objects.create(
+                    user=user,
+                    transaction_type='saving',
+                    amount=saving['amount'],
+                    description=saving['description'],
+                    date=base_date - timedelta(days=random.randint(0, 15)),
+                    ai_confidence=0.9
+                )
+            
+            # Create sample investments
+            for i, investment in enumerate(sample_investments):
+                Transaction.objects.create(
+                    user=user,
+                    transaction_type='investment',
+                    amount=investment['amount'],
+                    description=investment['description'],
+                    date=base_date - timedelta(days=random.randint(0, 20)),
+                    ai_confidence=0.9
+                )
+                
+        except Exception as e:
+            logger.error(f"Error creating sample transactions: {str(e)}", exc_info=True)
+            raise
     
     def get_client_ip(self, request):
         """Get client IP address"""

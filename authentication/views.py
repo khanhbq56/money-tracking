@@ -622,4 +622,62 @@ def fix_database_schema(request):
     except Exception as e:
         result['errors'].append(f"Database operation failed: {str(e)}")
     
+    return JsonResponse(result)
+
+
+@csrf_exempt  
+def run_migrations(request):
+    """Endpoint to trigger Django migrations manually"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    # Simple security check
+    try:
+        import json
+        data = json.loads(request.body)
+        migrate_key = data.get('migrate_key', '')
+        if migrate_key != 'run_migrations_2025':
+            return JsonResponse({'error': 'Invalid migrate key'}, status=403)
+    except:
+        return JsonResponse({'error': 'Invalid request body'}, status=400)
+    
+    result = {
+        'migrations_applied': [],
+        'errors': [],
+        'success': False
+    }
+    
+    try:
+        from django.core.management import call_command
+        from io import StringIO
+        import sys
+        
+        # Capture migration output
+        old_stdout = sys.stdout
+        sys.stdout = mystdout = StringIO()
+        
+        try:
+            # Run migrations
+            call_command('migrate', verbosity=2, interactive=False)
+            migration_output = mystdout.getvalue()
+            result['migrations_applied'].append(migration_output)
+            result['success'] = True
+        except Exception as e:
+            result['errors'].append(f"Migration failed: {str(e)}")
+        finally:
+            sys.stdout = old_stdout
+        
+        # Test User model after migrations
+        try:
+            from authentication.models import User
+            test_user = User(username='test', email='test@test.com')
+            has_custom_fields = hasattr(test_user, 'google_id') and hasattr(test_user, 'is_demo_user')
+            result['user_model_ready'] = has_custom_fields
+        except Exception as e:
+            result['errors'].append(f"User model test failed: {str(e)}")
+            result['user_model_ready'] = False
+        
+    except Exception as e:
+        result['errors'].append(f"Command execution failed: {str(e)}")
+    
     return JsonResponse(result) 

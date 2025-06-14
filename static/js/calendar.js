@@ -65,8 +65,7 @@ class ExpenseCalendar {
      */
     async init() {
         try {
-            console.log('📅 Initializing Calendar...');
-            
+
             // Wait for i18n to be ready
             await this.waitForI18n();
             
@@ -76,9 +75,7 @@ class ExpenseCalendar {
             // Load initial data and render
             await this.loadTransactions();
             this.render();
-            
-            console.log('✅ Calendar initialized successfully');
-            
+
         } catch (error) {
             console.error('❌ Error initializing calendar:', error);
             this.showError('Failed to initialize calendar');
@@ -107,8 +104,11 @@ class ExpenseCalendar {
     setupEventListeners() {
         // Language change events
         document.addEventListener('languageChanged', (e) => {
+    
             this.updateCalendarHeader();
             this.updateDayHeaders();
+            // Re-render calendar with new language
+            this.render();
         });
         
         // Window resize events
@@ -123,28 +123,54 @@ class ExpenseCalendar {
     async loadTransactions() {
         if (this.isLoading) return;
         
+        // Check if user is authenticated
+        const isAuthenticated = document.body.classList.contains('authenticated');
+        if (!isAuthenticated) {
+
+            this.transactions = {};
+            this.hideLoadingState(); // Make sure loading state is hidden
+            return;
+        }
+        
         this.isLoading = true;
         this.showLoadingState();
         
         try {
+            
             const response = await fetch(
-                `/api/ai_chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`
+                `/api/ai_chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': getCSRFToken(),
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'same-origin'
+                }
             );
             
             if (!response.ok) {
+                if (response.status === 401 || response.status === 403) {
+                    this.transactions = {};
+                    return;
+                }
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
             const data = await response.json();
             this.transactions = this.processNewTransactionData(data.daily_data || {});
-            
-            console.log('📊 Loaded calendar data:', this.transactions);
-            
+
         } catch (error) {
-            console.error('Error loading transactions:', error);
-            this.showError('Failed to load calendar data');
-            // Use fallback data
-            this.transactions = this.getFallbackData();
+            console.error('❌ Error loading calendar transactions:', error);
+            
+            // Don't show error for unauthenticated users
+            const isAuthenticated = document.body.classList.contains('authenticated');
+            if (isAuthenticated) {
+                this.showError('Failed to load calendar data');
+            }
+            
+            // Use empty data instead of fallback for cleaner UX
+            this.transactions = {};
         } finally {
             this.isLoading = false;
             this.hideLoadingState();
@@ -272,7 +298,6 @@ class ExpenseCalendar {
             }
         });
         
-        console.log('📅 Calendar day headers updated for language:', window.i18n?.currentLang || 'vi');
     }
     
     /**
@@ -418,8 +443,6 @@ class ExpenseCalendar {
         
         // Debug logging
         if (transactions.length > 0) {
-            console.log(`🔍 Filter: ${this.currentFilter}, Original: ${transactions.length}, Filtered: ${filtered.length}`);
-            console.log('Sample transaction types:', transactions.map(t => t.transaction_type));
         }
         
         return filtered;
@@ -563,7 +586,6 @@ class ExpenseCalendar {
      * Handle day click
      */
     async onDayClick(date, dayData) {
-        console.log('Day clicked:', date, dayData);
         const dateStr = this.formatDateForDatabase(date);
         
         try {

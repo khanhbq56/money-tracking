@@ -44,23 +44,42 @@ class UIComponents {
         modal.id = id;
         modal.className = 'modal';
         
+        // Handle close button visibility
+        const closeButtonHtml = options.showCloseButton !== false ? `
+            <button onclick="UIComponents.closeModal('${id}')" class="modal__close">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        ` : '';
+
+        // Handle modal size
+        const sizeClass = options.size === 'medium' ? 'max-w-lg' : 
+                         options.size === 'large' ? 'max-w-2xl' : 
+                         options.maxWidth || 'max-w-md';
+        
         modal.innerHTML = `
-            <div class="modal__content ${options.maxWidth || 'max-w-md'}" onclick="event.stopPropagation()">
+            <div class="modal__content ${sizeClass}" onclick="event.stopPropagation()">
                 <div class="modal__header">
                     <h3 class="modal__title">${title}</h3>
-                    <button onclick="UIComponents.closeModal('${id}')" class="modal__close">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
+                    ${closeButtonHtml}
                 </div>
                 <div class="modal__body">
-                    ${content}
+                    <!-- Content will be appended here -->
                 </div>
             </div>
         `;
         
-        // Add event listeners
+        // Append content (could be HTML string or DOM element)
+        const modalBody = modal.querySelector('.modal__body');
+        if (typeof content === 'string') {
+            modalBody.innerHTML = content;
+        } else {
+            modalBody.appendChild(content);
+        }
+        
+        // Add event listeners (only if not persistent)
+        if (!options.persistent) {
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 UIComponents.closeModal(id);
@@ -75,8 +94,15 @@ class UIComponents {
             }
         };
         document.addEventListener('keydown', escHandler);
+        }
         
         document.body.appendChild(modal);
+        
+        // Add show/hide methods to the modal element
+        modal.show = () => UIComponents.showModal(id);
+        modal.hide = () => UIComponents.closeModal(id);
+        modal.element = modal;
+        
         return modal;
     }
 

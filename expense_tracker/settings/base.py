@@ -33,6 +33,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    'authentication',
     'transactions',
     'ai_chat',
 ]
@@ -48,6 +49,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'authentication.middleware.AuthenticationMiddleware',  # Custom auth middleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -154,3 +156,24 @@ GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' 
+
+# Custom User Model
+AUTH_USER_MODEL = 'authentication.User'
+
+# Google OAuth 2.0 Settings
+GOOGLE_OAUTH2_CLIENT_ID = config('GOOGLE_OAUTH2_CLIENT_ID', default='development-client-id')
+GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET', default='development-client-secret')
+GOOGLE_OAUTH2_PROJECT_ID = config('GOOGLE_OAUTH2_PROJECT_ID', default='development-project')
+
+# OAuth Scopes - minimal permissions for privacy
+GOOGLE_OAUTH2_SCOPES = [
+    'openid',
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile'
+]
+
+# OAuth redirect URIs
+GOOGLE_OAUTH2_REDIRECT_URI = config(
+    'GOOGLE_OAUTH2_REDIRECT_URI', 
+    default='http://localhost:8000/auth/google/callback/'
+) 

@@ -18,7 +18,6 @@ class ExpenseTrackerApp {
      */
     async init() {
         try {
-            console.log('🚀 Initializing Expense Tracker App...');
             
             // Wait for i18n to be ready
             await this.waitForI18n();
@@ -33,7 +32,6 @@ class ExpenseTrackerApp {
             this.setupEventListeners();
             
             this.initialized = true;
-            console.log('✅ App initialized successfully');
             
         } catch (error) {
             console.error('❌ Error initializing app:', error);
@@ -61,11 +59,8 @@ class ExpenseTrackerApp {
      */
     initializeModules() {
         // Dashboard will be initialized in dashboard.js
-        console.log('📊 Initializing dashboard...');
         
         // Other modules will be initialized in their respective phases
-        console.log('🗓️ Calendar module will be initialized in Phase 4');
-        console.log('🤖 AI Chat module will be initialized in Phase 5');
     }
     
     /**
@@ -76,9 +71,7 @@ class ExpenseTrackerApp {
             // For Phase 3, we'll use mock data
             // In later phases, this will fetch from APIs
             this.currentData = this.getMockData();
-            
-            console.log('📄 Loaded initial data:', this.currentData);
-            
+
         } catch (error) {
             console.error('Error loading initial data:', error);
             // Use fallback data
@@ -151,7 +144,6 @@ class ExpenseTrackerApp {
     setupEventListeners() {
         // Language change events
         document.addEventListener('languageChanged', (e) => {
-            console.log('Language changed:', e.detail.language);
             this.handleLanguageChange(e.detail.language);
         });
         
@@ -393,7 +385,6 @@ window.eventBus = new EventBus();
 
 // Transaction update event handlers
 window.eventBus.on('transactionAdded', (data) => {
-    console.log('Transaction added, refreshing components:', data);
     
     // Refresh dashboard
     if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
@@ -413,7 +404,6 @@ window.eventBus.on('transactionAdded', (data) => {
 });
 
 window.eventBus.on('transactionUpdated', (data) => {
-    console.log('Transaction updated, refreshing components:', data);
     
     // Refresh dashboard
     if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
@@ -427,7 +417,6 @@ window.eventBus.on('transactionUpdated', (data) => {
 });
 
 window.eventBus.on('transactionDeleted', (data) => {
-    console.log('Transaction deleted, refreshing components:', data);
     
     // Refresh dashboard
     if (window.dashboard && typeof window.dashboard.refreshDashboard === 'function') {
@@ -438,4 +427,57 @@ window.eventBus.on('transactionDeleted', (data) => {
     if (window.calendar && typeof window.calendar.refreshCalendar === 'function') {
         window.calendar.refreshCalendar();
     }
-}); 
+});
+
+// Global dialog functions for compatibility
+window.showAlertDialog = function(message, options = {}) {
+    const type = options.type || 'info';
+    const title = options.title || (type === 'error' ? 'Error' : type === 'success' ? 'Success' : type === 'warning' ? 'Warning' : 'Notice');
+    
+    const alertModal = UIComponents.createModal('alert-modal', title, `
+        <div class="text-center py-4">
+            <div class="mb-4 text-4xl">
+                ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+            </div>
+            <p class="text-gray-700 mb-6">${message}</p>
+            <button onclick="UIComponents.closeModal('alert-modal')" class="btn btn--primary">
+                OK
+            </button>
+        </div>
+    `);
+    
+    alertModal.show();
+    return alertModal;
+};
+
+window.showConfirmationDialog = function(message, options = {}) {
+    return new Promise((resolve) => {
+        const type = options.type || 'info';
+        const title = options.title || 'Confirm';
+        
+        const confirmModal = UIComponents.createModal('confirm-modal', title, `
+            <div class="text-center py-4">
+                <div class="mb-4 text-4xl">
+                    ${type === 'warning' ? '⚠️' : type === 'danger' ? '🚨' : '❓'}
+                </div>
+                <p class="text-gray-700 mb-6">${message}</p>
+                <div class="flex space-x-3 justify-center">
+                    <button onclick="window.confirmResolve(false); UIComponents.closeModal('confirm-modal')" class="btn btn--neutral">
+                        ${window.i18n ? window.i18n.t('cancel') : 'Cancel'}
+                    </button>
+                    <button onclick="window.confirmResolve(true); UIComponents.closeModal('confirm-modal')" class="btn btn--${type === 'danger' ? 'danger' : 'primary'}">
+                        ${window.i18n ? window.i18n.t('confirm') : 'Confirm'}
+                    </button>
+                </div>
+            </div>
+        `);
+        
+        window.confirmResolve = resolve;
+        confirmModal.show();
+    });
+};
+
+window.closeConfirmationModal = function() {
+    UIComponents.closeModal('alert-modal');
+    UIComponents.closeModal('confirm-modal');
+}; 

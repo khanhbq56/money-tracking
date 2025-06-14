@@ -683,7 +683,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Only initialize if chat elements exist
     if (document.getElementById('chat-messages')) {
         window.aiChat = new AIChat();
-        console.log('AI Chat initialized');
     }
 });
 

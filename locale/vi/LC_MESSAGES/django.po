@@ -1,216 +1,51 @@
 # Vietnamese translations for expense tracker
 # Copyright (C) 2025
 # This file is distributed under the same license as the expense tracker package.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-02 12:00+0700\n"
+"POT-Creation-Date: 2025-06-14 12:25+0700\n"
 "PO-Revision-Date: 2025-01-02 12:00+0700\n"
 "Last-Translator: AI Assistant\n"
-"Language: vi\n"
 "Language-Team: Vietnamese\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: vi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
-# Main app titles
-msgid "Expense Tracker"
-msgstr "Theo Dõi Chi Tiêu"
+#: .\ai_chat\admin.py:20
+msgid "Message Content"
+msgstr "Nội dung tin nhắn"
 
-msgid "AI Assistant"
-msgstr "Trợ Lý AI"
+#: .\ai_chat\admin.py:23 .\ai_chat\views.py:582
+msgid "Voice Input"
+msgstr "Nhập bằng giọng nói"
 
-# Transaction types
-msgid "Chi Tiêu"
-msgstr "Chi Tiêu"
+#: .\ai_chat\admin.py:27 .\transactions\models.py:83
+msgid "Transaction"
+msgstr "Giao dịch"
 
-msgid "Tiết Kiệm"
-msgstr "Tiết Kiệm"
+#: .\ai_chat\admin.py:30 .\transactions\admin.py:68
 
-msgid "Đầu Tư"
-msgstr "Đầu Tư"
+#: .\ai_chat\admin.py:42
 
-msgid "Tổng Tháng"
-msgstr "Tổng Tháng"
+#: .\ai_chat\admin.py:46 .\ai_chat\models.py:10
+msgid "User Message"
+msgstr "Tin nhắn người dùng"
 
-# Time periods
-msgid "Tháng này"
-msgstr "Tháng này"
-
-msgid "Hôm Nay"
-msgstr "Hôm Nay"
-
-msgid "Số dư ròng"
-msgstr "Số dư ròng"
-
-# Actions and buttons
-msgid "Gửi"
-msgstr "Gửi"
-
-msgid "Tất cả"
-msgstr "Tất cả"
-
-msgid "Thao Tác Nhanh"
-msgstr "Thao Tác Nhanh"
-
-msgid "Future Me Simulator"
-msgstr "Mô Phỏng Tương Lai"
-
-msgid "Tạo Meme"
-msgstr "Tạo Meme"
-
-msgid "Thống Kê"
-msgstr "Thống Kê"
-
-# Calendar and interface
-msgid "Lịch Tài Chính"
-msgstr "Lịch Tài Chính"
-
-msgid "Quản lý tài chính thông minh"
-msgstr "Quản lý tài chính thông minh"
-
-msgid "Lịch sẽ được triển khai ở Phase 4"
-msgstr "Lịch sẽ được triển khai ở Phase 4"
-
-msgid "Calendar tương tác với hiển thị giao dịch theo ngày"
-msgstr "Calendar tương tác với hiển thị giao dịch theo ngày"
-
-# Chat interface
-msgid "Online"
-msgstr "Online"
-
-msgid "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
-msgstr "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
-
-msgid "VD: coffee 25k, tiết kiệm 200k..."
-msgstr "VD: coffee 25k, tiết kiệm 200k..."
-
-msgid "Ăn trưa"
-msgstr "Ăn trưa"
-
-msgid "Tổng hôm nay:"
-msgstr "Tổng hôm nay:"
-
-# Languages
-msgid "Tiếng Việt"
-msgstr "Tiếng Việt"
-
-msgid "English"
-msgstr "English"
-
-# Categories
-msgid "🍜 Ăn uống"
-msgstr "🍜 Ăn uống"
-
-msgid "☕ Coffee"
-msgstr "☕ Coffee"
-
-msgid "🚗 Di chuyển"
-msgstr "🚗 Di chuyển"
-
-msgid "🛒 Mua sắm"
-msgstr "🛒 Mua sắm"
-
-msgid "🎬 Giải trí"
-msgstr "🎬 Giải trí"
-
-msgid "🏥 Sức khỏe"
-msgstr "🏥 Sức khỏe"
-
-msgid "📚 Giáo dục"
-msgstr "📚 Giáo dục"
-
-msgid "⚡ Tiện ích"
-msgstr "⚡ Tiện ích"
-
-msgid "📦 Khác"
-msgstr "📦 Khác"
-
-# Transaction status
-msgid "🔴 Chi tiêu"
-msgstr "🔴 Chi tiêu"
-
-msgid "🟢 Tiết kiệm"
-msgstr "🟢 Tiết kiệm"
-
-msgid "🔵 Đầu tư"
-msgstr "🔵 Đầu tư"
-
-# Day names for calendar
-msgid "monday"
-msgstr "Thứ 2"
-
-msgid "tuesday"
-msgstr "Thứ 3"
-
-msgid "wednesday"
-msgstr "Thứ 4"
-
-msgid "thursday"
-msgstr "Thứ 5"
-
-msgid "friday"
-msgstr "Thứ 6"
-
-msgid "saturday"
-msgstr "Thứ 7"
-
-msgid "sunday"
-msgstr "CN"
-
-# Monthly total description
-msgid "net_amount"
-msgstr "Số dư ròng"
-
-# Voice input features
-msgid "Voice Input (Ctrl+Shift+V)"
-msgstr "Nhập bằng giọng nói (Ctrl+Shift+V)"
-
-msgid "Đang nghe..."
-msgstr "Đang nghe..."
-
-msgid "Listening..."
-msgstr "Đang nghe..."
-
-msgid "Voice recognition started"
-msgstr "Bắt đầu nhận diện giọng nói"
-
-msgid "Voice recognition ended"
-msgstr "Kết thúc nhận diện giọng nói"
-
-msgid "No speech detected. Please try again."
-msgstr "Không nghe thấy giọng nói. Hãy thử lại."
-
-msgid "Cannot access microphone. Check permissions."
-msgstr "Không thể truy cập microphone. Kiểm tra quyền truy cập."
-
-msgid "Microphone access denied."
-msgstr "Quyền truy cập microphone bị từ chối."
-
-msgid "Network error. Check internet connection."
-msgstr "Lỗi mạng. Kiểm tra kết nối internet."
-
-msgid "Voice recognition error. Please try again."
-msgstr "Lỗi nhận diện giọng nói. Hãy thử lại."
-
-msgid "Browser does not support voice input. Please use Chrome or Edge."
-msgstr "Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge."
+#: .\ai_chat\apps.py:8
 
 # Date format keys
+#: .\ai_chat\date_parser.py:224 .\ai_chat\date_parser.py:242
 msgid "date_format"
 msgstr "dd/MM/yyyy"
 
-# AI response template
-msgid "ai_classification_response"
-msgstr "{icon} Phân loại: {type_display} - {description} ({amount:,.0f}₫)"
-
 # Gemini prompt template  
+#: .\ai_chat\gemini_service.py:91
 msgid "gemini_prompt_template"
-msgstr ""
-"Phân tích tin nhắn tiếng Việt sau và trả về JSON chính xác:\n"
+msgstr "Phân tích tin nhắn tiếng Việt sau và trả về JSON chính xác:\n"
 "\n"
 "Tin nhắn: \"{message}\"\n"
 "\n"
@@ -226,18 +61,25 @@ msgstr ""
 "\n"
 "Quy tắc phân loại:\n"
 "1. CHI TIÊU (expense):\n"
-"   - \"coffee\", \"cafe\", \"cà phê\" → type: \"expense\", category: \"coffee\", icon: \"☕\"\n"
-"   - \"ăn\", \"trưa\", \"sáng\", \"tối\", \"phở\", \"cơm\", \"bún\" → type: \"expense\", category: \"food\", icon: \"🍜\"\n"
-"   - \"grab\", \"taxi\", \"xe ôm\", \"xăng\", \"uber\" → type: \"expense\", category: \"transport\", icon: \"🚗\"\n"
-"   - \"mua sắm\", \"shopping\", \"áo\", \"quần\", \"giày\" → type: \"expense\", category: \"shopping\", icon: \"🛒\"\n"
-"   - \"xem phim\", \"game\", \"giải trí\" → type: \"expense\", category: \"entertainment\", icon: \"🎬\"\n"
+"   - \"coffee\", \"cafe\", \"cà phê\" → type: \"expense\", category: "
+"\"coffee\", icon: \"☕\"\n"
+"   - \"ăn\", \"trưa\", \"sáng\", \"tối\", \"phở\", \"cơm\", \"bún\" → type: "
+"\"expense\", category: \"food\", icon: \"🍜\"\n"
+"   - \"grab\", \"taxi\", \"xe ôm\", \"xăng\", \"uber\" → type: \"expense\", "
+"category: \"transport\", icon: \"🚗\"\n"
+"   - \"mua sắm\", \"shopping\", \"áo\", \"quần\", \"giày\" → type: "
+"\"expense\", category: \"shopping\", icon: \"🛒\"\n"
+"   - \"xem phim\", \"game\", \"giải trí\" → type: \"expense\", category: "
+"\"entertainment\", icon: \"🎬\"\n"
 "   - Mặc định khác → type: \"expense\", category: \"other\", icon: \"📦\"\n"
 "\n"
 "2. TIẾT KIỆM (saving):\n"
-"   - \"tiết kiệm\", \"gửi ngân hàng\", \"save\" → type: \"saving\", category: null, icon: \"💰\"\n"
+"   - \"tiết kiệm\", \"gửi ngân hàng\", \"save\" → type: \"saving\", "
+"category: null, icon: \"💰\"\n"
 "\n"
 "3. ĐẦU TƯ (investment):\n"
-"   - \"mua cổ phiếu\", \"đầu tư\", \"invest\", \"bitcoin\", \"crypto\" → type: \"investment\", category: null, icon: \"📈\"\n"
+"   - \"mua cổ phiếu\", \"đầu tư\", \"invest\", \"bitcoin\", \"crypto\" → "
+"type: \"investment\", category: null, icon: \"📈\"\n"
 "\n"
 "4. Trích xuất số tiền:\n"
 "   - \"25k\" = 25000\n"
@@ -246,95 +88,1642 @@ msgstr ""
 "\n"
 "Luôn trả về amount dương và confidence từ 0.6 đến 1.0."
 
-# Date parsing descriptions
-msgid "hôm nay"
-msgstr "hôm nay"
+#: .\ai_chat\models.py:13
 
-msgid "hôm qua"
-msgstr "hôm qua"
+#: .\ai_chat\models.py:20
+msgid "Suggested Transaction"
+msgstr "Giao dịch được đề xuất"
 
-msgid "hôm kia"
-msgstr "hôm kia"
+#: .\ai_chat\models.py:24
+msgid "Is Confirmed"
+msgstr "Đã xác nhận"
 
-msgid "today"
-msgstr "hôm nay"
+#: .\ai_chat\models.py:30
+msgid "Has Voice Input"
+msgstr "Có nhập bằng giọng nói"
 
-msgid "yesterday"
-msgstr "hôm qua"
+#: .\ai_chat\models.py:34
 
-msgid "day before yesterday"
-msgstr "hôm kia"
+#: .\ai_chat\models.py:41
+msgid "Parsed Date"
+msgstr "Ngày đã phân tích"
 
-# Category keys for backend translation utils
-msgid "category_food"
-msgstr "Ăn uống"
+#: .\ai_chat\models.py:49
+msgid "Vietnamese"
+msgstr "Tiếng Việt"
 
-msgid "category_coffee"
-msgstr "Coffee"
+#: .\ai_chat\models.py:50 .\expense_tracker\settings\base.py:113
+msgid "English"
+msgstr "English"
 
-msgid "category_transport"
-msgstr "Di chuyển"
+#: .\ai_chat\models.py:52
 
-msgid "category_shopping"
-msgstr "Mua sắm"
+#: .\ai_chat\models.py:57 .\authentication\models.py:69
+#: .\transactions\models.py:75
+msgid "Created At"
+msgstr "Được tạo lúc"
 
-msgid "category_entertainment"
-msgstr "Giải trí"
+#: .\ai_chat\models.py:61
+msgid "Chat Message"
+msgstr ""
 
-msgid "category_health"
-msgstr "Sức khỏe"
+#: .\ai_chat\models.py:62
+msgid "Chat Messages"
+msgstr ""
 
-msgid "category_education"
-msgstr "Giáo dục"
+#: .\ai_chat\serializers.py:40
+msgid "User message to process"
+msgstr ""
 
-msgid "category_utilities"
-msgstr "Tiện ích"
+#: .\ai_chat\serializers.py:44
+msgid "Whether the message was inputted via voice"
+msgstr ""
 
-msgid "category_other"
-msgstr "Khác"
+#: .\ai_chat\serializers.py:49
 
-msgid "category_saving"
+#: .\ai_chat\serializers.py:55
+msgid "Message cannot be empty."
+msgstr ""
+
+#: .\ai_chat\serializers.py:63
+msgid "ID of the created chat message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:64
+
+#: .\ai_chat\serializers.py:65
+
+#: .\ai_chat\serializers.py:68
+msgid "Parsed date from the message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:70 .\ai_chat\serializers.py:172
+
+#: .\ai_chat\serializers.py:77
+msgid "ID of the chat message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:78
+msgid "Transaction data to confirm"
+msgstr ""
+
+#: .\ai_chat\serializers.py:82
+msgid "Custom date for the transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:90
+msgid "Chat message not found."
+msgstr ""
+
+#: .\ai_chat\serializers.py:106
+
+#: .\ai_chat\serializers.py:113 .\transactions\serializers.py:58
+msgid "Amount must be greater than 0."
+msgstr ""
+
+#: .\ai_chat\serializers.py:115
+msgid "Amount must be a valid number."
+msgstr ""
+
+#: .\ai_chat\serializers.py:124
+msgid "Whether the confirmation was successful"
+msgstr ""
+
+#: .\ai_chat\serializers.py:127
+msgid "ID of the created transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:131
+msgid "Date of the transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:135
+msgid "Success or error message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:143
+
+#: .\ai_chat\serializers.py:144
+
+#: .\ai_chat\serializers.py:153
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction type"
 msgstr "Tiết kiệm"
 
-msgid "category_investment"
-msgstr "Đầu tư"
+#: .\ai_chat\serializers.py:158
+msgid "Transaction amount"
+msgstr ""
 
-# Date description keys
-msgid "date_today"
-msgstr "hôm nay"
+#: .\ai_chat\serializers.py:162
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction description"
+msgstr "Tiết kiệm"
 
-msgid "date_yesterday"
-msgstr "hôm qua"
+#: .\ai_chat\serializers.py:167
+msgid "Expense category (only for expenses)"
+msgstr ""
 
-msgid "date_day_before_yesterday"
-msgstr "hôm kia"
+#: .\ai_chat\serializers.py:174
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction icon"
+msgstr "Tiết kiệm"
 
-msgid "date_days_ago"
-msgstr "{days} ngày trước"
+#: .\ai_chat\serializers.py:178
+msgid "Parsed date from message"
+msgstr ""
 
-msgid "date_weeks_ago"
-msgstr "{weeks} tuần trước"
+#: .\ai_chat\serializers.py:182
+msgid "Whether input was voice"
+msgstr ""
 
-# Voice suggestion keys
-msgid "voice_speak_clearly"
-msgstr "Hãy nói rõ hơn, ví dụ: \"coffee hai mười lăm nghìn\""
+#: .\ai_chat\views.py:186
+msgid "Transaction confirmed successfully"
+msgstr ""
 
-msgid "voice_no_amount"
-msgstr "Không tìm thấy số tiền. Hãy nói rõ số tiền, ví dụ: \"25k\" hoặc \"hai mười lăm nghìn\""
-
-msgid "voice_unclear_type"
-msgstr "Loại giao dịch không rõ. Hãy thêm từ khóa như \"coffee\", \"ăn trưa\", \"tiết kiệm\""
+#: .\ai_chat\views.py:193
+msgid "Chat message not found"
+msgstr ""
 
 # Error message keys
-msgid "error_language_not_supported"
+#: .\ai_chat\views.py:246
+#, fuzzy
+#| msgid "error_language_not_supported"
+msgid "Language not supported"
 msgstr "Ngôn ngữ không được hỗ trợ"
 
-# Transaction type keys
-msgid "transaction_type_expense"
-msgstr "Chi tiêu"
+# AI response template
+#: .\ai_chat\views.py:359
+msgid "ai_classification_response"
+msgstr "{icon} Phân loại: {type_display} - {description} ({amount:,.0f}₫)"
 
-msgid "transaction_type_saving"
+#: .\ai_chat\views.py:541
+
+#: .\ai_chat\views.py:542
+
+#: .\ai_chat\views.py:543
+
+#: .\ai_chat\views.py:544
+#, fuzzy
+#| msgid "today"
+msgid "Today"
+msgstr "hôm nay"
+
+#: .\ai_chat\views.py:545
+
+# Day names for calendar
+#: .\ai_chat\views.py:548
+#, fuzzy
+#| msgid "monday"
+msgid "Monday"
+msgstr "Thứ 2"
+
+#: .\ai_chat\views.py:549
+#, fuzzy
+#| msgid "tuesday"
+msgid "Tuesday"
+msgstr "Thứ 3"
+
+#: .\ai_chat\views.py:550
+#, fuzzy
+#| msgid "wednesday"
+msgid "Wednesday"
+msgstr "Thứ 4"
+
+#: .\ai_chat\views.py:551
+#, fuzzy
+#| msgid "thursday"
+msgid "Thursday"
+msgstr "Thứ 5"
+
+#: .\ai_chat\views.py:552
+#, fuzzy
+#| msgid "friday"
+msgid "Friday"
+msgstr "Thứ 6"
+
+#: .\ai_chat\views.py:553
+#, fuzzy
+#| msgid "saturday"
+msgid "Saturday"
+msgstr "Thứ 7"
+
+#: .\ai_chat\views.py:554
+#, fuzzy
+#| msgid "sunday"
+msgid "Sunday"
+msgstr "CN"
+
+#: .\ai_chat\views.py:557
+
+#: .\ai_chat\views.py:558
+
+#: .\ai_chat\views.py:559
+
+#: .\ai_chat\views.py:560
+
+#: .\ai_chat\views.py:561
+
+#: .\ai_chat\views.py:562
+
+#: .\ai_chat\views.py:563
+
+#: .\ai_chat\views.py:564
+
+#: .\ai_chat\views.py:565
+
+#: .\ai_chat\views.py:566
+
+#: .\ai_chat\views.py:567
+
+#: .\ai_chat\views.py:568
+
+# Main app titles
+#: .\ai_chat\views.py:571
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense"
+msgstr "Theo Dõi Chi Tiêu"
+
+#: .\ai_chat\views.py:572
+
+#: .\ai_chat\views.py:573
+#, fuzzy
+#| msgid "category_investment"
+msgid "Investment"
+msgstr "Đầu tư"
+
+# Monthly total description
+#: .\ai_chat\views.py:574
+#, fuzzy
+#| msgid "net_amount"
+msgid "Net Amount"
+msgstr "Số dư ròng"
+
+#: .\ai_chat\views.py:575 .\transactions\models.py:157
+
+#: .\ai_chat\views.py:578
+
+#: .\ai_chat\views.py:579
+msgid "Confirm"
+msgstr ""
+
+#: .\ai_chat\views.py:580
+msgid "Cancel"
+msgstr ""
+
+#: .\ai_chat\views.py:581
+msgid "Add Transaction"
+msgstr ""
+
+#: .\ai_chat\views.py:585
+#, fuzzy
+#| msgid "Listening..."
+msgid "Loading..."
+msgstr "Đang nghe..."
+
+#: .\ai_chat\views.py:586
+msgid "Error"
+msgstr ""
+
+#: .\ai_chat\views.py:587
+msgid "Success"
+msgstr ""
+
+#: .\ai_chat\views.py:590
+msgid "Listening..."
+msgstr "Đang nghe..."
+
+# Voice input features
+#: .\ai_chat\views.py:591 .\templates\index.html:310
+msgid "Voice Input (Ctrl+Shift+V)"
+msgstr "Nhập bằng giọng nói (Ctrl+Shift+V)"
+
+# Voice suggestion keys
+#: .\ai_chat\views.py:592
+#, fuzzy
+#| msgid "voice_speak_clearly"
+msgid "Please speak clearly"
+msgstr "Hãy nói rõ hơn, ví dụ: \"coffee hai mười lăm nghìn\""
+
+#: .\ai_chat\views.py:595
+
+# Main app titles
+#: .\ai_chat\views.py:596
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expenses"
+msgstr "Theo Dõi Chi Tiêu"
+
+#: .\ai_chat\views.py:597
+
+#: .\ai_chat\views.py:598
+#, fuzzy
+#| msgid "category_investment"
+msgid "Investments"
+msgstr "Đầu tư"
+
+#: .\ai_chat\views.py:601
+msgid "No transactions for this day"
+msgstr ""
+
+#: .\ai_chat\views.py:602
+msgid "Transaction added successfully"
+msgstr ""
+
+#: .\ai_chat\views.py:603
+msgid "AI is processing your message..."
+msgstr ""
+
+#: .\ai_chat\views.py:606
+
+#: .\ai_chat\views.py:607
+
+#: .\ai_chat\views.py:608
+
+#: .\ai_chat\views.py:609
+
+#: .\ai_chat\views.py:610
+#, fuzzy
+#| msgid "AI Assistant"
+msgid "AI Analysis"
+msgstr "Trợ Lý AI"
+
+#: .\ai_chat\views.py:611
+
+#: .\ai_chat\views.py:612
+
+#: .\authentication\admin.py:34
+msgid "Personal info"
+msgstr ""
+
+#: .\authentication\admin.py:37 .\authentication\admin.py:71
+msgid "Account Type"
+msgstr ""
+
+#: .\authentication\admin.py:40
+msgid "Google OAuth"
+msgstr ""
+
+#: .\authentication\admin.py:44
+msgid "Legal Consent"
+msgstr ""
+
+#: .\authentication\admin.py:51
+
+#: .\authentication\admin.py:55
+msgid "Important dates"
+msgstr ""
+
+#: .\authentication\admin.py:59
+
+#: .\authentication\admin.py:88
+msgid "Selected users marked as demo accounts."
+msgstr "Người dùng được chọn đã được đánh dấu là tài khoản demo."
+
+#: .\authentication\admin.py:89
+msgid "Mark as demo accounts"
+msgstr "Đánh dấu là tài khoản demo"
+
+#: .\authentication\admin.py:94
+msgid "Selected users marked as regular accounts."
+msgstr ""
+
+#: .\authentication\admin.py:95
+msgid "Mark as regular accounts"
+msgstr ""
+
+#: .\authentication\admin.py:105
+msgid "Legal consent reset for selected users."
+msgstr ""
+
+#: .\authentication\admin.py:106
+msgid "Reset legal consent"
+msgstr "Đặt lại sự đồng ý pháp lý"
+
+#: .\authentication\apps.py:8
+msgid "Authentication"
+msgstr ""
+
+#: .\authentication\models.py:14
+msgid "Email address"
+msgstr ""
+
+#: .\authentication\models.py:23
+msgid "Google ID"
+msgstr ""
+
+#: .\authentication\models.py:29
+msgid "Is Demo User"
+msgstr ""
+
+#: .\authentication\models.py:30
+msgid "Designates whether this is a temporary demo account."
+msgstr "Chỉ định xem đây có phải là tài khoản demo tạm thời hay không."
+
+#: .\authentication\models.py:36
+
+#: .\authentication\models.py:42
+msgid "Privacy Policy Accepted"
+msgstr ""
+
+#: .\authentication\models.py:47
+msgid "Privacy Policy Accepted At"
+msgstr ""
+
+#: .\authentication\models.py:51
+msgid "Terms Accepted"
+msgstr ""
+
+#: .\authentication\models.py:56
+msgid "Terms Accepted At"
+msgstr ""
+
+#: .\authentication\models.py:63
+msgid "Last Login IP"
+msgstr ""
+
+#: .\authentication\models.py:73 .\transactions\models.py:79
+msgid "Updated At"
+msgstr "Được cập nhật lúc"
+
+#: .\authentication\models.py:80
+msgid "Demo Account Expires At"
+msgstr ""
+
+#: .\authentication\models.py:81
+msgid "Demo accounts expire after 24 hours"
+msgstr ""
+
+#: .\authentication\models.py:89 .\transactions\models.py:65
+msgid "User"
+msgstr ""
+
+#: .\authentication\models.py:90
+msgid "Users"
+msgstr ""
+
+#: .\authentication\views.py:192
+msgid "You must accept the terms and privacy policy"
+msgstr "Bạn phải chấp nhận các điều khoản và chính sách bảo mật"
+
+#: .\authentication\views.py:209
+msgid "Demo account created successfully"
+msgstr ""
+
+#: .\authentication\views.py:221
+msgid "Failed to create demo account"
+msgstr "Không thể tạo tài khoản demo"
+
+#: .\authentication\views.py:235
+msgid "Demo User"
+msgstr ""
+
+#: .\authentication\views.py:254
+
+#: .\authentication\views.py:255
+
+#: .\authentication\views.py:256
+
+#: .\authentication\views.py:257
+
+#: .\authentication\views.py:258
+
+#: .\authentication\views.py:262
+
+#: .\authentication\views.py:263
+
+#: .\authentication\views.py:267
+#, fuzzy
+#| msgid "category_investment"
+msgid "Stock investment"
+msgstr "Đầu tư"
+
+#: .\authentication\views.py:268
+
+#: .\authentication\views.py:326
+msgid "Logged out successfully"
+msgstr ""
+
+# Languages
+#: .\expense_tracker\settings\base.py:112
+msgid "Tiếng Việt"
+msgstr "Tiếng Việt"
+
+# Main app titles
+#: .\templates\base.html:8 .\templates\index.html:5
+msgid "Expense Tracker"
+msgstr "Theo Dõi Chi Tiêu"
+
+#: .\templates\index.html:5 .\templates\index.html:213
+#: .\templates\index.html:265
+msgid "AI Assistant"
+msgstr "Trợ Lý AI"
+
+# Transaction types
+#: .\templates\index.html:33 .\templates\index.html:129
+msgid "Chi Tiêu"
+msgstr "Chi Tiêu"
+
+# Time periods
+#: .\templates\index.html:35 .\templates\index.html:52
+#: .\templates\index.html:68
+msgid "Tháng này"
+msgstr "Tháng này"
+
+#: .\templates\index.html:50 .\templates\index.html:132
+#: .\templates\index.html:191 .\templates\index.html:327
+msgid "Tiết Kiệm"
+msgstr "Tiết Kiệm"
+
+#: .\templates\index.html:66 .\templates\index.html:135
+msgid "Đầu Tư"
+msgstr "Đầu Tư"
+
+#: .\templates\index.html:82
+msgid "Tổng Tháng"
+msgstr "Tổng Tháng"
+
+#: .\templates\index.html:84
+msgid "Số dư ròng"
+msgstr "Số dư ròng"
+
+# Calendar and interface
+#: .\templates\index.html:106
+msgid "Lịch Tài Chính"
+msgstr "Lịch Tài Chính"
+
+#: .\templates\index.html:107
+msgid "Quản lý tài chính thông minh"
+msgstr "Quản lý tài chính thông minh"
+
+#: .\templates\index.html:126
+msgid "Tất cả"
+msgstr "Tất cả"
+
+#: .\templates\index.html:160
+msgid "Thao Tác Nhanh"
+msgstr "Thao Tác Nhanh"
+
+#: .\templates\index.html:164
+msgid "Future Me Simulator"
+msgstr "Mô Phỏng Tương Lai"
+
+#: .\templates\index.html:167
+msgid "Tạo Meme"
+msgstr "Tạo Meme"
+
+#: .\templates\index.html:170
+msgid "Thống Kê"
+msgstr "Thống Kê"
+
+#: .\templates\index.html:178
+msgid "Hôm Nay"
+msgstr "Hôm Nay"
+
+#: .\templates\index.html:183 .\templates\index.html:326
+msgid "Ăn trưa"
+msgstr "Ăn trưa"
+
+#: .\templates\index.html:196
+msgid "Tổng hôm nay:"
+msgstr "Tổng hôm nay:"
+
+# Chat interface
+#: .\templates\index.html:266
+msgid "Online"
+msgstr "Online"
+
+#: .\templates\index.html:275
+msgid "Auto Confirm"
+msgstr ""
+
+#: .\templates\index.html:301
+msgid "VD: coffee 25k, tiết kiệm 200k..."
+msgstr "VD: coffee 25k, tiết kiệm 200k..."
+
+#: .\templates\index.html:317
+
+#: .\templates\legal\privacy_policy.html:4
+#: .\templates\legal\privacy_policy.html:39
+msgid "Privacy Policy"
+msgstr "Chính sách Bảo mật"
+
+#: .\templates\legal\privacy_policy.html:14
+#: .\templates\legal\terms_of_service.html:14
+msgid "back_to_app"
+msgstr "Quay lại Ứng dụng"
+
+#: .\templates\legal\privacy_policy.html:42
+msgid "Your privacy is important to us"
+msgstr "Quyền riêng tư của bạn rất quan trọng với chúng tôi"
+
+#: .\templates\legal\privacy_policy.html:45
+#: .\templates\legal\terms_of_service.html:45
+msgid "Last updated"
+msgstr "Cập nhật lần cuối"
+
+#: .\templates\legal\privacy_policy.html:55
+#, fuzzy
+#| msgid "category_education"
+msgid "Introduction"
+msgstr "Giáo dục"
+
+#: .\templates\legal\privacy_policy.html:58
+msgid "privacy_intro_text"
+msgstr "Money Tracker (\"chúng tôi\", \"của chúng tôi\") cam kết bảo vệ quyền riêng tư của bạn. Chính sách Bảo mật này giải thích cách chúng tôi thu thập, sử dụng, tiết lộ và bảo vệ thông tin của bạn khi sử dụng ứng dụng theo dõi tài chính của chúng tôi."
+
+#: .\templates\legal\privacy_policy.html:65
+msgid "Data Collection"
+msgstr "Thu thập Dữ liệu"
+
+#: .\templates\legal\privacy_policy.html:69
+msgid "personal_information"
+msgstr "Thông tin Cá nhân"
+
+#: .\templates\legal\privacy_policy.html:72
+msgid "we_collect_minimal_personal_information"
+msgstr "Chúng tôi thu thập thông tin cá nhân tối thiểu:"
+
+#: .\templates\legal\privacy_policy.html:75
+msgid "email_address"
+msgstr "Địa chỉ email"
+
+#: .\templates\legal\privacy_policy.html:75
+msgid "for_account_auth"
+msgstr "Để xác thực và nhận dạng tài khoản"
+
+#: .\templates\legal\privacy_policy.html:76
+msgid "name"
+msgstr "Tên"
+
+#: .\templates\legal\privacy_policy.html:76
+msgid "from_google_oauth"
+msgstr "Họ và tên từ Google OAuth (tùy chọn hiển thị)"
+
+#: .\templates\legal\privacy_policy.html:77
+msgid "profile_picture_url"
+msgstr "URL ảnh đại diện"
+
+#: .\templates\legal\privacy_policy.html:77
+msgid "from_google_oauth_personalization"
+msgstr "Từ Google OAuth để cá nhân hóa"
+
+#: .\templates\legal\privacy_policy.html:78
+msgid "google_id"
+msgstr "Google ID"
+
+#: .\templates\legal\privacy_policy.html:78
+msgid "unique_identifier_oauth"
+msgstr "Mã định danh duy nhất cho xác thực OAuth"
+
+#: .\templates\legal\privacy_policy.html:82
+msgid "financial_data"
+msgstr "Dữ liệu Tài chính"
+
+#: .\templates\legal\privacy_policy.html:85
+msgid "transaction_records"
+msgstr "Hồ sơ giao dịch"
+
+#: .\templates\legal\privacy_policy.html:85
+msgid "amount_description_date"
+msgstr "Số tiền, mô tả và ngày tháng"
+
+#: .\templates\legal\privacy_policy.html:86
+msgid "financial_patterns"
+msgstr "Mẫu tài chính"
+
+#: .\templates\legal\privacy_policy.html:86
+msgid "aggregated_spending_saving"
+msgstr "Dữ liệu chi tiêu và tiết kiệm tổng hợp"
+
+#: .\templates\legal\privacy_policy.html:87
+msgid "ai_confidence_scores"
+msgstr "Điểm tin cậy AI"
+
+#: .\templates\legal\privacy_policy.html:87
+msgid "transaction_categorization_accuracy"
+msgstr "Để chính xác phân loại giao dịch"
+
+#: .\templates\legal\privacy_policy.html:90
+msgid "technical_data"
+msgstr "Dữ liệu Kỹ thuật"
+
+#: .\templates\legal\privacy_policy.html:92
+msgid "ip_address"
+msgstr "Địa chỉ IP"
+
+#: .\templates\legal\privacy_policy.html:92
+msgid "security_login_tracking"
+msgstr "Để bảo mật và theo dõi đăng nhập"
+
+#: .\templates\legal\privacy_policy.html:93
+msgid "session_data"
+msgstr "Dữ liệu phiên"
+
+#: .\templates\legal\privacy_policy.html:93
+msgid "maintaining_authenticated_sessions"
+msgstr "Để duy trì phiên xác thực"
+
+#: .\templates\legal\privacy_policy.html:94
+msgid "usage_analytics"
+msgstr "Phân tích sử dụng"
+
+#: .\templates\legal\privacy_policy.html:94
+msgid "feature_usage_improvement"
+msgstr "Sử dụng tính năng để cải thiện ứng dụng"
+
+#: .\templates\legal\privacy_policy.html:101
+msgid "How We Use Your Data"
+msgstr "Cách chúng tôi sử dụng Dữ liệu của bạn"
+
+#: .\templates\legal\privacy_policy.html:116
+msgid "Data Sharing Policy"
+msgstr "Chính sách Chia sẻ Dữ liệu"
+
+#: .\templates\legal\privacy_policy.html:135
+msgid "Data Security"
+msgstr "Bảo mật Dữ liệu"
+
+#: .\templates\legal\privacy_policy.html:149
+msgid "Demo Accounts"
+msgstr "Tài khoản Demo"
+
+#: .\templates\legal\privacy_policy.html:163
+msgid "Data Retention"
+msgstr "Lưu trữ Dữ liệu"
+
+#: .\templates\legal\privacy_policy.html:176
+msgid "Your Rights"
+msgstr "Quyền của bạn"
+
+#: .\templates\legal\privacy_policy.html:197
+msgid "Cookies & Local Storage"
+msgstr "Cookies & Lưu trữ Cục bộ"
+
+#: .\templates\legal\privacy_policy.html:210
+msgid "Children's Privacy"
+msgstr "Quyền riêng tư Trẻ em"
+
+#: .\templates\legal\privacy_policy.html:222
+msgid "Changes to This Policy"
+msgstr "Thay đổi Chính sách này"
+
+#: .\templates\legal\privacy_policy.html:234
+msgid "Contact Us"
+msgstr "Liên hệ chúng tôi"
+
+#: .\templates\legal\terms_of_service.html:4
+#: .\templates\legal\terms_of_service.html:39
+msgid "Terms of Service"
+msgstr "Điều khoản Dịch vụ"
+
+#: .\templates\legal\terms_of_service.html:42
+msgid "Please read these terms carefully"
+msgstr "Vui lòng đọc kỹ các điều khoản này"
+
+#: .\templates\legal\terms_of_service.html:55
+msgid "agreement_to_terms"
+msgstr "Đồng ý với Điều khoản"
+
+#: .\templates\legal\terms_of_service.html:58
+msgid "terms_agreement_text"
+msgstr "Bằng cách truy cập và sử dụng Money Tracker (\"Dịch vụ\"), bạn chấp nhận và đồng ý bị ràng buộc bởi các điều khoản và điều kiện của thỏa thuận này. Nếu bạn không đồng ý tuân thủ những điều trên, vui lòng không sử dụng dịch vụ này."
+
+#: .\templates\legal\terms_of_service.html:65
+msgid "service_description"
+msgstr "Mô tả dịch vụ"
+
+#: .\templates\legal\terms_of_service.html:67
+msgid "service_description_text"
+msgstr "Money Tracker là ứng dụng quản lý tài chính cá nhân cung cấp:"
+
+#: .\templates\legal\terms_of_service.html:69
+msgid "service_features_1"
+msgstr "Theo dõi chi tiêu và thu nhập cá nhân"
+
+#: .\templates\legal\terms_of_service.html:70
+msgid "service_features_2"
+msgstr "Phân loại và báo cáo tài chính"
+
+#: .\templates\legal\terms_of_service.html:71
+msgid "service_features_3"
+msgstr "Phân tích giao dịch và thông tin chi tiết được hỗ trợ bởi AI"
+
+#: .\templates\legal\terms_of_service.html:72
+msgid "service_features_4"
+msgstr "Công cụ trực quan hóa dữ liệu và lập kế hoạch tài chính"
+
+#: .\templates\legal\terms_of_service.html:73
+msgid "service_features_5"
+msgstr "Tài khoản demo để dùng thử dịch vụ"
+
+#: .\templates\legal\terms_of_service.html:80
+msgid "account_types"
+msgstr "Loại Tài khoản"
+
+#: .\templates\legal\terms_of_service.html:83
+msgid "regular_accounts"
+msgstr "Tài khoản Thường"
+
+#: .\templates\legal\terms_of_service.html:85
+msgid "regular_account_feature_1"
+msgstr "Xác thực qua Google OAuth 2.0"
+
+#: .\templates\legal\terms_of_service.html:86
+msgid "regular_account_feature_2"
+msgstr "Lưu trữ dữ liệu vĩnh viễn cho đến khi xóa tài khoản"
+
+#: .\templates\legal\terms_of_service.html:87
+msgid "regular_account_feature_3"
+msgstr "Truy cập đầy đủ tất cả tính năng ứng dụng"
+
+#: .\templates\legal\terms_of_service.html:88
+msgid "regular_account_feature_4"
+msgstr "Chịu trách nhiệm về độ chính xác và quản lý dữ liệu"
+
+#: .\templates\legal\terms_of_service.html:91
+msgid "demo_accounts"
+msgstr "Tài khoản demo"
+
+#: .\templates\legal\terms_of_service.html:94
+msgid "demo_account_feature_1"
+msgstr "Truy cập tạm thời: Giới hạn 24 giờ"
+
+#: .\templates\legal\terms_of_service.html:95
+msgid "demo_account_feature_2"
+msgstr "Tự động xóa: Tất cả dữ liệu được xóa sau khi hết hạn"
+
+#: .\templates\legal\terms_of_service.html:96
+msgid "demo_account_feature_3"
+msgstr "Phạm vi hạn chế: Chỉ để đánh giá"
+
+#: .\templates\legal\terms_of_service.html:97
+msgid "demo_account_feature_4"
+msgstr "Không đảm bảo: Dữ liệu demo có thể được đặt lại hoặc không khả dụng"
+
+#: .\templates\legal\terms_of_service.html:105
+msgid "user_responsibilities"
+msgstr "Trách nhiệm Người dùng"
+
+#: .\templates\legal\terms_of_service.html:107
+msgid "user_responsibilities_text"
+msgstr "Bằng cách sử dụng dịch vụ của chúng tôi, bạn đồng ý:"
+
+#: .\templates\legal\terms_of_service.html:109
+msgid "user_responsibility_1"
+msgstr "Cung cấp thông tin chính xác và trung thực"
+
+#: .\templates\legal\terms_of_service.html:110
+msgid "user_responsibility_2"
+msgstr "Duy trì bảo mật thông tin đăng nhập tài khoản của bạn"
+
+#: .\templates\legal\terms_of_service.html:111
+msgid "user_responsibility_3"
+msgstr "Chỉ sử dụng dịch vụ để theo dõi tài chính cá nhân"
+
+#: .\templates\legal\terms_of_service.html:112
+msgid "user_responsibility_4"
+msgstr "Tuân thủ tất cả luật và quy định hiện hành"
+
+#: .\templates\legal\terms_of_service.html:113
+msgid "user_responsibility_5"
+msgstr "Không cố gắng dịch ngược hoặc khai thác dịch vụ"
+
+#: .\templates\legal\terms_of_service.html:114
+msgid "user_responsibility_6"
+msgstr "Không tạo nhiều tài khoản demo để lách quy định"
+
+#: .\templates\legal\terms_of_service.html:115
+msgid "user_responsibility_7"
+msgstr "Tôn trọng quyền sở hữu trí tuệ của dịch vụ"
+
+#: .\templates\legal\terms_of_service.html:122
+
+#: .\templates\legal\terms_of_service.html:139
+msgid "Data and Privacy"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:153
+
+#: .\templates\legal\terms_of_service.html:173
+
+#: .\templates\legal\terms_of_service.html:186
+
+#: .\templates\legal\terms_of_service.html:206
+
+#: .\templates\legal\terms_of_service.html:219
+msgid "Account Termination"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:242
+msgid "Changes to Terms"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:255
+
+#: .\templates\legal\terms_of_service.html:267
+msgid "Contact Information"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:286
+
+#: .\transactions\admin.py:20
+msgid "Basic Information"
+msgstr ""
+
+# Category keys for backend translation utils
+#: .\transactions\admin.py:23
+#, fuzzy
+#| msgid "category_food"
+msgid "Category"
+msgstr "Ăn uống"
+
+#: .\transactions\admin.py:25
+msgid "Only required for expense transactions"
+msgstr ""
+
+#: .\transactions\admin.py:27
+msgid "AI Information"
+msgstr ""
+
+#: .\transactions\admin.py:31
+
+#: .\transactions\admin.py:34
+
+#: .\transactions\admin.py:42
+
+#: .\transactions\admin.py:62
+
+#: .\transactions\admin.py:65
+
+# Main app titles
+#: .\transactions\admin.py:85
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Tracker Administration"
+msgstr "Theo Dõi Chi Tiêu"
+
+# Main app titles
+#: .\transactions\admin.py:86
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Tracker Admin"
+msgstr "Theo Dõi Chi Tiêu"
+
+#: .\transactions\admin.py:87
+
+#: .\transactions\apps.py:8 .\transactions\models.py:84
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transactions"
 msgstr "Tiết kiệm"
 
-msgid "transaction_type_investment"
-msgstr "Đầu tư" 
+# Transaction status
+#: .\transactions\models.py:12
+msgid "🔴 Chi tiêu"
+msgstr "🔴 Chi tiêu"
+
+#: .\transactions\models.py:13
+msgid "🟢 Tiết kiệm"
+msgstr "🟢 Tiết kiệm"
+
+#: .\transactions\models.py:14
+msgid "🔵 Đầu tư"
+msgstr "🔵 Đầu tư"
+
+# Categories
+#: .\transactions\models.py:19
+msgid "🍜 Ăn uống"
+msgstr "🍜 Ăn uống"
+
+#: .\transactions\models.py:20
+msgid "☕ Coffee"
+msgstr "☕ Coffee"
+
+#: .\transactions\models.py:21
+msgid "🚗 Di chuyển"
+msgstr "🚗 Di chuyển"
+
+#: .\transactions\models.py:22
+msgid "🛒 Mua sắm"
+msgstr "🛒 Mua sắm"
+
+#: .\transactions\models.py:23
+msgid "🎬 Giải trí"
+msgstr "🎬 Giải trí"
+
+#: .\transactions\models.py:24
+msgid "🏥 Sức khỏe"
+msgstr "🏥 Sức khỏe"
+
+#: .\transactions\models.py:25
+msgid "📚 Giáo dục"
+msgstr "📚 Giáo dục"
+
+#: .\transactions\models.py:26
+msgid "⚡ Tiện ích"
+msgstr "⚡ Tiện ích"
+
+#: .\transactions\models.py:27
+msgid "📦 Khác"
+msgstr "📦 Khác"
+
+#: .\transactions\models.py:34
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction Type"
+msgstr "Tiết kiệm"
+
+# Monthly total description
+#: .\transactions\models.py:39
+#, fuzzy
+#| msgid "net_amount"
+msgid "Amount"
+msgstr "Số dư ròng"
+
+#: .\transactions\models.py:43
+msgid "Description"
+msgstr ""
+
+#: .\transactions\models.py:46
+msgid "Date"
+msgstr ""
+
+# Main app titles
+#: .\transactions\models.py:55
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Category"
+msgstr "Theo Dõi Chi Tiêu"
+
+#: .\transactions\models.py:71
+
+#: .\transactions\models.py:122
+
+#: .\transactions\models.py:123
+
+#: .\transactions\models.py:129
+
+#: .\transactions\models.py:135
+
+#: .\transactions\models.py:141
+
+#: .\transactions\models.py:147
+
+#: .\transactions\models.py:152
+msgid "Last Updated"
+msgstr ""
+
+#: .\transactions\models.py:158
+
+#: .\transactions\serializers.py:48
+msgid "Expense category is required for expense transactions."
+msgstr ""
+
+#: .\transactions\serializers.py:68
+msgid "Custom date for historical transactions"
+msgstr ""
+
+#: .\transactions\views.py:156
+msgid "Authentication required"
+msgstr ""
+
+#: .\transactions\views.py:169
+
+#: .\transactions\views.py:176 .\transactions\views.py:434
+
+#: .\transactions\views.py:182 .\transactions\views.py:440
+
+#: .\transactions\views.py:259 .\transactions\views.py:307
+
+#: .\transactions\views.py:364
+
+#: .\transactions\views.py:370
+
+#: .\transactions\views.py:428
+
+#, fuzzy
+#~| msgid "transaction_type_saving"
+#~ msgid "Transaction data"
+#~ msgstr "Tiết kiệm"
+
+# Actions and buttons
+#~ msgid "Gửi"
+#~ msgstr "Gửi"
+
+#~ msgid "Lịch sẽ được triển khai ở Phase 4"
+#~ msgstr "Lịch sẽ được triển khai ở Phase 4"
+
+#~ msgid "Calendar tương tác với hiển thị giao dịch theo ngày"
+#~ msgstr "Calendar tương tác với hiển thị giao dịch theo ngày"
+
+#~ msgid ""
+#~ "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
+#~ msgstr ""
+#~ "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
+
+#~ msgid "Đang nghe..."
+#~ msgstr "Đang nghe..."
+
+#~ msgid "Voice recognition started"
+#~ msgstr "Bắt đầu nhận diện giọng nói"
+
+#~ msgid "Voice recognition ended"
+#~ msgstr "Kết thúc nhận diện giọng nói"
+
+#~ msgid "No speech detected. Please try again."
+#~ msgstr "Không nghe thấy giọng nói. Hãy thử lại."
+
+#~ msgid "Cannot access microphone. Check permissions."
+#~ msgstr "Không thể truy cập microphone. Kiểm tra quyền truy cập."
+
+#~ msgid "Microphone access denied."
+#~ msgstr "Quyền truy cập microphone bị từ chối."
+
+#~ msgid "Network error. Check internet connection."
+#~ msgstr "Lỗi mạng. Kiểm tra kết nối internet."
+
+#~ msgid "Voice recognition error. Please try again."
+#~ msgstr "Lỗi nhận diện giọng nói. Hãy thử lại."
+
+#~ msgid "Browser does not support voice input. Please use Chrome or Edge."
+#~ msgstr "Trình duyệt không hỗ trợ voice input. Hãy sử dụng Chrome hoặc Edge."
+
+# Date parsing descriptions
+#~ msgid "hôm nay"
+#~ msgstr "hôm nay"
+
+#~ msgid "hôm qua"
+#~ msgstr "hôm qua"
+
+#~ msgid "hôm kia"
+#~ msgstr "hôm kia"
+
+#~ msgid "yesterday"
+#~ msgstr "hôm qua"
+
+#~ msgid "day before yesterday"
+#~ msgstr "hôm kia"
+
+#~ msgid "category_coffee"
+#~ msgstr "Coffee"
+
+#~ msgid "category_transport"
+#~ msgstr "Di chuyển"
+
+#~ msgid "category_shopping"
+#~ msgstr "Mua sắm"
+
+#~ msgid "category_entertainment"
+#~ msgstr "Giải trí"
+
+#~ msgid "category_health"
+#~ msgstr "Sức khỏe"
+
+#~ msgid "category_utilities"
+#~ msgstr "Tiện ích"
+
+#~ msgid "category_other"
+#~ msgstr "Khác"
+
+#~ msgid "category_saving"
+#~ msgstr "Tiết kiệm"
+
+# Date description keys
+#~ msgid "date_today"
+#~ msgstr "hôm nay"
+
+#~ msgid "date_yesterday"
+#~ msgstr "hôm qua"
+
+#~ msgid "date_day_before_yesterday"
+#~ msgstr "hôm kia"
+
+#~ msgid "date_days_ago"
+#~ msgstr "{days} ngày trước"
+
+#~ msgid "date_weeks_ago"
+#~ msgstr "{weeks} tuần trước"
+
+#~ msgid "voice_no_amount"
+#~ msgstr ""
+#~ "Không tìm thấy số tiền. Hãy nói rõ số tiền, ví dụ: \"25k\" hoặc \"hai "
+#~ "mười lăm nghìn\""
+
+#~ msgid "voice_unclear_type"
+#~ msgstr ""
+#~ "Loại giao dịch không rõ. Hãy thêm từ khóa như \"coffee\", \"ăn trưa\", "
+#~ "\"tiết kiệm\""
+
+# Transaction type keys
+#~ msgid "transaction_type_expense"
+#~ msgstr "Chi tiêu"
+
+#~ msgid "transaction_type_investment"
+#~ msgstr "Đầu tư"
+
+msgid "prohibited_uses"
+msgstr "Các Sử dụng Bị cấm"
+
+msgid "prohibited_uses_intro"
+msgstr "Bạn không được sử dụng dịch vụ của chúng tôi để:"
+
+msgid "prohibited_use_1"
+msgstr "Cho bất kỳ mục đích bất hợp pháp hoặc hoạt động bất hợp pháp nào"
+
+msgid "prohibited_use_2"
+msgstr "Vi phạm bất kỳ quy định hoặc luật pháp quốc tế, liên bang, tỉnh hoặc bang nào"
+
+msgid "prohibited_use_3"
+msgstr "Truyền mã độc hại, virus hoặc các tài liệu có hại khác"
+
+msgid "prohibited_use_4"
+msgstr "Mạo danh người khác hoặc tổ chức khác"
+
+msgid "prohibited_use_5"
+msgstr "Quấy rối, lạm dụng hoặc làm hại người khác"
+
+msgid "prohibited_use_6"
+msgstr "Thu thập hoặc thu hoạch thông tin về người dùng khác"
+
+msgid "prohibited_use_7"
+msgstr "Cho mục đích thương mại mà không có sự cho phép rõ ràng"
+
+msgid "data_and_privacy"
+msgstr "Dữ liệu và Quyền riêng tư"
+
+msgid "your_data_ownership"
+msgstr "Quyền sở hữu dữ liệu của bạn"
+
+msgid "your_data_ownership_desc"
+msgstr "Bạn giữ quyền sở hữu dữ liệu tài chính của mình"
+
+msgid "data_accuracy"
+msgstr "Độ chính xác dữ liệu"
+
+msgid "data_accuracy_desc"
+msgstr "Bạn chịu trách nhiệm về độ chính xác của dữ liệu đã nhập"
+
+msgid "privacy_protection"
+msgstr "Bảo vệ quyền riêng tư"
+
+msgid "privacy_protection_desc"
+msgstr "Chúng tôi bảo vệ dữ liệu của bạn như được nêu trong Chính sách Bảo mật"
+
+msgid "data_export"
+msgstr "Xuất dữ liệu"
+
+msgid "data_export_desc"
+msgstr "Bạn có thể xuất dữ liệu của mình bất cứ lúc nào"
+
+msgid "account_deletion"
+msgstr "Xóa tài khoản"
+
+msgid "account_deletion_desc"
+msgstr "Bạn có thể xóa tài khoản và dữ liệu của mình vĩnh viễn"
+
+msgid "ai_powered_features"
+msgstr "Tính năng được hỗ trợ bởi AI"
+
+msgid "ai_disclaimer_title"
+msgstr "Tuyên bố miễn trừ trách nhiệm AI"
+
+msgid "ai_disclaimer_text"
+msgstr "Các thông tin chi tiết và khuyến nghị được tạo bởi AI chỉ mang tính chất thông tin và không nên được coi là lời khuyên tài chính chuyên nghiệp."
+
+msgid "ai_feature_1"
+msgstr "Các tính năng AI được cung cấp \"như hiện tại\" mà không đảm bảo độ chính xác"
+
+msgid "ai_feature_2"
+msgstr "Người dùng nên xác minh các đề xuất của AI trước khi đưa ra quyết định tài chính"
+
+msgid "ai_feature_3"
+msgstr "Điểm tin cậy AI chỉ ra sự chắc chắn của hệ thống, không phải chất lượng lời khuyên tài chính"
+
+msgid "ai_feature_4"
+msgstr "Chúng tôi liên tục cải thiện độ chính xác của AI nhưng không thể đảm bảo sự hoàn hảo"
+
+msgid "service_availability"
+msgstr "Tính khả dụng của Dịch vụ"
+
+msgid "service_availability_1"
+msgstr "Chúng tôi cố gắng có sẵn 24/7 nhưng không thể đảm bảo dịch vụ không bị gián đoạn"
+
+msgid "service_availability_2"
+msgstr "Bảo trì theo kế hoạch sẽ được thông báo trước khi có thể"
+
+msgid "service_availability_3"
+msgstr "Chúng tôi có quyền sửa đổi hoặc ngừng các tính năng với thông báo"
+
+msgid "service_availability_4"
+msgstr "Dịch vụ có thể tạm thời không khả dụng trong quá trình cập nhật hoặc sửa chữa"
+
+msgid "limitation_of_liability"
+msgstr "Giới hạn Trách nhiệm pháp lý"
+
+msgid "important_legal_notice"
+msgstr "Thông báo Pháp lý Quan trọng: Vui lòng đọc kỹ"
+
+msgid "liability_1"
+msgstr "Dịch vụ được cung cấp \"như hiện tại\" mà không có bảo hành dưới bất kỳ hình thức nào"
+
+msgid "liability_2"
+msgstr "Chúng tôi không chịu trách nhiệm cho các quyết định tài chính được đưa ra dựa trên dịch vụ của chúng tôi"
+
+msgid "liability_3"
+msgstr "Người dùng chịu trách nhiệm về việc quản lý và quyết định tài chính của riêng họ"
+
+msgid "liability_4"
+msgstr "Chúng tôi không chịu trách nhiệm về việc mất dữ liệu, mặc dù chúng tôi thực hiện các thủ tục sao lưu"
+
+msgid "liability_5"
+msgstr "Trách nhiệm của chúng tôi được giới hạn ở số tiền đã trả cho dịch vụ (nếu có)"
+
+msgid "liability_6"
+msgstr "Chúng tôi không chịu trách nhiệm cho các tích hợp hoặc dịch vụ của bên thứ ba"
+
+msgid "intellectual_property"
+msgstr "Sở hữu Trí tuệ"
+
+msgid "intellectual_property_1"
+msgstr "Money Tracker và nội dung gốc của nó được bảo vệ bởi bản quyền"
+
+msgid "intellectual_property_2"
+msgstr "Người dùng không được sao chép, phân phối hoặc sửa đổi nội dung của chúng tôi mà không có sự cho phép"
+
+msgid "intellectual_property_3"
+msgstr "Nội dung và thương hiệu của bên thứ ba vẫn thuộc sở hữu của chủ sở hữu tương ứng"
+
+msgid "intellectual_property_4"
+msgstr "Dữ liệu tài chính do người dùng tạo vẫn thuộc sở hữu của người dùng"
+
+msgid "account_termination"
+msgstr "Chấm dứt Tài khoản"
+
+msgid "user_initiated_termination"
+msgstr "Chấm dứt do Người dùng Khởi tạo"
+
+msgid "user_termination_1"
+msgstr "Bạn có thể xóa tài khoản của mình bất cứ lúc nào"
+
+msgid "user_termination_2"
+msgstr "Việc xóa tài khoản là vĩnh viễn và không thể hoàn tác"
+
+msgid "user_termination_3"
+msgstr "Tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn"
+
+msgid "user_termination_4"
+msgstr "Xuất dữ liệu của bạn trước khi xóa nếu cần"
+
+msgid "service_initiated_termination"
+msgstr "Chấm dứt do Dịch vụ Khởi tạo"
+
+msgid "service_termination_1"
+msgstr "Chúng tôi có quyền tạm ngừng tài khoản vì vi phạm điều khoản"
+
+msgid "service_termination_2"
+msgstr "Lạm dụng lặp lại có thể dẫn đến chấm dứt tài khoản vĩnh viễn"
+
+msgid "service_termination_3"
+msgstr "Chúng tôi sẽ thông báo trước khi chấm dứt khi có thể"
+
+msgid "service_termination_4"
+msgstr "Tài khoản demo tự động chấm dứt sau 24 giờ"
+
+msgid "changes_to_terms"
+msgstr "Thay đổi Điều khoản"
+
+msgid "changes_to_terms_1"
+msgstr "Chúng tôi có thể cập nhật các điều khoản này theo thời gian"
+
+msgid "changes_to_terms_2"
+msgstr "Các thay đổi đáng kể sẽ được thông báo qua email hoặc thông báo trong ứng dụng"
+
+msgid "changes_to_terms_3"
+msgstr "Việc tiếp tục sử dụng sau khi thay đổi cấu thành sự chấp nhận các điều khoản mới"
+
+msgid "changes_to_terms_4"
+msgstr "Người dùng không đồng ý với các thay đổi có thể chấm dứt tài khoản của họ"
+
+msgid "governing_law"
+msgstr "Luật Điều chỉnh"
+
+msgid "governing_law_text"
+msgstr "Các điều khoản và điều kiện này được điều chỉnh và giải thích theo luật pháp của khu vực pháp lý nơi Money Tracker hoạt động. Bất kỳ tranh chấp nào phát sinh từ các điều khoản này sẽ thuộc thẩm quyền độc quyền của các tòa án thích hợp."
+
+msgid "contact_information"
+msgstr "Thông tin Liên hệ"
+
+msgid "contact_questions_text"
+msgstr "Nếu bạn có câu hỏi về các Điều khoản Dịch vụ này:"
+
+msgid "email"
+msgstr "Email"
+
+msgid "support"
+msgstr "Hỗ trợ"
+
+msgid "response_time"
+msgstr "Thời gian phản hồi"
+
+msgid "within_48_hours"
+msgstr "Trong vòng 48 giờ"
+
+msgid "languages"
+msgstr "Ngôn ngữ"
+
+msgid "vietnamese_english"
+msgstr "Tiếng Việt, Tiếng Anh"
+
+msgid "acknowledgment"
+msgstr "Xác nhận"
+
+msgid "acknowledgment_text"
+msgstr "Bằng cách sử dụng Money Tracker, bạn xác nhận rằng bạn đã đọc các Điều khoản Dịch vụ này, hiểu chúng và đồng ý bị ràng buộc bởi chúng. Nếu bạn không đồng ý với các điều khoản này, bạn không được sử dụng dịch vụ của chúng tôi."
+
+msgid "how_we_use_your_data"
+msgstr "Cách chúng tôi sử dụng Dữ liệu của bạn"
+
+msgid "data_usage_1"
+msgstr "Cung cấp dịch vụ theo dõi và quản lý tài chính"
+
+msgid "data_usage_2"
+msgstr "Xác thực tài khoản của bạn và duy trì bảo mật"
+
+msgid "data_usage_3"
+msgstr "Tạo thông tin chi tiết và khuyến nghị tài chính được hỗ trợ bởi AI"
+
+msgid "data_usage_4"
+msgstr "Tạo bảng điều khiển và báo cáo được cá nhân hóa"
+
+msgid "data_usage_5"
+msgstr "Cải thiện các tính năng ứng dụng và trải nghiệm người dùng của chúng tôi"
+
+msgid "data_usage_6"
+msgstr "Gửi thông báo tài khoản quan trọng (cảnh báo đăng nhập, v.v.)"
+
+msgid "data_sharing_policy"
+msgstr "Chính sách Chia sẻ Dữ liệu"
+
+msgid "data_sharing_commitment"
+msgstr "Chúng tôi KHÔNG bán, trao đổi hoặc chia sẻ dữ liệu cá nhân của bạn với bên thứ ba."
+
+msgid "limited_exceptions_intro"
+msgstr "Ngoại lệ hạn chế (chỉ khi được yêu cầu về mặt pháp lý):"
+
+msgid "exception_1"
+msgstr "Tuân thủ pháp luật khi được yêu cầu bởi cơ quan thực thi pháp luật"
+
+msgid "exception_2"
+msgstr "Bảo vệ quyền, tài sản hoặc sự an toàn của chúng tôi"
+
+msgid "exception_3"
+msgstr "Các tình huống khẩn cấp liên quan đến an toàn cá nhân"
+
+msgid "data_security"
+msgstr "Bảo mật Dữ liệu"
+
+msgid "encryption_in_transit"
+msgstr "Mã hóa trong quá trình truyền"
+
+msgid "encryption_in_transit_desc"
+msgstr "Tất cả dữ liệu được truyền qua HTTPS/SSL"
+
+msgid "encryption_at_rest"
+msgstr "Mã hóa khi lưu trữ"
+
+msgid "encryption_at_rest_desc"
+msgstr "Mã hóa cơ sở dữ liệu và lưu trữ tệp"
+
+msgid "secure_authentication"
+msgstr "Xác thực an toàn"
+
+msgid "secure_authentication_desc"
+msgstr "Google OAuth 2.0 với phạm vi tối thiểu"
+
+msgid "access_controls"
+msgstr "Kiểm soát truy cập"
+
+msgid "access_controls_desc"
+msgstr "Cách ly dữ liệu người dùng nghiêm ngặt"
+
+msgid "regular_security_audits"
+msgstr "Kiểm toán bảo mật thường xuyên"
+
+msgid "regular_security_audits_desc"
+msgstr "Giám sát bảo mật liên tục"
+
+msgid "demo_account_policy"
+msgstr "Chính sách Tài khoản Demo"
+
+msgid "demo_account_policy_text"
+msgstr "Tài khoản demo và tất cả dữ liệu liên quan được tự động xóa sau 24 giờ. Không thu thập thông tin cá nhân cho tài khoản demo."
+
+msgid "data_retention"
+msgstr "Lưu trữ Dữ liệu"
+
+msgid "account_data"
+msgstr "Dữ liệu tài khoản"
+
+msgid "account_data_retention"
+msgstr "Được giữ lại cho đến khi xóa tài khoản"
+
+msgid "transaction_data"
+msgstr "Dữ liệu giao dịch"
+
+msgid "transaction_data_retention"
+msgstr "Được giữ lại cho chức năng tài khoản"
+
+msgid "demo_accounts_retention"
+msgstr "Tự động xóa sau 24 giờ"
+
+msgid "login_logs"
+msgstr "Nhật ký đăng nhập"
+
+msgid "login_logs_retention"
+msgstr "Được giữ lại trong 90 ngày cho mục đích bảo mật"
+
+msgid "your_rights"
+msgstr "Quyền của bạn"
+
+msgid "access"
+msgstr "Truy cập"
+
+msgid "access_desc"
+msgstr "Xem tất cả dữ liệu cá nhân của bạn mà chúng tôi lưu trữ"
+
+msgid "correction"
+msgstr "Sửa chữa"
+
+msgid "correction_desc"
+msgstr "Cập nhật hoặc sửa chữa thông tin của bạn"
+
+msgid "deletion"
+msgstr "Xóa"
+
+msgid "deletion_desc"
+msgstr "Xóa tài khoản và tất cả dữ liệu liên quan của bạn"
+
+msgid "export"
+msgstr "Xuất"
+
+msgid "export_desc"
+msgstr "Tải xuống dữ liệu giao dịch của bạn"
+
+msgid "restriction"
+msgstr "Hạn chế"
+
+msgid "restriction_desc"
+msgstr "Giới hạn cách chúng tôi xử lý dữ liệu của bạn"
+
+msgid "to_exercise_rights"
+msgstr "Để thực hiện quyền của bạn"
+
+msgid "contact_privacy_email"
+msgstr "Liên hệ với chúng tôi tại"
+
+msgid "cookies_local_storage"
+msgstr "Cookies & Lưu trữ Cục bộ"
+
+msgid "cookies_intro"
+msgstr "Chúng tôi sử dụng cookies và lưu trữ cục bộ tối thiểu:"
+
+msgid "session_cookies"
+msgstr "Session cookies"
+
+msgid "session_cookies_desc"
+msgstr "Để xác thực và chức năng ứng dụng"
+
+msgid "preference_storage"
+msgstr "Lưu trữ tùy chọn"
+
+msgid "preference_storage_desc"
+msgstr "Ngôn ngữ, chủ đề và cài đặt người dùng"
+
+msgid "security_tokens"
+msgstr "Token bảo mật"
+
+msgid "security_tokens_desc"
+msgstr "Bảo vệ CSRF và trạng thái OAuth"
+
+msgid "childrens_privacy"
+msgstr "Quyền riêng tư Trẻ em"
+
+msgid "childrens_privacy_text"
+msgstr "Money Tracker không dành cho trẻ em dưới 18 tuổi. Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em. Nếu bạn tin rằng chúng tôi đã thu thập thông tin từ một đứa trẻ, vui lòng liên hệ với chúng tôi ngay lập tức."
+
+msgid "changes_to_policy"
+msgstr "Thay đổi Chính sách này"
+
+msgid "changes_to_policy_text"
+msgstr "Chúng tôi có thể cập nhật Chính sách Bảo mật này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi nào bằng cách đăng Chính sách Bảo mật mới trên trang này và cập nhật ngày \"Cập nhật lần cuối\". Các thay đổi có hiệu lực ngay lập tức sau khi đăng."
+
+msgid "contact_us"
+msgstr "Liên hệ chúng tôi"
+
+msgid "privacy_contact_intro"
+msgstr "Nếu bạn có câu hỏi về Chính sách Bảo mật này hoặc thực tiễn dữ liệu của chúng tôi:"
+

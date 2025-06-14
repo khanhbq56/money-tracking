@@ -4,6 +4,7 @@ from rest_framework import viewsets, status, filters
 from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Q, Count
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404
@@ -25,6 +26,9 @@ def index(request):
     return render(request, 'index.html') 
 
 
+
+
+
 class TransactionPagination(PageNumberPagination):
     """Custom pagination for transactions"""
     page_size = 20
@@ -35,10 +39,11 @@ class TransactionPagination(PageNumberPagination):
 class TransactionViewSet(viewsets.ModelViewSet):
     """
     ViewSet for Transaction CRUD operations with filtering and pagination.
+    User authentication required and filters by current user.
     """
-    queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
     pagination_class = TransactionPagination
+    permission_classes = [IsAuthenticated]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['description', 'expense_category']
     ordering_fields = ['date', 'amount', 'created_at']
@@ -53,8 +58,9 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return TransactionSerializer
     
     def get_queryset(self):
-        """Filter queryset based on query parameters"""
-        queryset = Transaction.objects.all()
+        """Filter queryset based on query parameters and current user"""
+        # Filter by current user only
+        queryset = Transaction.objects.filter(user=self.request.user)
         
         # Filter by transaction type
         transaction_type = self.request.query_params.get('type')
@@ -84,7 +90,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         """Create transaction and update monthly totals"""
-        transaction = serializer.save()
+        transaction = serializer.save(user=self.request.user)
         update_monthly_totals_on_transaction_change(transaction)
     
     def perform_update(self, serializer):
@@ -141,6 +147,15 @@ class TransactionViewSet(viewsets.ModelViewSet):
 def calendar_data(request):
     """
     Get calendar data for a specific month and year.
+    Requires authentication and filters by current user.
+    """
+    if not request.user.is_authenticated:
+        return Response(
+            {'error': _('Authentication required')},
+            status=status.HTTP_401_UNAUTHORIZED
+        )
+    """
+    Get calendar data for a specific month and year.
     Query params: month (1-12), year (YYYY), filter (all|expense|saving|investment)
     """
     try:
@@ -166,8 +181,9 @@ def calendar_data(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     
-    # Get transactions for the month
+    # Get transactions for the month (filtered by current user)
     transactions = Transaction.objects.filter(
+        user=request.user,
         date__year=year,
         date__month=month
     )

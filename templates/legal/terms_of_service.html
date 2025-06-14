@@ -1,0 +1,370 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Terms of Service" %} - Money Tracker{% endblock %}
+
+{% block content %}
+<!-- Sticky Navigation Bar -->
+<div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky-nav" id="legal-nav">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-3">
+            <!-- Back to App Button -->
+            <a href="/" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-sm rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-700 hover:shadow-xl transition-all duration-300 transform hover:scale-105 back-to-app-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <span>{% trans "back_to_app" %}</span>
+            </a>
+            
+            <!-- Language Switcher -->
+            <div class="relative">
+                <button id="language-switcher" class="bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 cursor-pointer flex items-center justify-between min-w-[80px]">
+                    <span id="current-flag">{% if LANGUAGE_CODE == 'vi' %}🇻🇳{% else %}🇺🇸{% endif %}</span>
+                    <svg class="w-4 h-4 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="language-dropdown" class="absolute top-full right-0 left-0 mt-1 bg-white border border-gray-300 rounded-xl shadow-lg z-50 hidden">
+                    <a href="?lang=vi" class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-t-xl block no-underline text-gray-700" style="text-decoration: none;">🇻🇳</a>
+                    <a href="?lang=en" class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-b-xl block no-underline text-gray-700" style="text-decoration: none;">🇺🇸</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                📋 {% trans "Terms of Service" %}
+            </h1>
+            <p class="text-xl text-gray-600">
+                {% trans "Please read these terms carefully" %}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                {% trans "Last updated" %}: {{ last_updated|default:"2024-01-15" }}
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div class="bg-white rounded-lg shadow-lg p-8 prose prose-lg max-w-none">
+            
+            <!-- Introduction -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📋 {% trans "agreement_to_terms" %}
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    {% trans "terms_agreement_text" %}
+                </p>
+            </section>
+
+            <!-- Service Description -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    💰 {% trans "service_description" %}
+                </h2>
+                <p class="text-gray-700 mb-4">{% trans "service_description_text" %}</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "service_features_1" %}</li>
+                    <li>{% trans "service_features_2" %}</li>
+                    <li>{% trans "service_features_3" %}</li>
+                    <li>{% trans "service_features_4" %}</li>
+                    <li>{% trans "service_features_5" %}</li>
+                </ul>
+            </section>
+
+            <!-- Account Types -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    👤 {% trans "account_types" %}
+                </h2>
+                
+                <h3 class="text-xl font-medium text-gray-700 mb-3">{% trans "regular_accounts" %}</h3>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-4">
+                    <li>{% trans "regular_account_feature_1" %}</li>
+                    <li>{% trans "regular_account_feature_2" %}</li>
+                    <li>{% trans "regular_account_feature_3" %}</li>
+                    <li>{% trans "regular_account_feature_4" %}</li>
+                </ul>
+
+                <h3 class="text-xl font-medium text-gray-700 mb-3">{% trans "demo_accounts" %}</h3>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                    <ul class="list-disc pl-6 text-yellow-800 space-y-2">
+                        <li><strong>{% trans "demo_account_feature_1" %}</strong></li>
+                        <li><strong>{% trans "demo_account_feature_2" %}</strong></li>
+                        <li><strong>{% trans "demo_account_feature_3" %}</strong></li>
+                        <li><strong>{% trans "demo_account_feature_4" %}</strong></li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- User Responsibilities -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    ✅ {% trans "user_responsibilities" %}
+                </h2>
+                <p class="text-gray-700 mb-4">{% trans "user_responsibilities_text" %}</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "user_responsibility_1" %}</li>
+                    <li>{% trans "user_responsibility_2" %}</li>
+                    <li>{% trans "user_responsibility_3" %}</li>
+                    <li>{% trans "user_responsibility_4" %}</li>
+                    <li>{% trans "user_responsibility_5" %}</li>
+                    <li>{% trans "user_responsibility_6" %}</li>
+                    <li>{% trans "user_responsibility_7" %}</li>
+                </ul>
+            </section>
+
+            <!-- Prohibited Uses -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🚫 {% trans "prohibited_uses" %}
+                </h2>
+                <p class="text-gray-700 mb-4">{% trans "prohibited_uses_intro" %}</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "prohibited_use_1" %}</li>
+                    <li>{% trans "prohibited_use_2" %}</li>
+                    <li>{% trans "prohibited_use_3" %}</li>
+                    <li>{% trans "prohibited_use_4" %}</li>
+                    <li>{% trans "prohibited_use_5" %}</li>
+                    <li>{% trans "prohibited_use_6" %}</li>
+                    <li>{% trans "prohibited_use_7" %}</li>
+                </ul>
+            </section>
+
+            <!-- Data and Privacy -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🔒 {% trans "data_and_privacy" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "your_data_ownership" %}:</strong> {% trans "your_data_ownership_desc" %}</li>
+                    <li><strong>{% trans "data_accuracy" %}:</strong> {% trans "data_accuracy_desc" %}</li>
+                    <li><strong>{% trans "privacy_protection" %}:</strong> {% trans "privacy_protection_desc" %}</li>
+                    <li><strong>{% trans "data_export" %}:</strong> {% trans "data_export_desc" %}</li>
+                    <li><strong>{% trans "account_deletion" %}:</strong> {% trans "account_deletion_desc" %}</li>
+                </ul>
+            </section>
+
+            <!-- AI Services -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🤖 {% trans "ai_powered_features" %}
+                </h2>
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4">
+                    <p class="text-blue-800">
+                        <strong>{% trans "ai_disclaimer_title" %}:</strong> {% trans "ai_disclaimer_text" %}
+                    </p>
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "ai_feature_1" %}</li>
+                    <li>{% trans "ai_feature_2" %}</li>
+                    <li>{% trans "ai_feature_3" %}</li>
+                    <li>{% trans "ai_feature_4" %}</li>
+                </ul>
+            </section>
+
+            <!-- Service Availability -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🌐 {% trans "service_availability" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "service_availability_1" %}</li>
+                    <li>{% trans "service_availability_2" %}</li>
+                    <li>{% trans "service_availability_3" %}</li>
+                    <li>{% trans "service_availability_4" %}</li>
+                </ul>
+            </section>
+
+            <!-- Limitation of Liability -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    ⚖️ {% trans "limitation_of_liability" %}
+                </h2>
+                <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                    <p class="text-red-800 font-semibold">
+                        {% trans "important_legal_notice" %}
+                    </p>
+                </div>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "liability_1" %}</li>
+                    <li>{% trans "liability_2" %}</li>
+                    <li>{% trans "liability_3" %}</li>
+                    <li>{% trans "liability_4" %}</li>
+                    <li>{% trans "liability_5" %}</li>
+                    <li>{% trans "liability_6" %}</li>
+                </ul>
+            </section>
+
+            <!-- Intellectual Property -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    © {% trans "intellectual_property" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "intellectual_property_1" %}</li>
+                    <li>{% trans "intellectual_property_2" %}</li>
+                    <li>{% trans "intellectual_property_3" %}</li>
+                    <li>{% trans "intellectual_property_4" %}</li>
+                </ul>
+            </section>
+
+            <!-- Account Termination -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🚪 {% trans "account_termination" %}
+                </h2>
+                
+                <h3 class="text-xl font-medium text-gray-700 mb-3">{% trans "user_initiated_termination" %}</h3>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-4">
+                    <li>{% trans "user_termination_1" %}</li>
+                    <li>{% trans "user_termination_2" %}</li>
+                    <li>{% trans "user_termination_3" %}</li>
+                    <li>{% trans "user_termination_4" %}</li>
+                </ul>
+
+                <h3 class="text-xl font-medium text-gray-700 mb-3">{% trans "service_initiated_termination" %}</h3>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "service_termination_1" %}</li>
+                    <li>{% trans "service_termination_2" %}</li>
+                    <li>{% trans "service_termination_3" %}</li>
+                    <li>{% trans "service_termination_4" %}</li>
+                </ul>
+            </section>
+
+            <!-- Changes to Terms -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📝 {% trans "changes_to_terms" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "changes_to_terms_1" %}</li>
+                    <li>{% trans "changes_to_terms_2" %}</li>
+                    <li>{% trans "changes_to_terms_3" %}</li>
+                    <li>{% trans "changes_to_terms_4" %}</li>
+                </ul>
+            </section>
+
+            <!-- Governing Law -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🏛️ {% trans "governing_law" %}
+                </h2>
+                <p class="text-gray-700">
+                    {% trans "governing_law_text" %}
+                </p>
+            </section>
+
+            <!-- Contact Information -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📧 {% trans "contact_information" %}
+                </h2>
+                <p class="text-gray-700 mb-4">
+                    {% trans "contact_questions_text" %}
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700">
+                        <strong>{% trans "email" %}:</strong> legal@moneytracker.app<br>
+                        <strong>{% trans "support" %}:</strong> support@moneytracker.app<br>
+                        <strong>{% trans "response_time" %}:</strong> {% trans "within_48_hours" %}<br>
+                        <strong>{% trans "languages" %}:</strong> {% trans "vietnamese_english" %}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Acknowledgment -->
+            <section class="mb-8">
+                <div class="bg-green-50 border-l-4 border-green-400 p-6">
+                    <h3 class="text-xl font-semibold text-green-800 mb-3">
+                        ✅ {% trans "acknowledgment" %}
+                    </h3>
+                    <p class="text-green-800">
+                        {% trans "acknowledgment_text" %}
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+// Add scroll effect for sticky navigation
+window.addEventListener('scroll', function() {
+    const nav = document.getElementById('legal-nav');
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+// Language dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Legal page: Language dropdown script loaded');
+    const switcher = document.getElementById('language-switcher');
+    const dropdown = document.getElementById('language-dropdown');
+    
+    console.log('Legal page: Elements found', { switcher: !!switcher, dropdown: !!dropdown });
+    
+    if (switcher && dropdown) {
+        // Toggle dropdown on click
+        switcher.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Legal page: Language switcher clicked');
+            dropdown.classList.toggle('hidden');
+            console.log('Legal page: Dropdown hidden state:', dropdown.classList.contains('hidden'));
+        });
+        
+        // Handle language selection
+        const languageOptions = dropdown.querySelectorAll('.language-option');
+        console.log('Legal page: Language options found:', languageOptions.length);
+        
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Legal page: Language option clicked:', this.getAttribute('href'));
+                
+                // Extract language from href (e.g., "?lang=vi" -> "vi")
+                const href = this.getAttribute('href');
+                const langMatch = href.match(/lang=([a-z]{2})/);
+                if (langMatch) {
+                    const selectedLang = langMatch[1];
+                    
+                    // Update cookie to sync with main app (same as i18n.js)
+                    const expires = new Date();
+                    expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
+                    document.cookie = `django_language=${selectedLang};expires=${expires.toUTCString()};path=/`;
+                    
+                    // Update localStorage for backward compatibility
+                    localStorage.setItem('language', selectedLang);
+                    console.log('Legal page: Updated cookie and localStorage language to:', selectedLang);
+                }
+                
+                // Navigate to the URL
+                window.location.href = href;
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!switcher.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+        
+        // Close dropdown on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                dropdown.classList.add('hidden');
+            }
+        });
+    } else {
+        console.error('Legal page: Language switcher elements not found!');
+    }
+});
+</script> 

@@ -4,10 +4,56 @@
  */
 class I18n {
     constructor() {
-        this.currentLang = localStorage.getItem('language') || 'vi';
+        this.currentLang = this.detectLanguage();
         this.translations = {};
         this.loadTranslations();
         this.initLanguageSwitcher();
+    }
+    
+    /**
+     * Detect user's preferred language
+     */
+    detectLanguage() {
+        // 1. Check if user has explicitly set language (cookie)
+        const cookieLang = this.getCookie('django_language');
+        if (cookieLang && ['vi', 'en'].includes(cookieLang)) {
+            return cookieLang;
+        }
+        
+        // 2. Check localStorage for backward compatibility
+        const localStorageLang = localStorage.getItem('language');
+        if (localStorageLang && ['vi', 'en'].includes(localStorageLang)) {
+            // Migrate to cookie
+            this.setCookie('django_language', localStorageLang, 365);
+            return localStorageLang;
+        }
+        
+        // 3. Detect from browser language
+        const browserLang = navigator.language || navigator.userLanguage;
+        const detectedLang = browserLang.startsWith('vi') ? 'vi' : 'en';
+        
+        // Save detected language to cookie
+        this.setCookie('django_language', detectedLang, 365);
+        return detectedLang;
+    }
+    
+    /**
+     * Get cookie value
+     */
+    getCookie(name) {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(';').shift();
+        return null;
+    }
+    
+    /**
+     * Set cookie value
+     */
+    setCookie(name, value, days) {
+        const expires = new Date();
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     }
     
     /**
@@ -82,6 +128,11 @@ class I18n {
         if (this.currentLang === lang) return;
         
         this.currentLang = lang;
+        
+        // Save to cookie instead of localStorage
+        this.setCookie('django_language', lang, 365);
+        
+        // Keep localStorage for backward compatibility
         localStorage.setItem('language', lang);
         
         // Update language switcher flag
@@ -109,7 +160,6 @@ class I18n {
         });
         document.dispatchEvent(languageChangeEvent);
         
-        console.log(`Language changed to: ${lang}`);
     }
     
     /**

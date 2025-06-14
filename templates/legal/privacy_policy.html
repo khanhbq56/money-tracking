@@ -1,0 +1,322 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Privacy Policy" %} - Money Tracker{% endblock %}
+
+{% block content %}
+<!-- Sticky Navigation Bar -->
+<div class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm sticky-nav" id="legal-nav">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-3">
+            <!-- Back to App Button -->
+            <a href="/" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-sm rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-700 hover:shadow-xl transition-all duration-300 transform hover:scale-105 back-to-app-btn">
+                <i class="fas fa-arrow-left mr-2"></i>
+                <span>{% trans "back_to_app" %}</span>
+            </a>
+            
+            <!-- Language Switcher -->
+            <div class="relative">
+                <button id="language-switcher" class="bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 cursor-pointer flex items-center justify-between min-w-[80px]">
+                    <span id="current-flag">{% if LANGUAGE_CODE == 'vi' %}🇻🇳{% else %}🇺🇸{% endif %}</span>
+                    <svg class="w-4 h-4 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+                <div id="language-dropdown" class="absolute top-full right-0 left-0 mt-1 bg-white border border-gray-300 rounded-xl shadow-lg z-50 hidden">
+                    <a href="?lang=vi" class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-t-xl block no-underline text-gray-700" style="text-decoration: none;">🇻🇳</a>
+                    <a href="?lang=en" class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-b-xl block no-underline text-gray-700" style="text-decoration: none;">🇺🇸</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="min-h-screen bg-gray-50 py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                🔒 {% trans "Privacy Policy" %}
+            </h1>
+            <p class="text-xl text-gray-600">
+                {% trans "Your privacy is important to us" %}
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                {% trans "Last updated" %}: {{ last_updated|default:"2024-01-15" }}
+            </p>
+        </div>
+
+        <!-- Content -->
+        <div class="bg-white rounded-lg shadow-lg p-8 prose prose-lg max-w-none">
+            
+            <!-- Introduction -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📋 {% trans "Introduction" %}
+                </h2>
+                <p class="text-gray-700 leading-relaxed">
+                    {% trans "privacy_intro_text" %}
+                </p>
+            </section>
+
+            <!-- Data Collection -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📊 {% trans "Data Collection" %}
+                </h2>
+                
+                <h3 class="text-xl font-medium text-gray-700 mb-3">
+                    {% trans "personal_information" %}
+                </h3>
+                <p class="text-gray-700 mb-4">
+                    {% trans "we_collect_minimal_personal_information" %}
+                </p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "email_address" %}</strong> - {% trans "for_account_auth" %}</li>
+                    <li><strong>{% trans "name" %}</strong> - {% trans "from_google_oauth" %}</li>
+                    <li><strong>{% trans "profile_picture_url" %}</strong> - {% trans "from_google_oauth_personalization" %}</li>
+                    <li><strong>{% trans "google_id" %}</strong> - {% trans "unique_identifier_oauth" %}</li>
+                </ul>
+
+                <h3 class="text-xl font-medium text-gray-700 mb-3 mt-6">
+                    {% trans "financial_data" %}
+                </h3>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "transaction_records" %}</strong> - {% trans "amount_description_date" %}</li>
+                    <li><strong>{% trans "financial_patterns" %}</strong> - {% trans "aggregated_spending_saving" %}</li>
+                    <li><strong>{% trans "ai_confidence_scores" %}</strong> - {% trans "transaction_categorization_accuracy" %}</li>
+                </ul>
+
+                <h3 class="text-xl font-medium text-gray-700 mb-3 mt-6">{% trans "technical_data" %}</h3>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "ip_address" %}</strong> - {% trans "security_login_tracking" %}</li>
+                    <li><strong>{% trans "session_data" %}</strong> - {% trans "maintaining_authenticated_sessions" %}</li>
+                    <li><strong>{% trans "usage_analytics" %}</strong> - {% trans "feature_usage_improvement" %}</li>
+                </ul>
+            </section>
+
+            <!-- Data Usage -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🎯 {% trans "how_we_use_your_data" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "data_usage_1" %}</li>
+                    <li>{% trans "data_usage_2" %}</li>
+                    <li>{% trans "data_usage_3" %}</li>
+                    <li>{% trans "data_usage_4" %}</li>
+                    <li>{% trans "data_usage_5" %}</li>
+                    <li>{% trans "data_usage_6" %}</li>
+                </ul>
+            </section>
+
+            <!-- Data Sharing -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🚫 {% trans "data_sharing_policy" %}
+                </h2>
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
+                    <p class="text-green-800 font-semibold">
+                        ✅ {% trans "data_sharing_commitment" %}
+                    </p>
+                </div>
+                
+                <p class="text-gray-700 mb-4">{% trans "limited_exceptions_intro" %}</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li>{% trans "exception_1" %}</li>
+                    <li>{% trans "exception_2" %}</li>
+                    <li>{% trans "exception_3" %}</li>
+                </ul>
+            </section>
+
+            <!-- Data Security -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🔐 {% trans "data_security" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "encryption_in_transit" %}</strong> - {% trans "encryption_in_transit_desc" %}</li>
+                    <li><strong>{% trans "encryption_at_rest" %}</strong> - {% trans "encryption_at_rest_desc" %}</li>
+                    <li><strong>{% trans "secure_authentication" %}</strong> - {% trans "secure_authentication_desc" %}</li>
+                    <li><strong>{% trans "access_controls" %}</strong> - {% trans "access_controls_desc" %}</li>
+                    <li><strong>{% trans "regular_security_audits" %}</strong> - {% trans "regular_security_audits_desc" %}</li>
+                </ul>
+            </section>
+
+            <!-- Demo Accounts -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    👤 {% trans "demo_accounts" %}
+                </h2>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-4">
+                    <p class="text-yellow-800">
+                        <strong>{% trans "demo_account_policy" %}:</strong> {% trans "demo_account_policy_text" %}
+                    </p>
+                </div>
+            </section>
+
+            <!-- Data Retention -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📅 {% trans "data_retention" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "account_data" %}</strong> - {% trans "account_data_retention" %}</li>
+                    <li><strong>{% trans "transaction_data" %}</strong> - {% trans "transaction_data_retention" %}</li>
+                    <li><strong>{% trans "demo_accounts" %}</strong> - {% trans "demo_accounts_retention" %}</li>
+                    <li><strong>{% trans "login_logs" %}</strong> - {% trans "login_logs_retention" %}</li>
+                </ul>
+            </section>
+
+            <!-- Your Rights -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    ⚖️ {% trans "your_rights" %}
+                </h2>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "access" %}</strong> - {% trans "access_desc" %}</li>
+                    <li><strong>{% trans "correction" %}</strong> - {% trans "correction_desc" %}</li>
+                    <li><strong>{% trans "deletion" %}</strong> - {% trans "deletion_desc" %}</li>
+                    <li><strong>{% trans "export" %}</strong> - {% trans "export_desc" %}</li>
+                    <li><strong>{% trans "restriction" %}</strong> - {% trans "restriction_desc" %}</li>
+                </ul>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mt-4">
+                    <p class="text-blue-800">
+                        <strong>{% trans "to_exercise_rights" %}:</strong> {% trans "contact_privacy_email" %}
+                        <a href="mailto:privacy@moneytracker.app" class="underline">privacy@moneytracker.app</a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Cookies -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    🍪 {% trans "cookies_local_storage" %}
+                </h2>
+                <p class="text-gray-700 mb-4">{% trans "cookies_intro" %}</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                    <li><strong>{% trans "session_cookies" %}</strong> - {% trans "session_cookies_desc" %}</li>
+                    <li><strong>{% trans "preference_storage" %}</strong> - {% trans "preference_storage_desc" %}</li>
+                    <li><strong>{% trans "security_tokens" %}</strong> - {% trans "security_tokens_desc" %}</li>
+                </ul>
+            </section>
+
+            <!-- Children's Privacy -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    👶 {% trans "childrens_privacy" %}
+                </h2>
+                <p class="text-gray-700">
+                    {% trans "childrens_privacy_text" %}
+                </p>
+            </section>
+
+            <!-- Changes to Policy -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📝 {% trans "changes_to_policy" %}
+                </h2>
+                <p class="text-gray-700">
+                    {% trans "changes_to_policy_text" %}
+                </p>
+            </section>
+
+            <!-- Contact -->
+            <section class="mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+                    📧 {% trans "contact_us" %}
+                </h2>
+                <p class="text-gray-700 mb-4">
+                    {% trans "privacy_contact_intro" %}
+                </p>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <p class="text-gray-700">
+                        <strong>{% trans "email" %}:</strong> privacy@moneytracker.app<br>
+                        <strong>{% trans "response_time" %}:</strong> {% trans "within_48_hours" %}<br>
+                        <strong>{% trans "languages" %}:</strong> {% trans "vietnamese_english" %}
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<script>
+// Add scroll effect for sticky navigation
+window.addEventListener('scroll', function() {
+    const nav = document.getElementById('legal-nav');
+    if (window.scrollY > 50) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+});
+
+// Language dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Legal page: Language dropdown script loaded');
+    const switcher = document.getElementById('language-switcher');
+    const dropdown = document.getElementById('language-dropdown');
+    
+    console.log('Legal page: Elements found', { switcher: !!switcher, dropdown: !!dropdown });
+    
+    if (switcher && dropdown) {
+        // Toggle dropdown on click
+        switcher.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Legal page: Language switcher clicked');
+            dropdown.classList.toggle('hidden');
+            console.log('Legal page: Dropdown hidden state:', dropdown.classList.contains('hidden'));
+        });
+        
+        // Handle language selection
+        const languageOptions = dropdown.querySelectorAll('.language-option');
+        console.log('Legal page: Language options found:', languageOptions.length);
+        
+        languageOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Legal page: Language option clicked:', this.getAttribute('href'));
+                
+                // Extract language from href (e.g., "?lang=vi" -> "vi")
+                const href = this.getAttribute('href');
+                const langMatch = href.match(/lang=([a-z]{2})/);
+                if (langMatch) {
+                    const selectedLang = langMatch[1];
+                    
+                    // Update cookie to sync with main app (same as i18n.js)
+                    const expires = new Date();
+                    expires.setTime(expires.getTime() + (365 * 24 * 60 * 60 * 1000));
+                    document.cookie = `django_language=${selectedLang};expires=${expires.toUTCString()};path=/`;
+                    
+                    // Update localStorage for backward compatibility
+                    localStorage.setItem('language', selectedLang);
+                    console.log('Legal page: Updated cookie and localStorage language to:', selectedLang);
+                }
+                
+                // Navigate to the URL
+                window.location.href = href;
+            });
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!switcher.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+        
+        // Close dropdown on Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                dropdown.classList.add('hidden');
+            }
+        });
+    } else {
+        console.error('Legal page: Language switcher elements not found!');
+    }
+});
+</script> 

@@ -16,7 +16,6 @@ class Dashboard {
      */
     async init() {
         try {
-            console.log('📊 Initializing Dashboard...');
             
             // Wait for app to be ready
             await this.waitForApp();
@@ -32,9 +31,7 @@ class Dashboard {
             
             // Setup auto-refresh
             this.setupAutoRefresh();
-            
-            console.log('✅ Dashboard initialized successfully');
-            
+
         } catch (error) {
             console.error('❌ Error initializing dashboard:', error);
         }
@@ -81,7 +78,6 @@ class Dashboard {
      */
     async loadDashboardData() {
         try {
-            console.log('📊 Loading dashboard data from API...');
             
             // Load monthly totals and today summary in parallel
             const [monthlyData, todayData] = await Promise.all([
@@ -96,9 +92,7 @@ class Dashboard {
             if (todayData) {
                 this.updateTodaySummary(todayData.transactions);
             }
-            
-            console.log('✅ Dashboard data loaded successfully');
-            
+
         } catch (error) {
             console.error('❌ Error loading dashboard data:', error);
             this.showErrorState();
@@ -116,7 +110,6 @@ class Dashboard {
             }
             
             const data = await response.json();
-            console.log('📈 Monthly totals fetched:', data);
             
             // Transform API response to expected format
             if (data.monthly_totals) {
@@ -146,7 +139,6 @@ class Dashboard {
             }
             
             const data = await response.json();
-            console.log('📅 Today summary fetched:', data);
             
             return data;
         } catch (error) {
@@ -422,7 +414,6 @@ class Dashboard {
      */
     async handleDataUpdate(newData) {
         // When data updates (new transaction added), refresh from API
-        console.log('🔄 Data updated, refreshing dashboard...');
         await this.loadDashboardData();
     }
     
@@ -431,7 +422,6 @@ class Dashboard {
      */
     async updateLanguage(language) {
         // Re-load data with new language
-        console.log('🌐 Language changed, refreshing dashboard...');
         await this.loadDashboardData();
     }
     
@@ -461,14 +451,12 @@ class Dashboard {
             this.loadDashboardData();
         }, 30000);
         
-        console.log('🔄 Auto-refresh setup for dashboard (30s interval)');
     }
     
     /**
      * Manually refresh dashboard
      */
     async refreshDashboard() {
-        console.log('🔄 Manually refreshing dashboard...');
         await this.loadDashboardData();
     }
     

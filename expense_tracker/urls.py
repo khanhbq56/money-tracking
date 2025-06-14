@@ -7,7 +7,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from .health import health_check
-from .debug_static import debug_static_files
+
 import ai_chat.views
 
 # Main app views (template rendering) - MUST come first
@@ -27,18 +27,20 @@ urlpatterns += [
     # Basic health check
     path('', basic_health, name='basic_health'),
     path('health/', health_check, name='health_check'),
-    path('debug-static/', debug_static_files, name='debug_static'),
+
     
     # Admin
     path('admin/', admin.site.urls),
     
+    # Authentication endpoints
+    path('auth/', include('authentication.urls')),
+    
     # API endpoints (outside i18n patterns)
     path('api/', include('transactions.api_urls')),
-    path('api/ai_chat/', include('ai_chat.urls')),
+    path('api/chat/', include('ai_chat.urls')),  # Main AI chat endpoints
     
     # API aliases for frontend compatibility
-    path('api/meme/weekly/', ai_chat.views.generate_weekly_meme, name='meme_weekly_alias'),
-    path('api/chat/', include('ai_chat.urls')),  # /api/chat/process/, /api/chat/confirm/ -> ai_chat endpoints
+    path('api/meme/weekly/', ai_chat.views.generate_weekly_meme, name='meme_weekly_alias')
 ]
 
 # Serve static and media files during development

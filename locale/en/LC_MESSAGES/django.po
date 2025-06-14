@@ -1,216 +1,51 @@
 # English translations for expense tracker
 # Copyright (C) 2025
 # This file is distributed under the same license as the expense tracker package.
-
 msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-02 12:00+0700\n"
+"POT-Creation-Date: 2025-06-14 12:35+0700\n"
 "PO-Revision-Date: 2025-01-02 12:00+0700\n"
 "Last-Translator: AI Assistant\n"
-"Language: en\n"
 "Language-Team: English\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# Main app titles
-msgid "Expense Tracker"
-msgstr "Expense Tracker"
+#: .\ai_chat\admin.py:20
+msgid "Message Content"
+msgstr "Message Content"
 
-msgid "AI Assistant"
-msgstr "AI Assistant"
+#: .\ai_chat\admin.py:23 .\ai_chat\views.py:582
+msgid "Voice Input"
+msgstr "Voice Input"
 
-# Transaction types
-msgid "Chi Tiêu"
-msgstr "Expense"
+#: .\ai_chat\admin.py:27 .\transactions\models.py:83
+msgid "Transaction"
+msgstr "Transaction"
 
-msgid "Tiết Kiệm"
-msgstr "Saving"
+#: .\ai_chat\admin.py:30 .\transactions\admin.py:68
 
-msgid "Đầu Tư"
-msgstr "Investment"
+#: .\ai_chat\admin.py:42
 
-msgid "Tổng Tháng"
-msgstr "Monthly Total"
+#: .\ai_chat\admin.py:46 .\ai_chat\models.py:10
+msgid "User Message"
+msgstr "User Message"
 
-# Time periods
-msgid "Tháng này"
-msgstr "This month"
-
-msgid "Hôm Nay"
-msgstr "Today"
-
-msgid "Số dư ròng"
-msgstr "Net amount"
-
-# Actions and buttons
-msgid "Gửi"
-msgstr "Send"
-
-msgid "Tất cả"
-msgstr "All"
-
-msgid "Thao Tác Nhanh"
-msgstr "Quick Actions"
-
-msgid "Future Me Simulator"
-msgstr "Future Me Simulator"
-
-msgid "Tạo Meme"
-msgstr "Generate Meme"
-
-msgid "Thống Kê"
-msgstr "Statistics"
-
-# Calendar and interface
-msgid "Lịch Tài Chính"
-msgstr "Financial Calendar"
-
-msgid "Quản lý tài chính thông minh"
-msgstr "Smart financial management"
-
-msgid "Lịch sẽ được triển khai ở Phase 4"
-msgstr "Calendar will be implemented in Phase 4"
-
-msgid "Calendar tương tác với hiển thị giao dịch theo ngày"
-msgstr "Interactive calendar with daily transaction display"
-
-# Chat interface
-msgid "Online"
-msgstr "Online"
-
-msgid "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
-msgstr "Hello! Tell me about your transaction. e.g: \"lunch 50k\""
-
-msgid "VD: coffee 25k, tiết kiệm 200k..."
-msgstr "e.g: coffee 25k, saving 200k..."
-
-msgid "Ăn trưa"
-msgstr "Lunch"
-
-msgid "Tổng hôm nay:"
-msgstr "Today total:"
-
-# Languages
-msgid "Tiếng Việt"
-msgstr "Vietnamese"
-
-msgid "English"
-msgstr "English"
-
-# Categories
-msgid "🍜 Ăn uống"
-msgstr "🍜 Food & Drink"
-
-msgid "☕ Coffee"
-msgstr "☕ Coffee"
-
-msgid "🚗 Di chuyển"
-msgstr "🚗 Transport"
-
-msgid "🛒 Mua sắm"
-msgstr "🛒 Shopping"
-
-msgid "🎬 Giải trí"
-msgstr "🎬 Entertainment"
-
-msgid "🏥 Sức khỏe"
-msgstr "🏥 Healthcare"
-
-msgid "📚 Giáo dục"
-msgstr "📚 Education"
-
-msgid "⚡ Tiện ích"
-msgstr "⚡ Utilities"
-
-msgid "📦 Khác"
-msgstr "📦 Other"
-
-# Transaction status
-msgid "🔴 Chi tiêu"
-msgstr "🔴 Expense"
-
-msgid "🟢 Tiết kiệm"
-msgstr "🟢 Saving"
-
-msgid "🔵 Đầu tư"
-msgstr "🔵 Investment"
-
-# Day names for calendar
-msgid "monday"
-msgstr "Mon"
-
-msgid "tuesday"
-msgstr "Tue"
-
-msgid "wednesday"
-msgstr "Wed"
-
-msgid "thursday"
-msgstr "Thu"
-
-msgid "friday"
-msgstr "Fri"
-
-msgid "saturday"
-msgstr "Sat"
-
-msgid "sunday"
-msgstr "Sun"
-
-# Monthly total description
-msgid "net_amount"
-msgstr "Net amount"
-
-# Voice input features
-msgid "Voice Input (Ctrl+Shift+V)"
-msgstr "Voice Input (Ctrl+Shift+V)"
-
-msgid "Đang nghe..."
-msgstr "Listening..."
-
-msgid "Listening..."
-msgstr "Listening..."
-
-msgid "Voice recognition started"
-msgstr "Voice recognition started"
-
-msgid "Voice recognition ended"
-msgstr "Voice recognition ended"
-
-msgid "No speech detected. Please try again."
-msgstr "No speech detected. Please try again."
-
-msgid "Cannot access microphone. Check permissions."
-msgstr "Cannot access microphone. Check permissions."
-
-msgid "Microphone access denied."
-msgstr "Microphone access denied."
-
-msgid "Network error. Check internet connection."
-msgstr "Network error. Check internet connection."
-
-msgid "Voice recognition error. Please try again."
-msgstr "Voice recognition error. Please try again."
-
-msgid "Browser does not support voice input. Please use Chrome or Edge."
-msgstr "Browser does not support voice input. Please use Chrome or Edge."
+#: .\ai_chat\apps.py:8
 
 # Date format keys
+#: .\ai_chat\date_parser.py:224 .\ai_chat\date_parser.py:242
 msgid "date_format"
 msgstr "MM/dd/yyyy"
 
-# AI response template
-msgid "ai_classification_response"
-msgstr "{icon} Classified as: {type_display} - {description} ({amount:,.0f}₫)"
-
 # Gemini prompt template
+#: .\ai_chat\gemini_service.py:91
 msgid "gemini_prompt_template"
-msgstr ""
-"Analyze the following English message and return accurate JSON:\n"
+msgstr "Analyze the following English message and return accurate JSON:\n"
 "\n"
 "Message: \"{message}\"\n"
 "\n"
@@ -226,17 +61,23 @@ msgstr ""
 "\n"
 "Classification rules:\n"
 "1. EXPENSES:\n"
-"   - \"coffee\", \"cafe\" → type: \"expense\", category: \"coffee\", icon: \"☕\"\n"
-"   - \"lunch\", \"dinner\", \"food\", \"eat\" → type: \"expense\", category: \"food\", icon: \"🍜\"\n"
-"   - \"transport\", \"taxi\", \"gas\", \"fuel\" → type: \"expense\", category: \"transport\", icon: \"🚗\"\n"
-"   - \"shopping\", \"buy clothes\" → type: \"expense\", category: \"shopping\", icon: \"🛒\"\n"
+"   - \"coffee\", \"cafe\" → type: \"expense\", category: \"coffee\", icon: "
+"\"☕\"\n"
+"   - \"lunch\", \"dinner\", \"food\", \"eat\" → type: \"expense\", category: "
+"\"food\", icon: \"🍜\"\n"
+"   - \"transport\", \"taxi\", \"gas\", \"fuel\" → type: \"expense\", "
+"category: \"transport\", icon: \"🚗\"\n"
+"   - \"shopping\", \"buy clothes\" → type: \"expense\", category: "
+"\"shopping\", icon: \"🛒\"\n"
 "   - Default others → type: \"expense\", category: \"other\", icon: \"📦\"\n"
 "\n"
 "2. SAVINGS:\n"
-"   - \"saving\", \"save money\", \"bank deposit\" → type: \"saving\", category: null, icon: \"💰\"\n"
+"   - \"saving\", \"save money\", \"bank deposit\" → type: \"saving\", "
+"category: null, icon: \"💰\"\n"
 "\n"
 "3. INVESTMENTS:\n"
-"   - \"investment\", \"buy stocks\", \"invest\" → type: \"investment\", category: null, icon: \"📈\"\n"
+"   - \"investment\", \"buy stocks\", \"invest\" → type: \"investment\", "
+"category: null, icon: \"📈\"\n"
 "\n"
 "4. Amount extraction:\n"
 "   - \"25k\" = 25000\n"
@@ -245,95 +86,1641 @@ msgstr ""
 "\n"
 "Always return positive amount and confidence 0.6-1.0."
 
-# Date parsing descriptions
-msgid "hôm nay"
-msgstr "today"
+#: .\ai_chat\models.py:13
 
-msgid "hôm qua"
-msgstr "yesterday"
+#: .\ai_chat\models.py:20
+msgid "Suggested Transaction"
+msgstr "Suggested Transaction"
 
-msgid "hôm kia"
-msgstr "day before yesterday"
+#: .\ai_chat\models.py:24
+msgid "Is Confirmed"
+msgstr "Is Confirmed"
 
-msgid "today"
-msgstr "today"
+#: .\ai_chat\models.py:30
+msgid "Has Voice Input"
+msgstr "Has Voice Input"
 
-msgid "yesterday"
-msgstr "yesterday"
+#: .\ai_chat\models.py:34
 
-msgid "day before yesterday"
-msgstr "day before yesterday"
+#: .\ai_chat\models.py:41
+msgid "Parsed Date"
+msgstr "Parsed Date"
 
-# Category keys for backend translation utils
-msgid "category_food"
-msgstr "Food & Drink"
+#: .\ai_chat\models.py:49
+msgid "Vietnamese"
+msgstr "Vietnamese"
 
-msgid "category_coffee"
-msgstr "Coffee"
+#: .\ai_chat\models.py:50 .\expense_tracker\settings\base.py:113
+msgid "English"
+msgstr "English"
 
-msgid "category_transport"
-msgstr "Transport"
+#: .\ai_chat\models.py:52
 
-msgid "category_shopping"
-msgstr "Shopping"
+#: .\ai_chat\models.py:57 .\authentication\models.py:69
+#: .\transactions\models.py:75
+msgid "Created At"
+msgstr "Created At"
 
-msgid "category_entertainment"
-msgstr "Entertainment"
+#: .\ai_chat\models.py:61
+msgid "Chat Message"
+msgstr ""
 
-msgid "category_health"
-msgstr "Healthcare"
+#: .\ai_chat\models.py:62
+msgid "Chat Messages"
+msgstr ""
 
-msgid "category_education"
-msgstr "Education"
+#: .\ai_chat\serializers.py:40
+msgid "User message to process"
+msgstr ""
 
-msgid "category_utilities"
-msgstr "Utilities"
+#: .\ai_chat\serializers.py:44
+msgid "Whether the message was inputted via voice"
+msgstr ""
 
-msgid "category_other"
-msgstr "Other"
+#: .\ai_chat\serializers.py:49
 
-msgid "category_saving"
+#: .\ai_chat\serializers.py:55
+msgid "Message cannot be empty."
+msgstr ""
+
+#: .\ai_chat\serializers.py:63
+msgid "ID of the created chat message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:64
+
+#: .\ai_chat\serializers.py:65
+
+#: .\ai_chat\serializers.py:68
+msgid "Parsed date from the message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:70 .\ai_chat\serializers.py:172
+
+#: .\ai_chat\serializers.py:77
+msgid "ID of the chat message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:78
+msgid "Transaction data to confirm"
+msgstr ""
+
+#: .\ai_chat\serializers.py:82
+msgid "Custom date for the transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:90
+msgid "Chat message not found."
+msgstr ""
+
+#: .\ai_chat\serializers.py:106
+
+#: .\ai_chat\serializers.py:113 .\transactions\serializers.py:58
+msgid "Amount must be greater than 0."
+msgstr ""
+
+#: .\ai_chat\serializers.py:115
+msgid "Amount must be a valid number."
+msgstr ""
+
+#: .\ai_chat\serializers.py:124
+msgid "Whether the confirmation was successful"
+msgstr ""
+
+#: .\ai_chat\serializers.py:127
+msgid "ID of the created transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:131
+msgid "Date of the transaction"
+msgstr ""
+
+#: .\ai_chat\serializers.py:135
+msgid "Success or error message"
+msgstr ""
+
+#: .\ai_chat\serializers.py:143
+
+#: .\ai_chat\serializers.py:144
+
+#: .\ai_chat\serializers.py:153
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction type"
 msgstr "Saving"
 
-msgid "category_investment"
-msgstr "Investment"
+#: .\ai_chat\serializers.py:158
+msgid "Transaction amount"
+msgstr ""
 
-# Date description keys
-msgid "date_today"
-msgstr "today"
+#: .\ai_chat\serializers.py:162
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction description"
+msgstr "Saving"
 
-msgid "date_yesterday"
-msgstr "yesterday"
+#: .\ai_chat\serializers.py:167
+msgid "Expense category (only for expenses)"
+msgstr ""
 
-msgid "date_day_before_yesterday"
-msgstr "day before yesterday"
+#: .\ai_chat\serializers.py:174
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction icon"
+msgstr "Saving"
 
-msgid "date_days_ago"
-msgstr "{days} days ago"
+#: .\ai_chat\serializers.py:178
+msgid "Parsed date from message"
+msgstr ""
 
-msgid "date_weeks_ago"
-msgstr "{weeks} weeks ago"
+#: .\ai_chat\serializers.py:182
+msgid "Whether input was voice"
+msgstr ""
 
-# Voice suggestion keys
-msgid "voice_speak_clearly"
-msgstr "Please speak more clearly, e.g.: \"coffee twenty five thousand\""
+#: .\ai_chat\views.py:186
+msgid "Transaction confirmed successfully"
+msgstr ""
 
-msgid "voice_no_amount"
-msgstr "No amount detected. Please specify the amount, e.g.: \"25k\" or \"twenty five thousand\""
-
-msgid "voice_unclear_type"
-msgstr "Transaction type unclear. Please add keywords like \"coffee\", \"lunch\", \"saving\""
+#: .\ai_chat\views.py:193
+msgid "Chat message not found"
+msgstr ""
 
 # Error message keys
-msgid "error_language_not_supported"
+#: .\ai_chat\views.py:246
+#, fuzzy
+#| msgid "error_language_not_supported"
+msgid "Language not supported"
 msgstr "Language not supported"
 
-# Transaction type keys
-msgid "transaction_type_expense"
+# AI response template
+#: .\ai_chat\views.py:359
+msgid "ai_classification_response"
+msgstr "{icon} Classified as: {type_display} - {description} ({amount:,.0f}₫)"
+
+#: .\ai_chat\views.py:541
+
+#: .\ai_chat\views.py:542
+
+#: .\ai_chat\views.py:543
+
+#: .\ai_chat\views.py:544
+#, fuzzy
+#| msgid "today"
+msgid "Today"
+msgstr "today"
+
+#: .\ai_chat\views.py:545
+
+# Day names for calendar
+#: .\ai_chat\views.py:548
+#, fuzzy
+#| msgid "monday"
+msgid "Monday"
+msgstr "Mon"
+
+#: .\ai_chat\views.py:549
+#, fuzzy
+#| msgid "tuesday"
+msgid "Tuesday"
+msgstr "Tue"
+
+#: .\ai_chat\views.py:550
+#, fuzzy
+#| msgid "wednesday"
+msgid "Wednesday"
+msgstr "Wed"
+
+#: .\ai_chat\views.py:551
+#, fuzzy
+#| msgid "thursday"
+msgid "Thursday"
+msgstr "Thu"
+
+#: .\ai_chat\views.py:552
+#, fuzzy
+#| msgid "friday"
+msgid "Friday"
+msgstr "Fri"
+
+#: .\ai_chat\views.py:553
+#, fuzzy
+#| msgid "saturday"
+msgid "Saturday"
+msgstr "Sat"
+
+#: .\ai_chat\views.py:554
+#, fuzzy
+#| msgid "sunday"
+msgid "Sunday"
+msgstr "Sun"
+
+#: .\ai_chat\views.py:557
+
+#: .\ai_chat\views.py:558
+
+#: .\ai_chat\views.py:559
+
+#: .\ai_chat\views.py:560
+
+#: .\ai_chat\views.py:561
+
+#: .\ai_chat\views.py:562
+
+#: .\ai_chat\views.py:563
+
+#: .\ai_chat\views.py:564
+
+#: .\ai_chat\views.py:565
+
+#: .\ai_chat\views.py:566
+
+#: .\ai_chat\views.py:567
+
+#: .\ai_chat\views.py:568
+
+# Main app titles
+#: .\ai_chat\views.py:571
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense"
+msgstr "Expense Tracker"
+
+#: .\ai_chat\views.py:572
+
+#: .\ai_chat\views.py:573
+#, fuzzy
+#| msgid "category_investment"
+msgid "Investment"
+msgstr "Investment"
+
+# Monthly total description
+#: .\ai_chat\views.py:574
+#, fuzzy
+#| msgid "net_amount"
+msgid "Net Amount"
+msgstr "Net amount"
+
+#: .\ai_chat\views.py:575 .\transactions\models.py:157
+
+#: .\ai_chat\views.py:578
+
+#: .\ai_chat\views.py:579
+msgid "Confirm"
+msgstr ""
+
+#: .\ai_chat\views.py:580
+msgid "Cancel"
+msgstr ""
+
+#: .\ai_chat\views.py:581
+msgid "Add Transaction"
+msgstr ""
+
+#: .\ai_chat\views.py:585
+#, fuzzy
+#| msgid "Listening..."
+msgid "Loading..."
+msgstr "Listening..."
+
+#: .\ai_chat\views.py:586
+msgid "Error"
+msgstr ""
+
+#: .\ai_chat\views.py:587
+msgid "Success"
+msgstr ""
+
+#: .\ai_chat\views.py:590
+msgid "Listening..."
+msgstr "Listening..."
+
+# Voice input features
+#: .\ai_chat\views.py:591 .\templates\index.html:310
+msgid "Voice Input (Ctrl+Shift+V)"
+msgstr "Voice Input (Ctrl+Shift+V)"
+
+# Voice suggestion keys
+#: .\ai_chat\views.py:592
+#, fuzzy
+#| msgid "voice_speak_clearly"
+msgid "Please speak clearly"
+msgstr "Please speak more clearly, e.g.: \"coffee twenty five thousand\""
+
+#: .\ai_chat\views.py:595
+
+# Main app titles
+#: .\ai_chat\views.py:596
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expenses"
+msgstr "Expense Tracker"
+
+#: .\ai_chat\views.py:597
+
+#: .\ai_chat\views.py:598
+#, fuzzy
+#| msgid "category_investment"
+msgid "Investments"
+msgstr "Investment"
+
+#: .\ai_chat\views.py:601
+msgid "No transactions for this day"
+msgstr ""
+
+#: .\ai_chat\views.py:602
+msgid "Transaction added successfully"
+msgstr ""
+
+#: .\ai_chat\views.py:603
+msgid "AI is processing your message..."
+msgstr ""
+
+#: .\ai_chat\views.py:606
+
+#: .\ai_chat\views.py:607
+
+#: .\ai_chat\views.py:608
+
+#: .\ai_chat\views.py:609
+
+#: .\ai_chat\views.py:610
+#, fuzzy
+#| msgid "AI Assistant"
+msgid "AI Analysis"
+msgstr "AI Assistant"
+
+#: .\ai_chat\views.py:611
+
+#: .\ai_chat\views.py:612
+
+#: .\authentication\admin.py:34
+msgid "Personal info"
+msgstr ""
+
+#: .\authentication\admin.py:37 .\authentication\admin.py:71
+msgid "Account Type"
+msgstr ""
+
+#: .\authentication\admin.py:40
+msgid "Google OAuth"
+msgstr ""
+
+#: .\authentication\admin.py:44
+msgid "Legal Consent"
+msgstr ""
+
+#: .\authentication\admin.py:51
+
+#: .\authentication\admin.py:55
+msgid "Important dates"
+msgstr ""
+
+#: .\authentication\admin.py:59
+
+#: .\authentication\admin.py:88
+msgid "Selected users marked as demo accounts."
+msgstr "Selected users marked as demo accounts."
+
+#: .\authentication\admin.py:89
+msgid "Mark as demo accounts"
+msgstr "Mark as demo accounts"
+
+#: .\authentication\admin.py:94
+msgid "Selected users marked as regular accounts."
+msgstr ""
+
+#: .\authentication\admin.py:95
+msgid "Mark as regular accounts"
+msgstr ""
+
+#: .\authentication\admin.py:105
+msgid "Legal consent reset for selected users."
+msgstr ""
+
+#: .\authentication\admin.py:106
+msgid "Reset legal consent"
+msgstr "Reset legal consent"
+
+#: .\authentication\apps.py:8
+msgid "Authentication"
+msgstr ""
+
+#: .\authentication\models.py:14
+msgid "Email address"
+msgstr ""
+
+#: .\authentication\models.py:23
+msgid "Google ID"
+msgstr ""
+
+#: .\authentication\models.py:29
+msgid "Is Demo User"
+msgstr ""
+
+#: .\authentication\models.py:30
+msgid "Designates whether this is a temporary demo account."
+msgstr "Designates whether this is a temporary demo account."
+
+#: .\authentication\models.py:36
+
+#: .\authentication\models.py:42
+msgid "Privacy Policy Accepted"
+msgstr ""
+
+#: .\authentication\models.py:47
+msgid "Privacy Policy Accepted At"
+msgstr ""
+
+#: .\authentication\models.py:51
+msgid "Terms Accepted"
+msgstr ""
+
+#: .\authentication\models.py:56
+msgid "Terms Accepted At"
+msgstr ""
+
+#: .\authentication\models.py:63
+msgid "Last Login IP"
+msgstr ""
+
+#: .\authentication\models.py:73 .\transactions\models.py:79
+msgid "Updated At"
+msgstr "Updated At"
+
+#: .\authentication\models.py:80
+msgid "Demo Account Expires At"
+msgstr ""
+
+#: .\authentication\models.py:81
+msgid "Demo accounts expire after 24 hours"
+msgstr ""
+
+#: .\authentication\models.py:89 .\transactions\models.py:65
+msgid "User"
+msgstr ""
+
+#: .\authentication\models.py:90
+msgid "Users"
+msgstr ""
+
+#: .\authentication\views.py:192
+msgid "You must accept the terms and privacy policy"
+msgstr "You must accept the terms and privacy policy"
+
+#: .\authentication\views.py:209
+msgid "Demo account created successfully"
+msgstr ""
+
+#: .\authentication\views.py:221
+msgid "Failed to create demo account"
+msgstr "Failed to create demo account"
+
+#: .\authentication\views.py:235
+msgid "Demo User"
+msgstr ""
+
+#: .\authentication\views.py:254
+
+#: .\authentication\views.py:255
+
+#: .\authentication\views.py:256
+
+#: .\authentication\views.py:257
+
+#: .\authentication\views.py:258
+
+#: .\authentication\views.py:262
+
+#: .\authentication\views.py:263
+
+#: .\authentication\views.py:267
+#, fuzzy
+#| msgid "category_investment"
+msgid "Stock investment"
+msgstr "Investment"
+
+#: .\authentication\views.py:268
+
+#: .\authentication\views.py:326
+msgid "Logged out successfully"
+msgstr ""
+
+# Languages
+#: .\expense_tracker\settings\base.py:112
+msgid "Tiếng Việt"
+msgstr "Vietnamese"
+
+# Main app titles
+#: .\templates\base.html:8 .\templates\index.html:5
+msgid "Expense Tracker"
+msgstr "Expense Tracker"
+
+#: .\templates\index.html:5 .\templates\index.html:213
+#: .\templates\index.html:265
+msgid "AI Assistant"
+msgstr "AI Assistant"
+
+# Transaction types
+#: .\templates\index.html:33 .\templates\index.html:129
+msgid "Chi Tiêu"
 msgstr "Expense"
 
-msgid "transaction_type_saving"
+# Time periods
+#: .\templates\index.html:35 .\templates\index.html:52
+#: .\templates\index.html:68
+msgid "Tháng này"
+msgstr "This month"
+
+#: .\templates\index.html:50 .\templates\index.html:132
+#: .\templates\index.html:191 .\templates\index.html:327
+msgid "Tiết Kiệm"
 msgstr "Saving"
 
-msgid "transaction_type_investment"
-msgstr "Investment" 
+#: .\templates\index.html:66 .\templates\index.html:135
+msgid "Đầu Tư"
+msgstr "Investment"
+
+#: .\templates\index.html:82
+msgid "Tổng Tháng"
+msgstr "Monthly Total"
+
+#: .\templates\index.html:84
+msgid "Số dư ròng"
+msgstr "Net amount"
+
+# Calendar and interface
+#: .\templates\index.html:106
+msgid "Lịch Tài Chính"
+msgstr "Financial Calendar"
+
+#: .\templates\index.html:107
+msgid "Quản lý tài chính thông minh"
+msgstr "Smart financial management"
+
+#: .\templates\index.html:126
+msgid "Tất cả"
+msgstr "All"
+
+#: .\templates\index.html:160
+msgid "Thao Tác Nhanh"
+msgstr "Quick Actions"
+
+#: .\templates\index.html:164
+msgid "Future Me Simulator"
+msgstr "Future Me Simulator"
+
+#: .\templates\index.html:167
+msgid "Tạo Meme"
+msgstr "Generate Meme"
+
+#: .\templates\index.html:170
+msgid "Thống Kê"
+msgstr "Statistics"
+
+#: .\templates\index.html:178
+msgid "Hôm Nay"
+msgstr "Today"
+
+#: .\templates\index.html:183 .\templates\index.html:326
+msgid "Ăn trưa"
+msgstr "Lunch"
+
+#: .\templates\index.html:196
+msgid "Tổng hôm nay:"
+msgstr "Today total:"
+
+# Chat interface
+#: .\templates\index.html:266
+msgid "Online"
+msgstr "Online"
+
+#: .\templates\index.html:275
+msgid "Auto Confirm"
+msgstr ""
+
+#: .\templates\index.html:301
+msgid "VD: coffee 25k, tiết kiệm 200k..."
+msgstr "e.g: coffee 25k, saving 200k..."
+
+#: .\templates\index.html:317
+
+#: .\templates\legal\privacy_policy.html:4
+#: .\templates\legal\privacy_policy.html:39
+msgid "Privacy Policy"
+msgstr "Privacy Policy"
+
+#: .\templates\legal\privacy_policy.html:14
+#: .\templates\legal\terms_of_service.html:14
+msgid "back_to_app"
+msgstr "Back to App"
+
+#: .\templates\legal\privacy_policy.html:42
+msgid "Your privacy is important to us"
+msgstr "Your privacy is important to us"
+
+#: .\templates\legal\privacy_policy.html:45
+#: .\templates\legal\terms_of_service.html:45
+msgid "Last updated"
+msgstr "Last updated"
+
+#: .\templates\legal\privacy_policy.html:55
+#, fuzzy
+#| msgid "category_education"
+msgid "Introduction"
+msgstr "Education"
+
+#: .\templates\legal\privacy_policy.html:58
+msgid "privacy_intro_text"
+msgstr "Money Tracker (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our financial tracking application."
+
+#: .\templates\legal\privacy_policy.html:65
+msgid "Data Collection"
+msgstr "Data Collection"
+
+#: .\templates\legal\privacy_policy.html:69
+msgid "personal_information"
+msgstr "Personal Information"
+
+#: .\templates\legal\privacy_policy.html:72
+msgid "we_collect_minimal_personal_information"
+msgstr "We collect minimal personal information:"
+
+#: .\templates\legal\privacy_policy.html:75
+msgid "email_address"
+msgstr "Email address"
+
+#: .\templates\legal\privacy_policy.html:75
+msgid "for_account_auth"
+msgstr "For account authentication and identification"
+
+#: .\templates\legal\privacy_policy.html:76
+msgid "name"
+msgstr "Name"
+
+#: .\templates\legal\privacy_policy.html:76
+msgid "from_google_oauth"
+msgstr "First and last name from Google OAuth (optional display)"
+
+#: .\templates\legal\privacy_policy.html:77
+msgid "profile_picture_url"
+msgstr "Profile picture URL"
+
+#: .\templates\legal\privacy_policy.html:77
+msgid "from_google_oauth_personalization"
+msgstr "From Google OAuth for personalization"
+
+#: .\templates\legal\privacy_policy.html:78
+msgid "google_id"
+msgstr "Google ID"
+
+#: .\templates\legal\privacy_policy.html:78
+msgid "unique_identifier_oauth"
+msgstr "Unique identifier for OAuth authentication"
+
+#: .\templates\legal\privacy_policy.html:82
+msgid "financial_data"
+msgstr "Financial Data"
+
+#: .\templates\legal\privacy_policy.html:85
+msgid "transaction_records"
+msgstr "Transaction records"
+
+#: .\templates\legal\privacy_policy.html:85
+msgid "amount_description_date"
+msgstr "Amount, description and date"
+
+#: .\templates\legal\privacy_policy.html:86
+msgid "financial_patterns"
+msgstr "Financial patterns"
+
+#: .\templates\legal\privacy_policy.html:86
+msgid "aggregated_spending_saving"
+msgstr "Aggregated spending and saving data"
+
+#: .\templates\legal\privacy_policy.html:87
+msgid "ai_confidence_scores"
+msgstr "AI confidence scores"
+
+#: .\templates\legal\privacy_policy.html:87
+msgid "transaction_categorization_accuracy"
+msgstr "For transaction categorization accuracy"
+
+#: .\templates\legal\privacy_policy.html:90
+msgid "technical_data"
+msgstr "Technical Data"
+
+#: .\templates\legal\privacy_policy.html:92
+msgid "ip_address"
+msgstr "IP address"
+
+#: .\templates\legal\privacy_policy.html:92
+msgid "security_login_tracking"
+msgstr "For security and login tracking"
+
+#: .\templates\legal\privacy_policy.html:93
+msgid "session_data"
+msgstr "Session data"
+
+#: .\templates\legal\privacy_policy.html:93
+msgid "maintaining_authenticated_sessions"
+msgstr "For maintaining authenticated sessions"
+
+#: .\templates\legal\privacy_policy.html:94
+msgid "usage_analytics"
+msgstr "Usage analytics"
+
+#: .\templates\legal\privacy_policy.html:94
+msgid "feature_usage_improvement"
+msgstr "Feature usage for app improvement"
+
+#: .\templates\legal\privacy_policy.html:101
+msgid "How We Use Your Data"
+msgstr "How We Use Your Data"
+
+#: .\templates\legal\privacy_policy.html:116
+msgid "Data Sharing Policy"
+msgstr "Data Sharing Policy"
+
+#: .\templates\legal\privacy_policy.html:135
+msgid "Data Security"
+msgstr "Data Security"
+
+#: .\templates\legal\privacy_policy.html:149
+msgid "Demo Accounts"
+msgstr "Demo Accounts"
+
+#: .\templates\legal\privacy_policy.html:163
+msgid "Data Retention"
+msgstr "Data Retention"
+
+#: .\templates\legal\privacy_policy.html:176
+msgid "Your Rights"
+msgstr "Your Rights"
+
+#: .\templates\legal\privacy_policy.html:197
+msgid "Cookies & Local Storage"
+msgstr "Cookies & Local Storage"
+
+#: .\templates\legal\privacy_policy.html:210
+msgid "Children's Privacy"
+msgstr "Children's Privacy"
+
+#: .\templates\legal\privacy_policy.html:222
+msgid "Changes to This Policy"
+msgstr "Changes to This Policy"
+
+#: .\templates\legal\privacy_policy.html:234
+msgid "Contact Us"
+msgstr "Contact Us"
+
+#: .\templates\legal\terms_of_service.html:4
+#: .\templates\legal\terms_of_service.html:39
+msgid "Terms of Service"
+msgstr "Terms of Service"
+
+#: .\templates\legal\terms_of_service.html:42
+msgid "Please read these terms carefully"
+msgstr "Please read these terms carefully"
+
+#: .\templates\legal\terms_of_service.html:55
+msgid "agreement_to_terms"
+msgstr "Agreement to Terms"
+
+#: .\templates\legal\terms_of_service.html:58
+msgid "terms_agreement_text"
+msgstr "By accessing and using Money Tracker (\"the Service\"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service."
+
+#: .\templates\legal\terms_of_service.html:65
+msgid "service_description"
+msgstr "Service description"
+
+#: .\templates\legal\terms_of_service.html:67
+msgid "service_description_text"
+msgstr "Money Tracker is a personal financial management application that provides:"
+
+#: .\templates\legal\terms_of_service.html:69
+msgid "service_features_1"
+msgstr "Personal expense and income tracking"
+
+#: .\templates\legal\terms_of_service.html:70
+msgid "service_features_2"
+msgstr "Financial categorization and reporting"
+
+#: .\templates\legal\terms_of_service.html:71
+msgid "service_features_3"
+msgstr "AI-powered transaction analysis and insights"
+
+#: .\templates\legal\terms_of_service.html:72
+msgid "service_features_4"
+msgstr "Data visualization and financial planning tools"
+
+#: .\templates\legal\terms_of_service.html:73
+msgid "service_features_5"
+msgstr "Demo accounts for trying the service"
+
+#: .\templates\legal\terms_of_service.html:80
+msgid "account_types"
+msgstr "Account Types"
+
+#: .\templates\legal\terms_of_service.html:83
+msgid "regular_accounts"
+msgstr "Regular Accounts"
+
+#: .\templates\legal\terms_of_service.html:85
+msgid "regular_account_feature_1"
+msgstr "Authenticated via Google OAuth 2.0"
+
+#: .\templates\legal\terms_of_service.html:86
+msgid "regular_account_feature_2"
+msgstr "Permanent data storage until account deletion"
+
+#: .\templates\legal\terms_of_service.html:87
+msgid "regular_account_feature_3"
+msgstr "Full access to all application features"
+
+#: .\templates\legal\terms_of_service.html:88
+msgid "regular_account_feature_4"
+msgstr "Responsible for data accuracy and management"
+
+#: .\templates\legal\terms_of_service.html:91
+msgid "demo_accounts"
+msgstr "Demo accounts"
+
+#: .\templates\legal\terms_of_service.html:94
+msgid "demo_account_feature_1"
+msgstr "Temporary access: 24-hour limitation"
+
+#: .\templates\legal\terms_of_service.html:95
+msgid "demo_account_feature_2"
+msgstr "Automatic deletion: All data removed after expiration"
+
+#: .\templates\legal\terms_of_service.html:96
+msgid "demo_account_feature_3"
+msgstr "Limited scope: For evaluation purposes only"
+
+#: .\templates\legal\terms_of_service.html:97
+msgid "demo_account_feature_4"
+msgstr "No guarantees: Demo data may be reset or unavailable"
+
+#: .\templates\legal\terms_of_service.html:105
+msgid "user_responsibilities"
+msgstr "User Responsibilities"
+
+#: .\templates\legal\terms_of_service.html:107
+msgid "user_responsibilities_text"
+msgstr "By using our service, you agree to:"
+
+#: .\templates\legal\terms_of_service.html:109
+msgid "user_responsibility_1"
+msgstr "Provide accurate and truthful information"
+
+#: .\templates\legal\terms_of_service.html:110
+msgid "user_responsibility_2"
+msgstr "Maintain the security of your account credentials"
+
+#: .\templates\legal\terms_of_service.html:111
+msgid "user_responsibility_3"
+msgstr "Use the service for personal financial tracking only"
+
+#: .\templates\legal\terms_of_service.html:112
+msgid "user_responsibility_4"
+msgstr "Comply with all applicable laws and regulations"
+
+#: .\templates\legal\terms_of_service.html:113
+msgid "user_responsibility_5"
+msgstr "Not attempt to reverse engineer or exploit the service"
+
+#: .\templates\legal\terms_of_service.html:114
+msgid "user_responsibility_6"
+msgstr "Not create multiple demo accounts to circumvent limitations"
+
+#: .\templates\legal\terms_of_service.html:115
+msgid "user_responsibility_7"
+msgstr "Respect the intellectual property rights of the service"
+
+#: .\templates\legal\terms_of_service.html:122
+
+#: .\templates\legal\terms_of_service.html:139
+msgid "Data and Privacy"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:153
+
+#: .\templates\legal\terms_of_service.html:173
+
+#: .\templates\legal\terms_of_service.html:186
+
+#: .\templates\legal\terms_of_service.html:206
+
+#: .\templates\legal\terms_of_service.html:219
+msgid "Account Termination"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:242
+msgid "Changes to Terms"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:255
+
+#: .\templates\legal\terms_of_service.html:267
+msgid "Contact Information"
+msgstr ""
+
+#: .\templates\legal\terms_of_service.html:286
+
+#: .\transactions\admin.py:20
+msgid "Basic Information"
+msgstr ""
+
+# Category keys for backend translation utils
+#: .\transactions\admin.py:23
+#, fuzzy
+#| msgid "category_food"
+msgid "Category"
+msgstr "Food & Drink"
+
+#: .\transactions\admin.py:25
+msgid "Only required for expense transactions"
+msgstr ""
+
+#: .\transactions\admin.py:27
+msgid "AI Information"
+msgstr ""
+
+#: .\transactions\admin.py:31
+
+#: .\transactions\admin.py:34
+
+#: .\transactions\admin.py:42
+
+#: .\transactions\admin.py:62
+
+#: .\transactions\admin.py:65
+
+# Main app titles
+#: .\transactions\admin.py:85
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Tracker Administration"
+msgstr "Expense Tracker"
+
+# Main app titles
+#: .\transactions\admin.py:86
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Tracker Admin"
+msgstr "Expense Tracker"
+
+#: .\transactions\admin.py:87
+
+#: .\transactions\apps.py:8 .\transactions\models.py:84
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transactions"
+msgstr "Saving"
+
+# Transaction status
+#: .\transactions\models.py:12
+msgid "🔴 Chi tiêu"
+msgstr "🔴 Expense"
+
+#: .\transactions\models.py:13
+msgid "🟢 Tiết kiệm"
+msgstr "🟢 Saving"
+
+#: .\transactions\models.py:14
+msgid "🔵 Đầu tư"
+msgstr "🔵 Investment"
+
+# Categories
+#: .\transactions\models.py:19
+msgid "🍜 Ăn uống"
+msgstr "🍜 Food & Drink"
+
+#: .\transactions\models.py:20
+msgid "☕ Coffee"
+msgstr "☕ Coffee"
+
+#: .\transactions\models.py:21
+msgid "🚗 Di chuyển"
+msgstr "🚗 Transport"
+
+#: .\transactions\models.py:22
+msgid "🛒 Mua sắm"
+msgstr "🛒 Shopping"
+
+#: .\transactions\models.py:23
+msgid "🎬 Giải trí"
+msgstr "🎬 Entertainment"
+
+#: .\transactions\models.py:24
+msgid "🏥 Sức khỏe"
+msgstr "🏥 Healthcare"
+
+#: .\transactions\models.py:25
+msgid "📚 Giáo dục"
+msgstr "📚 Education"
+
+#: .\transactions\models.py:26
+msgid "⚡ Tiện ích"
+msgstr "⚡ Utilities"
+
+#: .\transactions\models.py:27
+msgid "📦 Khác"
+msgstr "📦 Other"
+
+#: .\transactions\models.py:34
+#, fuzzy
+#| msgid "transaction_type_saving"
+msgid "Transaction Type"
+msgstr "Saving"
+
+# Monthly total description
+#: .\transactions\models.py:39
+#, fuzzy
+#| msgid "net_amount"
+msgid "Amount"
+msgstr "Net amount"
+
+#: .\transactions\models.py:43
+msgid "Description"
+msgstr ""
+
+#: .\transactions\models.py:46
+msgid "Date"
+msgstr ""
+
+# Main app titles
+#: .\transactions\models.py:55
+#, fuzzy
+#| msgid "Expense Tracker"
+msgid "Expense Category"
+msgstr "Expense Tracker"
+
+#: .\transactions\models.py:71
+
+#: .\transactions\models.py:122
+
+#: .\transactions\models.py:123
+
+#: .\transactions\models.py:129
+
+#: .\transactions\models.py:135
+
+#: .\transactions\models.py:141
+
+#: .\transactions\models.py:147
+
+#: .\transactions\models.py:152
+msgid "Last Updated"
+msgstr ""
+
+#: .\transactions\models.py:158
+
+#: .\transactions\serializers.py:48
+msgid "Expense category is required for expense transactions."
+msgstr ""
+
+#: .\transactions\serializers.py:68
+msgid "Custom date for historical transactions"
+msgstr ""
+
+#: .\transactions\views.py:156
+msgid "Authentication required"
+msgstr ""
+
+#: .\transactions\views.py:169
+
+#: .\transactions\views.py:176 .\transactions\views.py:434
+
+#: .\transactions\views.py:182 .\transactions\views.py:440
+
+#: .\transactions\views.py:259 .\transactions\views.py:307
+
+#: .\transactions\views.py:364
+
+#: .\transactions\views.py:370
+
+#: .\transactions\views.py:428
+
+#, fuzzy
+#~| msgid "transaction_type_saving"
+#~ msgid "Transaction data"
+#~ msgstr "Saving"
+
+# Actions and buttons
+#~ msgid "Gửi"
+#~ msgstr "Send"
+
+#~ msgid "Lịch sẽ được triển khai ở Phase 4"
+#~ msgstr "Calendar will be implemented in Phase 4"
+
+#~ msgid "Calendar tương tác với hiển thị giao dịch theo ngày"
+#~ msgstr "Interactive calendar with daily transaction display"
+
+#~ msgid ""
+#~ "Xin chào! Hãy nói cho tôi biết giao dịch của bạn. VD: \"ăn trưa 50k\""
+#~ msgstr "Hello! Tell me about your transaction. e.g: \"lunch 50k\""
+
+#~ msgid "Đang nghe..."
+#~ msgstr "Listening..."
+
+#~ msgid "Voice recognition started"
+#~ msgstr "Voice recognition started"
+
+#~ msgid "Voice recognition ended"
+#~ msgstr "Voice recognition ended"
+
+#~ msgid "No speech detected. Please try again."
+#~ msgstr "No speech detected. Please try again."
+
+#~ msgid "Cannot access microphone. Check permissions."
+#~ msgstr "Cannot access microphone. Check permissions."
+
+#~ msgid "Microphone access denied."
+#~ msgstr "Microphone access denied."
+
+#~ msgid "Network error. Check internet connection."
+#~ msgstr "Network error. Check internet connection."
+
+#~ msgid "Voice recognition error. Please try again."
+#~ msgstr "Voice recognition error. Please try again."
+
+#~ msgid "Browser does not support voice input. Please use Chrome or Edge."
+#~ msgstr "Browser does not support voice input. Please use Chrome or Edge."
+
+# Date parsing descriptions
+#~ msgid "hôm nay"
+#~ msgstr "today"
+
+#~ msgid "hôm qua"
+#~ msgstr "yesterday"
+
+#~ msgid "hôm kia"
+#~ msgstr "day before yesterday"
+
+#~ msgid "yesterday"
+#~ msgstr "yesterday"
+
+#~ msgid "day before yesterday"
+#~ msgstr "day before yesterday"
+
+#~ msgid "category_coffee"
+#~ msgstr "Coffee"
+
+#~ msgid "category_transport"
+#~ msgstr "Transport"
+
+#~ msgid "category_shopping"
+#~ msgstr "Shopping"
+
+#~ msgid "category_entertainment"
+#~ msgstr "Entertainment"
+
+#~ msgid "category_health"
+#~ msgstr "Healthcare"
+
+#~ msgid "category_utilities"
+#~ msgstr "Utilities"
+
+#~ msgid "category_other"
+#~ msgstr "Other"
+
+#~ msgid "category_saving"
+#~ msgstr "Saving"
+
+# Date description keys
+#~ msgid "date_today"
+#~ msgstr "today"
+
+#~ msgid "date_yesterday"
+#~ msgstr "yesterday"
+
+#~ msgid "date_day_before_yesterday"
+#~ msgstr "day before yesterday"
+
+#~ msgid "date_days_ago"
+#~ msgstr "{days} days ago"
+
+#~ msgid "date_weeks_ago"
+#~ msgstr "{weeks} weeks ago"
+
+#~ msgid "voice_no_amount"
+#~ msgstr ""
+#~ "No amount detected. Please specify the amount, e.g.: \"25k\" or \"twenty "
+#~ "five thousand\""
+
+#~ msgid "voice_unclear_type"
+#~ msgstr ""
+#~ "Transaction type unclear. Please add keywords like \"coffee\", \"lunch\", "
+#~ "\"saving\""
+
+# Transaction type keys
+#~ msgid "transaction_type_expense"
+#~ msgstr "Expense"
+
+#~ msgid "transaction_type_investment"
+#~ msgstr "Investment"
+
+msgid "prohibited_uses"
+msgstr "Prohibited Uses"
+
+msgid "prohibited_uses_intro"
+msgstr "You may not use our service:"
+
+msgid "prohibited_use_1"
+msgstr "For any unlawful purpose or illegal activity"
+
+msgid "prohibited_use_2"
+msgstr "To violate any international, federal, provincial, or state regulations or laws"
+
+msgid "prohibited_use_3"
+msgstr "To transmit malicious code, viruses, or other harmful materials"
+
+msgid "prohibited_use_4"
+msgstr "To impersonate another person or entity"
+
+msgid "prohibited_use_5"
+msgstr "To harass, abuse, or harm others"
+
+msgid "prohibited_use_6"
+msgstr "To collect or harvest information about other users"
+
+msgid "prohibited_use_7"
+msgstr "For commercial purposes without explicit permission"
+
+msgid "data_and_privacy"
+msgstr "Data and Privacy"
+
+msgid "your_data_ownership"
+msgstr "Your data ownership"
+
+msgid "your_data_ownership_desc"
+msgstr "You retain ownership of your financial data"
+
+msgid "data_accuracy"
+msgstr "Data accuracy"
+
+msgid "data_accuracy_desc"
+msgstr "You are responsible for the accuracy of entered data"
+
+msgid "privacy_protection"
+msgstr "Privacy protection"
+
+msgid "privacy_protection_desc"
+msgstr "We protect your data as outlined in our Privacy Policy"
+
+msgid "data_export"
+msgstr "Data export"
+
+msgid "data_export_desc"
+msgstr "You can export your data at any time"
+
+msgid "account_deletion"
+msgstr "Account deletion"
+
+msgid "account_deletion_desc"
+msgstr "You can delete your account and data permanently"
+
+msgid "ai_powered_features"
+msgstr "AI-Powered Features"
+
+msgid "ai_disclaimer_title"
+msgstr "AI Disclaimer"
+
+msgid "ai_disclaimer_text"
+msgstr "AI-generated insights and recommendations are for informational purposes only and should not be considered professional financial advice."
+
+msgid "ai_feature_1"
+msgstr "AI features are provided \"as is\" without guarantees of accuracy"
+
+msgid "ai_feature_2"
+msgstr "Users should verify AI suggestions before making financial decisions"
+
+msgid "ai_feature_3"
+msgstr "AI confidence scores indicate system certainty, not financial advice quality"
+
+msgid "ai_feature_4"
+msgstr "We continuously improve AI accuracy but cannot guarantee perfection"
+
+msgid "service_availability"
+msgstr "Service Availability"
+
+msgid "service_availability_1"
+msgstr "We strive for 24/7 availability but cannot guarantee uninterrupted service"
+
+msgid "service_availability_2"
+msgstr "Planned maintenance will be announced in advance when possible"
+
+msgid "service_availability_3"
+msgstr "We reserve the right to modify or discontinue features with notice"
+
+msgid "service_availability_4"
+msgstr "Service may be temporarily unavailable during updates or repairs"
+
+msgid "limitation_of_liability"
+msgstr "Limitation of Liability"
+
+msgid "important_legal_notice"
+msgstr "Important Legal Notice: Please read carefully"
+
+msgid "liability_1"
+msgstr "The service is provided \"as is\" without warranties of any kind"
+
+msgid "liability_2"
+msgstr "We are not liable for financial decisions made based on our service"
+
+msgid "liability_3"
+msgstr "Users are responsible for their own financial management and decisions"
+
+msgid "liability_4"
+msgstr "We are not liable for data loss, though we implement backup procedures"
+
+msgid "liability_5"
+msgstr "Our liability is limited to the amount paid for the service (if any)"
+
+msgid "liability_6"
+msgstr "We are not responsible for third-party integrations or services"
+
+msgid "intellectual_property"
+msgstr "Intellectual Property"
+
+msgid "intellectual_property_1"
+msgstr "Money Tracker and its original content are protected by copyright"
+
+msgid "intellectual_property_2"
+msgstr "Users may not reproduce, distribute, or modify our content without permission"
+
+msgid "intellectual_property_3"
+msgstr "Third-party content and trademarks remain property of their respective owners"
+
+msgid "intellectual_property_4"
+msgstr "User-generated financial data remains owned by the user"
+
+msgid "account_termination"
+msgstr "Account Termination"
+
+msgid "user_initiated_termination"
+msgstr "User-Initiated Termination"
+
+msgid "user_termination_1"
+msgstr "You may delete your account at any time"
+
+msgid "user_termination_2"
+msgstr "Account deletion is permanent and irreversible"
+
+msgid "user_termination_3"
+msgstr "All associated data will be permanently removed"
+
+msgid "user_termination_4"
+msgstr "Export your data before deletion if needed"
+
+msgid "service_initiated_termination"
+msgstr "Service-Initiated Termination"
+
+msgid "service_termination_1"
+msgstr "We reserve the right to suspend accounts for terms violations"
+
+msgid "service_termination_2"
+msgstr "Repeated abuse may result in permanent account termination"
+
+msgid "service_termination_3"
+msgstr "We will provide notice before termination when possible"
+
+msgid "service_termination_4"
+msgstr "Demo accounts automatically terminate after 24 hours"
+
+msgid "changes_to_terms"
+msgstr "Changes to Terms"
+
+msgid "changes_to_terms_1"
+msgstr "We may update these terms from time to time"
+
+msgid "changes_to_terms_2"
+msgstr "Significant changes will be communicated via email or in-app notification"
+
+msgid "changes_to_terms_3"
+msgstr "Continued use after changes constitutes acceptance of new terms"
+
+msgid "changes_to_terms_4"
+msgstr "Users who disagree with changes may terminate their account"
+
+msgid "governing_law"
+msgstr "Governing Law"
+
+msgid "governing_law_text"
+msgstr "These terms and conditions are governed by and construed in accordance with the laws of the jurisdiction where Money Tracker operates. Any disputes arising from these terms will be subject to the exclusive jurisdiction of the appropriate courts."
+
+msgid "contact_information"
+msgstr "Contact Information"
+
+msgid "contact_questions_text"
+msgstr "If you have questions about these Terms of Service:"
+
+msgid "email"
+msgstr "Email"
+
+msgid "support"
+msgstr "Support"
+
+msgid "response_time"
+msgstr "Response time"
+
+msgid "within_48_hours"
+msgstr "Within 48 hours"
+
+msgid "languages"
+msgstr "Languages"
+
+msgid "vietnamese_english"
+msgstr "Vietnamese, English"
+
+msgid "acknowledgment"
+msgstr "Acknowledgment"
+
+msgid "acknowledgment_text"
+msgstr "By using Money Tracker, you acknowledge that you have read these Terms of Service, understood them, and agree to be bound by them. If you do not agree to these terms, you must not use our service."
+
+msgid "how_we_use_your_data"
+msgstr "How We Use Your Data"
+
+msgid "data_usage_1"
+msgstr "Provide financial tracking and management services"
+
+msgid "data_usage_2"
+msgstr "Authenticate your account and maintain security"
+
+msgid "data_usage_3"
+msgstr "Generate AI-powered financial insights and recommendations"
+
+msgid "data_usage_4"
+msgstr "Create personalized dashboards and reports"
+
+msgid "data_usage_5"
+msgstr "Improve our application features and user experience"
+
+msgid "data_usage_6"
+msgstr "Send important account notifications (login alerts, etc.)"
+
+msgid "data_sharing_policy"
+msgstr "Data Sharing Policy"
+
+msgid "data_sharing_commitment"
+msgstr "We do NOT sell, trade, or share your personal data with third parties."
+
+msgid "limited_exceptions_intro"
+msgstr "Limited exceptions (only when legally required):"
+
+msgid "exception_1"
+msgstr "Legal compliance when required by law enforcement"
+
+msgid "exception_2"
+msgstr "Protection of our rights, property, or safety"
+
+msgid "exception_3"
+msgstr "Emergency situations involving personal safety"
+
+msgid "data_security"
+msgstr "Data Security"
+
+msgid "encryption_in_transit"
+msgstr "Encryption in transit"
+
+msgid "encryption_in_transit_desc"
+msgstr "All data transmitted via HTTPS/SSL"
+
+msgid "encryption_at_rest"
+msgstr "Encryption at rest"
+
+msgid "encryption_at_rest_desc"
+msgstr "Database and file storage encryption"
+
+msgid "secure_authentication"
+msgstr "Secure authentication"
+
+msgid "secure_authentication_desc"
+msgstr "Google OAuth 2.0 with minimal scopes"
+
+msgid "access_controls"
+msgstr "Access controls"
+
+msgid "access_controls_desc"
+msgstr "Strict user data isolation"
+
+msgid "regular_security_audits"
+msgstr "Regular security audits"
+
+msgid "regular_security_audits_desc"
+msgstr "Ongoing security monitoring"
+
+msgid "demo_account_policy"
+msgstr "Demo Account Policy"
+
+msgid "demo_account_policy_text"
+msgstr "Demo accounts and all associated data are automatically deleted after 24 hours. No personal information is collected for demo accounts."
+
+msgid "data_retention"
+msgstr "Data Retention"
+
+msgid "account_data"
+msgstr "Account data"
+
+msgid "account_data_retention"
+msgstr "Retained until account deletion"
+
+msgid "transaction_data"
+msgstr "Transaction data"
+
+msgid "transaction_data_retention"
+msgstr "Retained for account functionality"
+
+msgid "demo_accounts_retention"
+msgstr "Automatically deleted after 24 hours"
+
+msgid "login_logs"
+msgstr "Login logs"
+
+msgid "login_logs_retention"
+msgstr "Retained for 90 days for security purposes"
+
+msgid "your_rights"
+msgstr "Your Rights"
+
+msgid "access"
+msgstr "Access"
+
+msgid "access_desc"
+msgstr "View all your personal data we store"
+
+msgid "correction"
+msgstr "Correction"
+
+msgid "correction_desc"
+msgstr "Update or correct your information"
+
+msgid "deletion"
+msgstr "Deletion"
+
+msgid "deletion_desc"
+msgstr "Delete your account and all associated data"
+
+msgid "export"
+msgstr "Export"
+
+msgid "export_desc"
+msgstr "Download your transaction data"
+
+msgid "restriction"
+msgstr "Restriction"
+
+msgid "restriction_desc"
+msgstr "Limit how we process your data"
+
+msgid "to_exercise_rights"
+msgstr "To exercise your rights"
+
+msgid "contact_privacy_email"
+msgstr "Contact us at"
+
+msgid "cookies_local_storage"
+msgstr "Cookies & Local Storage"
+
+msgid "cookies_intro"
+msgstr "We use minimal cookies and local storage:"
+
+msgid "session_cookies"
+msgstr "Session cookies"
+
+msgid "session_cookies_desc"
+msgstr "For authentication and app functionality"
+
+msgid "preference_storage"
+msgstr "Preference storage"
+
+msgid "preference_storage_desc"
+msgstr "Language, theme, and user settings"
+
+msgid "security_tokens"
+msgstr "Security tokens"
+
+msgid "security_tokens_desc"
+msgstr "CSRF protection and OAuth state"
+
+msgid "childrens_privacy"
+msgstr "Children's Privacy"
+
+msgid "childrens_privacy_text"
+msgstr "Money Tracker is not intended for children under 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately."
+
+msgid "changes_to_policy"
+msgstr "Changes to This Policy"
+
+msgid "changes_to_policy_text"
+msgstr "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last updated\" date. Changes are effective immediately upon posting."
+
+msgid "contact_us"
+msgstr "Contact Us"
+
+msgid "privacy_contact_intro"
+msgstr "If you have questions about this Privacy Policy or our data practices:"
+

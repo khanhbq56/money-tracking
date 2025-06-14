@@ -41,7 +41,6 @@ class VoiceInput {
             this.isListening = true;
             this.updateVoiceButton(true);
             this.showListeningFeedback();
-            console.log('Voice recognition started');
         };
         
         this.recognition.onresult = (event) => {
@@ -58,7 +57,6 @@ class VoiceInput {
             this.isListening = false;
             this.updateVoiceButton(false);
             this.hideListeningFeedback();
-            console.log('Voice recognition ended');
         };
     }
     
@@ -94,7 +92,6 @@ class VoiceInput {
         this.currentLanguage = languageMap[currentLang] || 'vi-VN';
         this.recognition.lang = this.currentLanguage;
         
-        console.log(`Voice recognition language set to: ${this.currentLanguage}`);
     }
     
     toggleListening() {
@@ -176,7 +173,6 @@ class VoiceInput {
     }
     
     processFinalResult(transcript) {
-        console.log('Final voice transcript:', transcript);
         
         if (!transcript) {
             this.showVoiceError('empty_transcript');
@@ -422,7 +418,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize voice input
     window.voiceInput = new VoiceInput();
     
-    console.log('Voice input initialized:', window.voiceInput.getIsSupported() ? 'Supported' : 'Not supported');
 });
 
 // Export for module systems

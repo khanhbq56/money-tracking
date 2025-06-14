@@ -532,4 +532,94 @@ def debug_health_check(request):
     ])
     
     status_code = 200 if health_status['healthy'] else 500
-    return JsonResponse(health_status, status=status_code) 
+    return JsonResponse(health_status, status=status_code)
+
+
+@csrf_exempt
+def fix_database_schema(request):
+    """Emergency endpoint to fix missing User model columns"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'POST method required'}, status=405)
+    
+    # Simple security check - require a key
+    try:
+        import json
+        data = json.loads(request.body)
+        fix_key = data.get('fix_key', '')
+        if fix_key != 'fix_user_model_2025':
+            return JsonResponse({'error': 'Invalid fix key'}, status=403)
+    except:
+        return JsonResponse({'error': 'Invalid request body'}, status=400)
+    
+    result = {
+        'columns_added': [],
+        'columns_existed': [],
+        'errors': [],
+        'success': False
+    }
+    
+    try:
+        from django.db import connection, transaction
+        
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                # Check existing columns first
+                cursor.execute("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name='auth_user'
+                """)
+                existing_columns = [row[0] for row in cursor.fetchall()]
+                
+                # Define columns to add
+                columns_to_add = [
+                    ('google_id', 'VARCHAR(50) NULL'),
+                    ('is_demo_user', 'BOOLEAN DEFAULT FALSE'),
+                    ('profile_picture', 'TEXT NULL'),
+                    ('privacy_policy_accepted', 'BOOLEAN DEFAULT FALSE'),
+                    ('privacy_policy_accepted_at', 'TIMESTAMP NULL'),
+                    ('terms_accepted', 'BOOLEAN DEFAULT FALSE'),
+                    ('terms_accepted_at', 'TIMESTAMP NULL'),
+                    ('last_login_ip', 'INET NULL'),
+                    ('created_at', 'TIMESTAMP DEFAULT NOW()'),
+                    ('updated_at', 'TIMESTAMP DEFAULT NOW()'),
+                    ('demo_expires_at', 'TIMESTAMP NULL'),
+                ]
+                
+                # Add missing columns
+                for col_name, col_definition in columns_to_add:
+                    if col_name not in existing_columns:
+                        try:
+                            sql = f"ALTER TABLE auth_user ADD COLUMN {col_name} {col_definition}"
+                            cursor.execute(sql)
+                            result['columns_added'].append(col_name)
+                        except Exception as e:
+                            result['errors'].append(f"Failed to add {col_name}: {str(e)}")
+                    else:
+                        result['columns_existed'].append(col_name)
+                
+                # Add unique constraint for google_id if column was added
+                if 'google_id' in result['columns_added']:
+                    try:
+                        cursor.execute("ALTER TABLE auth_user ADD CONSTRAINT auth_user_google_id_unique UNIQUE (google_id)")
+                        result['columns_added'].append('google_id_unique_constraint')
+                    except Exception as e:
+                        result['errors'].append(f"Failed to add google_id constraint: {str(e)}")
+                
+                # Mark authentication migration as applied
+                try:
+                    cursor.execute("""
+                        INSERT INTO django_migrations (app, name, applied) 
+                        VALUES ('authentication', '0001_initial', NOW())
+                        ON CONFLICT (app, name) DO NOTHING
+                    """)
+                    result['columns_added'].append('migration_record')
+                except Exception as e:
+                    result['errors'].append(f"Failed to add migration record: {str(e)}")
+        
+        result['success'] = len(result['columns_added']) > 0 or len(result['columns_existed']) > 0
+        
+    except Exception as e:
+        result['errors'].append(f"Database operation failed: {str(e)}")
+    
+    return JsonResponse(result) 

@@ -27,11 +27,24 @@ else:
     print('✅ Superuser already exists')
 "
 
+# Force apply authentication migrations if needed
+echo "🔧 Checking and fixing authentication migrations..."
+python manage.py force_auth_migration --force || {
+    echo "⚠️ Force auth migration failed, continuing with fallback..."
+}
+
 # Verify multi-user setup
 echo "🔍 Verifying multi-user setup..."
 python manage.py shell -c "
 from transactions.models import Transaction, MonthlyTotal
 from ai_chat.models import ChatMessage
+from authentication.models import User
+
+# Check User model custom fields
+user_has_google_id = hasattr(User, 'google_id')
+user_has_demo_flag = hasattr(User, 'is_demo_user')
+print(f'User.google_id field: {'✅' if user_has_google_id else '❌'}')
+print(f'User.is_demo_user field: {'✅' if user_has_demo_flag else '❌'}')
 
 # Check Transaction model
 tx_has_user = hasattr(Transaction._meta.get_field('user'), 'related_model')

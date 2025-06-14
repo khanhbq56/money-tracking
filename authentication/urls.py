@@ -4,17 +4,20 @@ from . import views
 app_name = 'authentication'
 
 urlpatterns = [
-    # Google OAuth URLs
-    path('google/login/', views.GoogleOAuthInitView.as_view(), name='google_login'),
-    path('google/callback/', views.GoogleOAuthCallbackView.as_view(), name='google_callback'),
+    # OAuth login flow
+    path('oauth/google/', views.GoogleOAuthInitView.as_view(), name='google_oauth_init'),
+    path('oauth/google/callback/', views.GoogleOAuthCallbackView.as_view(), name='google_oauth_callback'),
     
-    # Demo login
+    # Demo account
     path('demo/login/', views.DemoLoginView.as_view(), name='demo_login'),
+    
+    # Debug endpoint for production
+    path('debug/health/', views.debug_health_check, name='debug_health'),
     
     # Logout
     path('logout/', views.logout_view, name='logout'),
     
-    # Legal compliance
+    # Legal pages
     path('privacy/', views.privacy_policy_view, name='privacy_policy'),
     path('terms/', views.terms_of_service_view, name='terms_of_service'),
 ] 

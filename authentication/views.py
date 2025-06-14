@@ -433,4 +433,79 @@ def terms_of_service_view(request):
     context = {
         'last_updated': '2024-01-15'
     }
-    return render(request, 'legal/terms_of_service.html', context) 
+    return render(request, 'legal/terms_of_service.html', context)
+
+
+@csrf_exempt
+def debug_health_check(request):
+    """Debug endpoint to test database connectivity and basic operations"""
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    
+    health_status = {
+        'database': False,
+        'user_creation': False,
+        'transaction_creation': False,
+        'errors': []
+    }
+    
+    try:
+        # Test 1: Database connectivity
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1")
+            health_status['database'] = True
+    except Exception as e:
+        health_status['errors'].append(f"Database connection failed: {str(e)}")
+    
+    try:
+        # Test 2: User creation
+        import uuid
+        from django.db import transaction
+        
+        test_username = f'test_{uuid.uuid4().hex[:8]}'
+        test_email = f'{test_username}@test.local'
+        
+        with transaction.atomic():
+            test_user = User.objects.create_user(
+                username=test_username,
+                email=test_email,
+                first_name='Test User',
+                is_demo_user=True,
+                is_active=True
+            )
+            health_status['user_creation'] = True
+            
+            # Test 3: Transaction creation
+            try:
+                from transactions.models import Transaction
+                from datetime import date
+                
+                Transaction.objects.create(
+                    user=test_user,
+                    transaction_type='expense',
+                    amount=-50000,
+                    description='Test transaction',
+                    expense_category='food',
+                    date=date.today(),
+                    ai_confidence=0.9
+                )
+                health_status['transaction_creation'] = True
+            except Exception as e:
+                health_status['errors'].append(f"Transaction creation failed: {str(e)}")
+            
+            # Clean up - rollback the transaction
+            transaction.set_rollback(True)
+            
+    except Exception as e:
+        health_status['errors'].append(f"User creation failed: {str(e)}")
+    
+    # Overall health status
+    health_status['healthy'] = all([
+        health_status['database'],
+        health_status['user_creation'],
+        health_status['transaction_creation']
+    ])
+    
+    status_code = 200 if health_status['healthy'] else 500
+    return JsonResponse(health_status, status=status_code) 

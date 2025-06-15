@@ -278,6 +278,8 @@ const viTranslations = {
     'expires_in': 'Hết hạn trong',
     'expired': 'Đã hết hạn',
     'welcome_back': 'Chào mừng trở lại!',
+    'demo_account_created_successfully': 'Tài khoản demo đã được tạo thành công',
+    'demo_user': 'Người dùng Demo',
     
     // Session monitoring
     'session_timeout_warning': 'Phiên của bạn sẽ hết hạn trong {minutes} phút do không hoạt động. Bạn có muốn gia hạn phiên?',

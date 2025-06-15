@@ -295,6 +295,8 @@ const enTranslations = {
     'expires_in': 'Expires in',
     'expired': 'Expired',
     'welcome_back': 'Welcome back!',
+    'demo_account_created_successfully': 'Demo account created successfully',
+    'demo_user': 'Demo User',
     
     // Session monitoring
     'session_timeout_warning': 'Your session will expire in {minutes} minutes due to inactivity. Do you want to extend your session?',

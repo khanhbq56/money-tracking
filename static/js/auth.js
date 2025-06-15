@@ -276,6 +276,7 @@ class AuthManager {
         
         googleBtn.classList.add('google-login-btn', 'h-12', 'text-base', 'shadow-lg', 'hover:shadow-xl', 'transition-all', 'duration-300', 'font-semibold');
         googleBtn.style.background = 'linear-gradient(135deg, #4285f4 0%, #34a853 50%, #fbbc05 75%, #ea4335 100%)';
+        googleBtn.setAttribute('data-i18n-btn', 'login_with_google');
         googleContainer.appendChild(googleBtn);
 
         // Demo Login Button  
@@ -296,7 +297,11 @@ class AuthManager {
         demoBtn.insertBefore(rocketIcon, demoBtn.firstChild);
         
         demoBtn.classList.add('demo-login-btn', 'h-12', 'text-base', 'bg-gradient-to-r', 'from-gray-600', 'to-gray-700', 'hover:from-gray-700', 'hover:to-gray-800', 'shadow-lg', 'hover:shadow-xl', 'transition-all', 'duration-300', 'font-semibold');
+        demoBtn.setAttribute('data-i18n-btn', 'try_demo_account');
         demoContainer.appendChild(demoBtn);
+
+        // Store button references for language updates
+        this.loginButtons = { googleBtn, demoBtn };
 
         // Set up legal acceptance handler
         const legalCheckbox = container.querySelector('#legal-acceptance');
@@ -357,7 +362,7 @@ class AuthManager {
             const data = await response.json();
 
             if (data.success) {
-                showAlertDialog(data.message, { type: 'success' });
+                showAlertDialog(window.i18n.t('demo_account_created_successfully'), { type: 'success' });
                 
                 // Clean up and refresh page to load authenticated state
                 setTimeout(() => {

@@ -63,8 +63,14 @@
                                     <span>{{ user.get_short_name|first|upper|default:"U" }}</span>
                                 {% endif %}
                             </div>
-                            <!-- User Name (hidden on mobile) -->
-                            <span class="hidden md:block text-sm font-medium text-gray-700">{{ user.get_short_name|default:user.username }}</span>
+                            <!-- User Name (hidden) -->
+                            <!-- <span class="hidden md:block text-sm font-medium text-gray-700">
+                                {% if user.is_demo_user %}
+                                    <span data-i18n="demo_user">{% trans "Demo User" %}</span>
+                                {% else %}
+                                    {{ user.get_short_name|default:user.username }}
+                                {% endif %}
+                            </span> -->
                             <!-- Dropdown Arrow -->
                             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -74,7 +80,13 @@
                         <!-- User Dropdown Menu -->
                         <div id="user-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[200px]">
                             <div class="p-3 border-b border-gray-100">
-                                <p class="text-sm font-medium text-gray-800">{{ user.get_short_name|default:user.username }}</p>
+                                <p class="text-sm font-medium text-gray-800">
+                                    {% if user.is_demo_user %}
+                                        <span data-i18n="demo_user">{% trans "Demo User" %}</span>
+                                    {% else %}
+                                        {{ user.get_short_name|default:user.username }}
+                                    {% endif %}
+                                </p>
                                 <p class="text-xs text-gray-500">{{ user.email }}</p>
                                 {% if user.is_demo_user %}
                                 <span class="inline-block mt-1 bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full" data-i18n="demo_account_info">
@@ -934,32 +946,47 @@
                 quickActionsContainer.innerHTML = '';
                 quickActionsContainer.className = 'p-4 space-y-3';
                 
-                // Create standardized buttons
-                const futureButton = UIComponents.createQuickActionButton(
-                    window.i18n.t('future_me'),
-                    '🔮',
-                    openFutureMe,
-                    'primary'
-                );
-                
-                const memeButton = UIComponents.createQuickActionButton(
-                    window.i18n.t('generate_meme'),
-                    '🎭',
-                    generateMeme,
-                    'warning'
-                );
-                
-                const statsButton = UIComponents.createQuickActionButton(
-                    window.i18n.t('statistics'),
-                    '📊',
-                    showStats,
-                    'success'
-                );
-                
-                quickActionsContainer.appendChild(futureButton);
-                quickActionsContainer.appendChild(memeButton);
-                quickActionsContainer.appendChild(statsButton);
+                createQuickActionButtons();
             }
         }
+
+        function createQuickActionButtons() {
+            const quickActionsContainer = document.querySelector('.p-4.space-y-3');
+            if (!quickActionsContainer) return;
+            
+            // Clear container
+            quickActionsContainer.innerHTML = '';
+            
+            // Create standardized buttons with current language
+            const futureButton = UIComponents.createQuickActionButton(
+                window.i18n.t('future_me'),
+                '🔮',
+                openFutureMe,
+                'primary'
+            );
+            
+            const memeButton = UIComponents.createQuickActionButton(
+                window.i18n.t('generate_meme'),
+                '🎭',
+                generateMeme,
+                'warning'
+            );
+            
+            const statsButton = UIComponents.createQuickActionButton(
+                window.i18n.t('statistics'),
+                '📊',
+                showStats,
+                'success'
+            );
+            
+            quickActionsContainer.appendChild(futureButton);
+            quickActionsContainer.appendChild(memeButton);
+            quickActionsContainer.appendChild(statsButton);
+        }
+
+        // Listen for language change events to update quick action buttons
+        document.addEventListener('languageChanged', function(event) {
+            createQuickActionButtons();
+        });
     </script>
 {% endblock %} 

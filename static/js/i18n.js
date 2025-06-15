@@ -12,27 +12,29 @@ class I18n {
     
     /**
      * Detect user's preferred language
+     * Priority: Cookie -> Browser Language (for first-time visitors)
      */
     detectLanguage() {
-        // 1. Check if user has explicitly set language (cookie)
+        // 1. First priority: Check cookie (user has previously set language)
         const cookieLang = this.getCookie('django_language');
         if (cookieLang && ['vi', 'en'].includes(cookieLang)) {
             return cookieLang;
         }
         
-        // 2. Check localStorage for backward compatibility
+        // 2. Check localStorage for backward compatibility (migration path)
         const localStorageLang = localStorage.getItem('language');
         if (localStorageLang && ['vi', 'en'].includes(localStorageLang)) {
-            // Migrate to cookie
+            // Migrate from localStorage to cookie
             this.setCookie('django_language', localStorageLang, 365);
             return localStorageLang;
         }
         
-        // 3. Detect from browser language
+        // 3. No cookie found - this is a first-time visitor
+        // Detect from browser language preference
         const browserLang = navigator.language || navigator.userLanguage;
         const detectedLang = browserLang.startsWith('vi') ? 'vi' : 'en';
         
-        // Save detected language to cookie
+        // Save detected language to cookie for future visits
         this.setCookie('django_language', detectedLang, 365);
         return detectedLang;
     }
@@ -129,7 +131,7 @@ class I18n {
         
         this.currentLang = lang;
         
-        // Save to cookie instead of localStorage
+        // Always save to cookie first when user changes language
         this.setCookie('django_language', lang, 365);
         
         // Keep localStorage for backward compatibility
@@ -171,7 +173,7 @@ class I18n {
             const translatedText = this.t(key);
             
             // Preserve emojis and icons - enhanced handling for colored emojis
-            const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|🟢|🔴|🔵|📊|📅|🤖|⚡|📝/gu;
+            const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|🟢|🔴|🔵|📊|📅|🤖|⚡|📝|🔮|🎭|🍜|💰|☕/gu;
             const currentText = element.textContent.trim();
             const emojiMatch = currentText.match(emojiRegex);
             

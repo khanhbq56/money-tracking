@@ -78,20 +78,24 @@
             const cookieLang = getCookie('django_language');
             const localStorageLang = localStorage.getItem('language');
             
-            // Priority: Django session > Cookie > localStorage
-            if (currentDjangoLang && currentDjangoLang !== cookieLang) {
-                setCookie('django_language', currentDjangoLang, 365);
-                localStorage.setItem('language', currentDjangoLang);
-                
-                // Trigger i18n reload if available
-                if (window.i18n && typeof window.i18n.setLanguage === 'function') {
-                    window.i18n.setLanguage(currentDjangoLang);
+            // Priority: Cookie (user preference) > localStorage (migration) > Browser/Django fallback
+            if (cookieLang && ['vi', 'en'].includes(cookieLang)) {
+                // User has set a preference via cookie, respect it
+                if (currentDjangoLang !== cookieLang) {
+                    // Sync localStorage for backward compatibility
+                    localStorage.setItem('language', cookieLang);
                 }
-            } else if (!cookieLang && localStorageLang) {
+            } else if (localStorageLang && ['vi', 'en'].includes(localStorageLang)) {
                 // Migrate from localStorage to cookie
                 setCookie('django_language', localStorageLang, 365);
-            } else if (!cookieLang && !localStorageLang) {
-                // Set default language
+                
+                // Trigger i18n reload if available to use localStorage language
+                if (window.i18n && typeof window.i18n.setLanguage === 'function') {
+                    window.i18n.setLanguage(localStorageLang);
+                }
+            } else {
+                // No preference set - first time visitor
+                // Django/browser detection will be handled by i18n.js detectLanguage()
                 setCookie('django_language', currentDjangoLang, 365);
                 localStorage.setItem('language', currentDjangoLang);
             }

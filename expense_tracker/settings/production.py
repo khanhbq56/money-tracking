@@ -11,14 +11,23 @@ except ImportError:
     dj_database_url = None
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
-# Allowed hosts for production
-ALLOWED_HOSTS = config(
-    'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,*.railway.app,healthcheck.railway.app,money-tracking-production.up.railway.app',
-    cast=lambda v: [s.strip() for s in v.split(',')]
-)
+# Allowed hosts - add Railway domain
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'healthcheck.railway.app',
+    'money-tracking-production.up.railway.app',
+    '.railway.app',  # Allow all Railway subdomains
+]
+
+# Get from environment or use defaults
+env_hosts = os.environ.get('ALLOWED_HOSTS', '')
+if env_hosts:
+    additional_hosts = [host.strip() for host in env_hosts.split(',') if host.strip()]
+    ALLOWED_HOSTS.extend(additional_hosts)
 
 # Multi-user configuration for production
 ENABLE_MULTI_USER = config('ENABLE_MULTI_USER', default=True, cast=bool)
@@ -30,14 +39,23 @@ SESSION_COOKIE_AGE = 86400  # 24 hours max
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Force re-login after browser close
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Google OAuth Dynamic Redirect URI for production
-GOOGLE_OAUTH2_REDIRECT_URI = config(
-    'GOOGLE_OAUTH2_REDIRECT_URI',
-    default='https://money-tracking-production.up.railway.app/auth/oauth/google/callback/'
+# Google OAuth Settings - support both naming conventions
+GOOGLE_OAUTH_CLIENT_ID = (
+    os.environ.get('GOOGLE_OAUTH_CLIENT_ID') or 
+    os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
+)
+GOOGLE_OAUTH_CLIENT_SECRET = (
+    os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET') or 
+    os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET')
+)
+GOOGLE_OAUTH_REDIRECT_URI = (
+    os.environ.get('GOOGLE_OAUTH_REDIRECT_URI') or 
+    os.environ.get('GOOGLE_OAUTH2_REDIRECT_URI') or
+    'https://money-tracking-production.up.railway.app/auth/oauth/google/callback/'
 )
 
 # Database - use Railway's PostgreSQL if available, otherwise SQLite
-DATABASE_URL = config('DATABASE_URL', default=None)
+DATABASE_URL = os.environ.get('DATABASE_URL')
 
 if DATABASE_URL and dj_database_url:
     # Use PostgreSQL from Railway
@@ -56,15 +74,22 @@ else:
     }
 
 # Security settings for production
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
-CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Session settings
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 # CORS settings for production
 CORS_ALLOW_ALL_ORIGINS = False
@@ -144,12 +169,12 @@ LOGGING = {
     },
     'root': {
         'handlers': ['console'],
-        'level': 'WARNING',
+        'level': 'INFO',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'WARNING',
+            'level': 'INFO',
             'propagate': False,
         },
         'transactions': {

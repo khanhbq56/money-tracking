@@ -789,10 +789,32 @@ class ExpenseCalendar {
     handleResize() {
         // Update mobile-specific styling
         const isMobile = window.innerWidth < 768;
+        const isExtraSmall = window.innerWidth < 480;
         const calendarContainer = document.querySelector('.calendar-container');
+        const calendarGrid = document.querySelector('.calendar-grid');
         
         if (calendarContainer) {
             calendarContainer.classList.toggle('mobile', isMobile);
+            calendarContainer.classList.toggle('extra-small', isExtraSmall);
+        }
+        
+        if (calendarGrid) {
+            calendarGrid.classList.toggle('mobile', isMobile);
+            calendarGrid.classList.toggle('extra-small', isExtraSmall);
+        }
+        
+        // Update calendar days for mobile
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(day => {
+            day.classList.toggle('mobile', isMobile);
+            day.classList.toggle('extra-small', isExtraSmall);
+        });
+        
+        // Re-render if needed for layout changes
+        if (isMobile !== this.wasMobile) {
+            this.wasMobile = isMobile;
+            // Optional: Re-render calendar for layout optimization
+            // this.render();
         }
     }
     

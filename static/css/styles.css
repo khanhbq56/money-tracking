@@ -19,6 +19,9 @@
     backdrop-filter: blur(10px);
     border-radius: 16px;
     padding: 16px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .calendar-day-header {
@@ -57,6 +60,9 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .calendar-day.saturday {
@@ -245,22 +251,184 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .calendar-container {
-        padding: 16px;
+        padding: 12px;
         border-radius: 16px;
+        margin: 0 auto; /* Căn giữa thay vì margin âm */
+        max-width: 100%; /* Đảm bảo không vượt quá viewport */
+        width: 100%; /* Sử dụng toàn bộ width có sẵn */
+        min-height: 500px; /* Giảm chiều cao tối thiểu */
+    }
+    
+    .calendar-grid {
+        gap: 2px; /* Giảm gap để tiết kiệm không gian */
+        padding: 8px;
+        margin: 0 auto; /* Căn giữa grid */
     }
     
     .calendar-day {
-        min-height: 60px;
+        min-height: 70px; /* Giảm chiều cao */
         padding: 6px;
+        border-radius: 8px;
+        aspect-ratio: auto;
+        max-height: none;
+    }
+    
+    .calendar-day-header {
+        font-size: 0.625rem; /* Giảm font size hơn nữa */
+        padding: 8px 4px;
+        font-weight: 600;
     }
     
     .day-number {
-        font-size: 0.75rem;
+        font-size: 0.625rem; /* Giảm font size hơn nữa */
+        margin-bottom: 3px;
+        font-weight: 600;
     }
     
     .day-event {
-        font-size: 0.5rem;
-        padding: 1px 4px;
+        font-size: 0.375rem; /* Giảm font size hơn nữa */
+        padding: 1px 3px; /* Giảm padding */
+        border-radius: 3px;
+        margin-bottom: 1px;
+        font-weight: 500;
+    }
+    
+    .day-total {
+        font-size: 0.375rem; /* Giảm font size hơn nữa */
+        padding: 1px 4px; /* Giảm padding */
+        min-width: 16px;
+        font-weight: 600;
+    }
+    
+    /* Calendar header mobile optimization */
+    .calendar-header {
+        margin-bottom: 12px;
+        text-align: center; /* Căn giữa header */
+    }
+    
+    .calendar-header h2 {
+        font-size: 1.25rem !important; /* Giảm font size hơn nữa */
+    }
+    
+    .calendar-header p {
+        font-size: 0.75rem !important; /* Giảm font size hơn nữa */
+    }
+    
+    /* Navigation buttons mobile optimization */
+    .nav-btn {
+        padding: 6px 12px; /* Giảm padding */
+        border-radius: 8px;
+        font-size: 0.75rem; /* Giảm font size */
+    }
+    
+    .nav-btn svg {
+        width: 1rem; /* Giảm kích thước icon */
+        height: 1rem;
+    }
+    
+    /* Filter buttons mobile optimization */
+    .filter-btn {
+        padding: 6px 12px; /* Giảm padding */
+        font-size: 0.75rem; /* Giảm font size */
+        border-radius: 8px;
+    }
+    
+    /* Hide or minimize sidebar on mobile to give more space to calendar */
+    .lg\\:col-span-1 {
+        order: 2; /* Move sidebar below calendar on mobile */
+    }
+    
+    .lg\\:col-span-3 {
+        order: 1; /* Keep calendar at top on mobile */
+    }
+    
+    /* Improve calendar visual density on mobile */
+    .calendar-day .day-events {
+        gap: 1px; /* Giảm gap giữa events */
+    }
+    
+    /* Better contrast for day numbers on mobile */
+    .calendar-day .day-number {
+        text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+}
+
+/* Extra small mobile devices (max-width: 480px) */
+@media (max-width: 480px) {
+    .calendar-container {
+        padding: 8px;
+        margin: 0 auto; /* Căn giữa */
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .calendar-grid {
+        gap: 1px; /* Giảm gap tối đa */
+        padding: 4px;
+    }
+    
+    .calendar-day {
+        min-height: 60px; /* Giảm chiều cao hơn nữa */
+        padding: 4px;
+        border-radius: 6px;
+        aspect-ratio: auto;
+        max-height: none;
+    }
+    
+    .calendar-day-header {
+        font-size: 0.5rem; /* Giảm font size tối đa */
+        padding: 6px 2px;
+        font-weight: 600;
+    }
+    
+    .day-number {
+        font-size: 0.5rem; /* Giảm font size tối đa */
+        font-weight: 600;
+    }
+    
+    .day-event {
+        font-size: 0.3rem; /* Giảm font size tối đa */
+        padding: 1px 2px; /* Giảm padding tối đa */
+        font-weight: 500;
+        margin-bottom: 1px;
+    }
+    
+    .day-total {
+        font-size: 0.3rem; /* Giảm font size tối đa */
+        padding: 1px 3px; /* Giảm padding tối đa */
+        min-width: 14px;
+        font-weight: 600;
+    }
+    
+    .calendar-header h2 {
+        font-size: 1.125rem !important; /* Giảm font size tối đa */
+    }
+    
+    .calendar-header p {
+        font-size: 0.625rem !important; /* Giảm font size tối đa */
+    }
+    
+    .nav-btn {
+        padding: 4px 8px; /* Giảm padding tối đa */
+        font-size: 0.625rem; /* Giảm font size */
+    }
+    
+    .filter-btn {
+        padding: 4px 8px; /* Giảm padding tối đa */
+        font-size: 0.625rem; /* Giảm font size */
+    }
+    
+    /* Force container to not overflow */
+    .max-w-7xl {
+        box-sizing: border-box;
+        padding: 0 8px; /* Thêm padding nhỏ */
+    }
+    
+    /* Grid layout fixes for mobile */
+    .grid {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -543,4 +711,6 @@
         margin: 20px;
         max-height: calc(100vh - 40px);
     }
-} 
+}
+
+ 

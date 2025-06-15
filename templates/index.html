@@ -735,6 +735,8 @@
             
             if (modal.classList.contains('hidden')) {
                 modal.classList.remove('hidden');
+                // Add class to body to hide FAB on mobile
+                document.body.classList.add('chat-modal-open');
                 // Hide notification when opening modal
                 if (window.aiChat && window.aiChat.hideNotification) {
                     window.aiChat.hideNotification();
@@ -746,6 +748,8 @@
                 }, 100);
             } else {
                 modal.classList.add('hidden');
+                // Remove class from body to show FAB again
+                document.body.classList.remove('chat-modal-open');
             }
         }
 

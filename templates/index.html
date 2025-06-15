@@ -25,8 +25,8 @@
                 <div class="flex items-center space-x-4">
                     <!-- Demo Status (if applicable) -->
                     {% if user.is_demo_user %}
-                    <div class="hidden sm:flex items-center space-x-2 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-1 demo-status">
-                        <span class="text-yellow-600 text-sm font-medium">🚀 Demo</span>
+                                    <div class="hidden sm:flex items-center space-x-2 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-1 demo-status">
+                    <span class="text-yellow-600 text-sm font-medium" data-i18n="demo_account_info">🚀 Demo</span>
                         {% if user.demo_expires_at %}
                         <span class="text-yellow-600 text-xs" id="demo-countdown" data-expires="{{ user.demo_expires_at|date:'c' }}">--</span>
                         {% endif %}
@@ -77,8 +77,8 @@
                                 <p class="text-sm font-medium text-gray-800">{{ user.get_short_name|default:user.username }}</p>
                                 <p class="text-xs text-gray-500">{{ user.email }}</p>
                                 {% if user.is_demo_user %}
-                                <span class="inline-block mt-1 bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">
-                                    🚀 {% trans "Tài khoản demo" %}
+                                <span class="inline-block mt-1 bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full" data-i18n="demo_account_info">
+                                    🚀 {% trans "demo_account_info" %}
                                 </span>
                                 {% endif %}
                             </div>

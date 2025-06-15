@@ -1,0 +1,11 @@
+DJANGO_SECRET_KEY=pqbw(ro1t97wbfb&rj+q5s%0d(%(&lc1h7-+a9x3d7lbjj%7e_
+GEMINI_API_KEY=AIzaSyDXRY0ECgjUeBwdgSaw6UGJr3eqh85rEgk
+DEBUG=False
+DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
+LANGUAGE_CODE=vi
+TIME_ZONE=Asia/Ho_Chi_Minh
+ALLOWED_HOSTS=localhost,127.0.0.1,healthcheck.railway.app,money-tracking-production.up.railway.app
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+GOOGLE_OAUTH_CLIENT_ID=515963526992-q8ga8lhcd59a0s6v2i6voerf0tng5lcd.apps.googleusercontent.com
+GOOGLE_OAUTH_CLIENT_SECRET=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
+GOOGLE_OAUTH_REDIRECT_URI=https://money-tracking-production.up.railway.app/auth/oauth/google/callback/ 

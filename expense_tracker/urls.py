@@ -7,6 +7,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from .health import health_check
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 import ai_chat.views
 
@@ -51,4 +53,8 @@ if settings.DEBUG:
 # Admin site configuration
 admin.site.site_header = "Expense Tracker Admin"
 admin.site.site_title = "Expense Tracker"
-admin.site.index_title = "Welcome to Expense Tracker Administration" 
+admin.site.index_title = "Welcome to Expense Tracker Administration"
+
+def health_check(request):
+    """Health check endpoint for Railway"""
+    return JsonResponse({'status': 'healthy'}) 

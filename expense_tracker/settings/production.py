@@ -74,7 +74,7 @@ else:
     }
 
 # Security settings for production
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False  # Disable for Railway health checks
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -82,6 +82,9 @@ SECURE_HSTS_PRELOAD = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
+
+# Health check exemption for Railway
+SECURE_SSL_REDIRECT_EXEMPT = ['/health/']
 
 # Session settings
 SESSION_COOKIE_SECURE = True
@@ -193,4 +196,13 @@ LOGGING = {
             'propagate': False,
         },
     },
-} 
+}
+
+# Add Railway middleware at the beginning
+MIDDLEWARE = [
+    'expense_tracker.middleware.RailwayMiddleware',
+    'expense_tracker.middleware.HealthCheckMiddleware',
+] + [m for m in MIDDLEWARE if m not in [
+    'expense_tracker.middleware.RailwayMiddleware',
+    'expense_tracker.middleware.HealthCheckMiddleware'
+]] 

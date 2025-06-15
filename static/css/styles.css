@@ -707,9 +707,176 @@
         height: 24px;
     }
     
+    /* Chat Modal Mobile Optimization */
     #chat-modal .bg-white {
-        margin: 20px;
-        max-height: calc(100vh - 40px);
+        margin: 12px;
+        max-height: calc(100vh - 24px);
+        max-width: calc(100vw - 24px);
+    }
+    
+    /* Chat Messages Container */
+    #chat-modal #chat-messages {
+        height: 60vh; /* Tăng chiều cao cho mobile */
+        max-height: calc(100vh - 200px);
+    }
+    
+    /* Chat Input Area Mobile */
+    #chat-modal .p-4.border-t {
+        padding: 12px;
+    }
+    
+    /* Chat Input Row - Fix Overflow Issue */
+    #chat-modal .flex.space-x-2 {
+        display: flex;
+        gap: 8px; /* Giảm gap để tiết kiệm không gian */
+        align-items: center;
+        width: 100%;
+    }
+    
+    /* Chat Input Field */
+    #chat-modal #chat-input {
+        flex: 1;
+        min-width: 0; /* Cho phép shrink */
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+    
+    /* Voice Button Mobile */
+    #chat-modal #voice-btn {
+        padding: 10px;
+        min-width: 44px;
+        width: 44px;
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+    
+    /* Send Button Mobile - Fix Overflow */
+    #chat-modal button[onclick="sendMessage()"] {
+        padding: 10px;
+        min-width: 44px;
+        width: 44px;
+        flex-shrink: 0;
+    }
+    
+    /* Quick Action Buttons */
+    #chat-modal .flex.flex-wrap.gap-2 {
+        gap: 6px;
+        margin-top: 8px;
+    }
+    
+    #chat-modal .flex.flex-wrap.gap-2 button {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    /* Chat Header Mobile */
+    #chat-modal .bg-gradient-to-r.from-purple-600 {
+        padding: 12px 16px;
+    }
+    
+    #chat-modal .bg-gradient-to-r.from-purple-600 h3 {
+        font-size: 16px;
+    }
+    
+    /* Auto-confirm toggle - hide text on mobile */
+    #chat-modal .text-xs.hidden.sm\\:inline {
+        display: none !important;
+    }
+    
+    /* Confirmation Modal Mobile */
+    #confirmation-modal .bg-white {
+        margin: 16px;
+        max-width: calc(100vw - 32px);
+    }
+    
+    #confirmation-modal .p-6 {
+        padding: 16px;
+    }
+    
+    #confirmation-modal .bg-gradient-to-r.from-red-600 {
+        padding: 16px;
+    }
+    
+    #confirmation-modal .text-lg {
+        font-size: 16px;
+    }
+    
+    #confirmation-modal .flex.gap-3 {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    #confirmation-modal .px-6.py-3 {
+        padding: 12px 16px;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens - further optimization */
+    #chat-modal .bg-white {
+        margin: 8px;
+        max-height: calc(100vh - 16px);
+    }
+    
+    #chat-modal #chat-messages {
+        height: 55vh;
+    }
+    
+    #chat-modal .p-4.border-t {
+        padding: 8px;
+    }
+    
+    #chat-modal .flex.space-x-2 {
+        gap: 6px;
+    }
+    
+    #chat-modal #chat-input {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+    
+    #chat-modal #voice-btn,
+    #chat-modal button[onclick="sendMessage()"] {
+        min-width: 40px;
+        width: 40px;
+        padding: 8px;
+    }
+    
+    #chat-modal .bg-gradient-to-r.from-purple-600 {
+        padding: 10px 12px;
+    }
+    
+    /* Confirmation Modal Extra Small */
+    #confirmation-modal .bg-white {
+        margin: 12px;
+    }
+    
+    #confirmation-modal .p-6 {
+        padding: 12px;
+    }
+    
+    #confirmation-modal .bg-gradient-to-r.from-red-600 {
+        padding: 12px;
+    }
+}
+
+/* Additional Mobile Modal Improvements */
+@media (max-width: 768px) {
+    /* Ensure modals don't exceed viewport */
+    .fixed.inset-0 > div {
+        max-width: 100vw !important;
+        max-height: 100vh !important;
+    }
+    
+    /* Better scrolling on mobile */
+    .overflow-y-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Prevent zoom on input focus (iOS Safari) */
+    input[type="text"], textarea {
+        font-size: 16px !important;
     }
 }
 

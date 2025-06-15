@@ -1,15 +1,16 @@
 """
 Development settings for expense_tracker project.
 """
+import os
 from .base import *
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# Debug mode for development
 DEBUG = True
 
-# Allow testserver for development and testing
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'testserver']
+# Allow all hosts in development
+ALLOWED_HOSTS = ['*']
 
-# Database for development - using SQLite
+# Database for development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -17,19 +18,36 @@ DATABASES = {
     }
 }
 
-# Enable all CORS origins for development
-CORS_ALLOW_ALL_ORIGINS = True
-
-# Additional development settings
-INTERNAL_IPS = [
-    '127.0.0.1',
-    'localhost',
+# Static files in development
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
 ]
 
-# Email backend for development
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Google OAuth settings for development (HTTP allowed)
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', os.environ.get('GOOGLE_OAUTH2_CLIENT_ID'))
+GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET'))
+GOOGLE_OAUTH_REDIRECT_URI = 'http://localhost:8000/auth/oauth/google/callback/'
 
-# Logging configuration for development
+# Disable HTTPS requirement for OAuth in development
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+
+# Session settings
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = False  # Allow HTTP cookies in development
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+# CSRF settings for development
+CSRF_COOKIE_SECURE = False  # Allow HTTP in development
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+
+# Logging for development
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -38,15 +56,28 @@ LOGGING = {
             'class': 'logging.StreamHandler',
         },
     },
-    'root': {
-        'handlers': ['console'],
-        'level': 'INFO',
-    },
     'loggers': {
+        'authentication': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'django': {
             'handlers': ['console'],
             'level': 'INFO',
-            'propagate': False,
+            'propagate': True,
         },
     },
-} 
+}
+
+# Email backend for development (console)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Enable all CORS origins for development
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Additional development settings
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+] 

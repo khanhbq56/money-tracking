@@ -1,83 +1,153 @@
-# Deployment Guide
+# Money Tracking App Deployment Guide
+
+## Table of Contents
+1. [Google Cloud Console Setup](#google-cloud-console-setup)
+2. [Railway Deployment](#railway-deployment)
+3. [Environment Variables](#environment-variables)
+4. [Common Issues](#common-issues)
+
+## Google Cloud Console Setup
+
+### 1. Create OAuth 2.0 Credentials
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing project
+3. Navigate to **APIs & Services** → **Credentials**
+4. Click **Create Credentials** → **OAuth 2.0 Client ID**
+5. Set **Application type** to **Web application**
+6. Add **Authorized redirect URIs**:
+   - For production: `https://your-domain.railway.app/auth/oauth/google/callback/`
+   - For development: `http://localhost:8000/auth/oauth/google/callback/`
+   - For backward compatibility: `https://your-domain.railway.app/auth/google/callback/`
+
+### 2. Enable Required APIs
+1. Go to **APIs & Services** → **Library**
+2. Enable the following APIs:
+   - Google+ API
+   - People API
+   - Gmail API (if needed)
 
 ## Railway Deployment
 
-### Environment Variables
+### 1. Connect Repository
+1. Go to [Railway](https://railway.app/)
+2. Create new project
+3. Connect your GitHub repository
+4. Select the main branch
 
-Set these environment variables in your Railway deployment:
+### 2. Configure Build Settings
+Railway should auto-detect Django. If not, add these build settings:
+- **Build Command**: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
+- **Start Command**: `gunicorn expense_tracker.wsgi:application --bind 0.0.0.0:$PORT`
+
+### 3. Environment Variables
+Add these environment variables in Railway dashboard:
 
 ```bash
 # Django Settings
-DJANGO_SECRET_KEY="your-secret-key-here"
-DEBUG="False"
-DJANGO_SETTINGS_MODULE="expense_tracker.settings.production"
+DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
+SECRET_KEY=your-secret-key-here
+DEBUG=False
 
-# Localization
-LANGUAGE_CODE="vi"
-TIME_ZONE="Asia/Ho_Chi_Minh"
+# Database (Railway PostgreSQL)
+DATABASE_URL=postgresql://user:password@host:port/database
 
-# Allowed hosts (comma-separated)
-ALLOWED_HOSTS="localhost,127.0.0.1,healthcheck.railway.app,your-app-name.up.railway.app"
+# Google OAuth (Use GOOGLE_OAUTH2_* naming for Railway)
+GOOGLE_OAUTH2_CLIENT_ID=your-google-client-id
+GOOGLE_OAUTH2_CLIENT_SECRET=your-google-client-secret
 
-# Database (Railway automatically provides this)
-DATABASE_URL="${{Postgres.DATABASE_URL}}"
+# Optional: Custom redirect URI
+GOOGLE_OAUTH_REDIRECT_URI=https://your-domain.railway.app/auth/oauth/google/callback/
 
-# Google OAuth Settings (IMPORTANT: Use correct naming)
-GOOGLE_OAUTH_CLIENT_ID="your-google-oauth-client-id"
-GOOGLE_OAUTH_CLIENT_SECRET="your-google-oauth-client-secret"  
-GOOGLE_OAUTH_REDIRECT_URI="https://your-app-name.up.railway.app/auth/oauth/google/callback/"
-
-# AI Settings
-GEMINI_API_KEY="your-gemini-api-key"
+# Security
+ALLOWED_HOSTS=your-domain.railway.app,healthcheck.railway.app
 ```
 
-### Fix for Current Deployment
+## Environment Variables
 
-Your current `.env` has these issues:
-
-1. **Incorrect OAuth variable names**: Change from `GOOGLE_OAUTH2_*` to `GOOGLE_OAUTH_*`
-2. **Wrong redirect URI**: Should be `/auth/oauth/google/callback/` not `/auth/google/callback/`
-
-#### Updated .env for your deployment:
-
+### Production (Railway)
 ```bash
-DJANGO_SECRET_KEY="pqbw(ro1t97wbfb&rj+q5s%0d(%(&lc1h7-+a9x3d7lbjj%7e_"
-GEMINI_API_KEY="AIzaSyDXRY0ECgjUeBwdgSaw6UGJr3eqh85rEgk"
-DEBUG="False"
-DJANGO_SETTINGS_MODULE="expense_tracker.settings.production"
-LANGUAGE_CODE="vi"
-TIME_ZONE="Asia/Ho_Chi_Minh"
-ALLOWED_HOSTS="localhost,127.0.0.1,healthcheck.railway.app,money-tracking-production.up.railway.app"
-DATABASE_URL="${{Postgres.DATABASE_URL}}"
-
-# Fixed OAuth variables (changed from GOOGLE_OAUTH2_* to GOOGLE_OAUTH_*)
-GOOGLE_OAUTH_CLIENT_ID="515963526992-q8ga8lhcd59a0s6v2i6voerf0tng5lcd.apps.googleusercontent.com"
-GOOGLE_OAUTH_CLIENT_SECRET="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"
-GOOGLE_OAUTH_REDIRECT_URI="https://money-tracking-production.up.railway.app/auth/oauth/google/callback/"
+DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
+SECRET_KEY=your-django-secret-key
+DEBUG=False
+DATABASE_URL=postgresql://user:password@host:port/database
+GOOGLE_OAUTH2_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_OAUTH2_CLIENT_SECRET=your-google-oauth-client-secret
+ALLOWED_HOSTS=your-domain.railway.app,healthcheck.railway.app
 ```
 
-### Google OAuth Console Setup
+### Development (Local)
+Create a `.env` file in your project root:
+```bash
+DJANGO_SETTINGS_MODULE=expense_tracker.settings.development
+SECRET_KEY=your-local-secret-key
+DEBUG=True
+GOOGLE_OAUTH_CLIENT_ID=your-google-oauth-client-id
+GOOGLE_OAUTH_CLIENT_SECRET=your-google-oauth-client-secret
+```
 
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Select your project
-3. Go to APIs & Services > Credentials
-4. Edit your OAuth 2.0 Client ID
-5. Update Authorized redirect URIs to:
-   ```
-   https://money-tracking-production.up.railway.app/auth/oauth/google/callback/
-   ```
+## Common Issues
 
-### Deployment Steps
+### 1. Google OAuth Redirect Mismatch
+**Error**: `redirect_uri_mismatch`
+**Solution**: 
+- Check that redirect URI in Google Cloud Console matches exactly
+- Production: `https://your-domain.railway.app/auth/oauth/google/callback/`
+- Development: `http://localhost:8000/auth/oauth/google/callback/`
 
-1. Update environment variables in Railway dashboard
-2. Update Google OAuth redirect URI in Google Cloud Console
-3. Redeploy the application
-4. Test OAuth login functionality
+### 2. HTTPS Required for OAuth
+**Error**: `(insecure_transport) OAuth 2 MUST utilize https`
+**Solution**: 
+- Development settings automatically set `OAUTHLIB_INSECURE_TRANSPORT=1`
+- Production uses HTTPS by default
 
-### Verification
+### 3. Invalid HTTP_HOST header
+**Error**: `Invalid HTTP_HOST header`
+**Solution**: Add domain to `ALLOWED_HOSTS` in environment variables
 
-After deployment, verify:
-- ✅ App loads without ALLOWED_HOSTS error
-- ✅ Google OAuth login works
-- ✅ Demo account creation works
-- ✅ Session management works properly 
+### 4. Session Issues
+**Error**: Users not staying logged in
+**Solution**: 
+- Check session settings in production.py
+- Ensure `SESSION_COOKIE_SECURE=True` in production
+- Ensure `SESSION_COOKIE_SECURE=False` in development
+
+### 5. Database Migration Issues
+**Error**: Migration failures during deployment
+**Solution**:
+- Ensure migrations are committed to git
+- Check DATABASE_URL format
+- Manually run migrations: `python manage.py migrate`
+
+### 6. Static Files Not Loading
+**Error**: CSS/JS files not found
+**Solution**:
+- Run `python manage.py collectstatic`
+- Check STATIC_ROOT and STATIC_URL settings
+- Ensure staticfiles app is in INSTALLED_APPS
+
+## Security Checklist
+
+- [ ] DEBUG=False in production
+- [ ] SECRET_KEY is unique and secure
+- [ ] DATABASE_URL uses SSL
+- [ ] SESSION_COOKIE_SECURE=True in production
+- [ ] CSRF_COOKIE_SECURE=True in production
+- [ ] ALLOWED_HOSTS properly configured
+- [ ] Google OAuth credentials are secure
+
+## Performance Tips
+
+1. Use Railway's built-in PostgreSQL for production
+2. Enable Redis for session storage (optional)
+3. Configure proper logging levels
+4. Use CDN for static files (optional)
+5. Monitor with Railway's built-in metrics
+
+## Support
+
+For issues:
+1. Check Railway deployment logs
+2. Check Django debug logs
+3. Verify environment variables
+4. Test Google OAuth configuration
+5. Check database connectivity 

@@ -8,6 +8,9 @@ urlpatterns = [
     path('oauth/google/', views.GoogleOAuthInitView.as_view(), name='google_oauth_init'),
     path('oauth/google/callback/', views.GoogleOAuthCallbackView.as_view(), name='google_oauth_callback'),
     
+    # Backward compatibility route for Google OAuth callback
+    path('google/callback/', views.GoogleOAuthCallbackView.as_view(), name='google_oauth_callback_compat'),
+    
     # Demo account
     path('demo/login/', views.DemoLoginView.as_view(), name='demo_login'),
     

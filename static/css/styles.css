@@ -715,7 +715,8 @@
     #chat-modal .flex.items-center.justify-center.min-h-screen {
         min-height: 100vh;
         padding: 16px;
-        align-items: flex-end; /* Đặt dialog ở dưới cùng */
+        align-items: center; /* Đặt dialog ở giữa thay vì flex-end */
+        padding-bottom: 100px; /* Tạo khoảng cách với FAB ở dưới */
     }
     
     #chat-modal .bg-white {
@@ -723,7 +724,6 @@
         max-height: 70vh; /* Giảm từ 85vh xuống 70vh */
         max-width: 100%;
         width: 100%;
-        margin-bottom: 80px; /* Tạo khoảng cách với FAB */
     }
     
     /* Chat Messages Container - Smaller */
@@ -826,9 +826,12 @@
 
 @media (max-width: 480px) {
     /* Extra small screens - Even Smaller Dialog */
+    #chat-modal .flex.items-center.justify-center.min-h-screen {
+        padding-bottom: 110px; /* Tăng khoảng cách với FAB cho phone */
+    }
+    
     #chat-modal .bg-white {
         max-height: 60vh; /* Giảm xuống 60vh cho phone nhỏ */
-        margin-bottom: 90px; /* Tăng khoảng cách với FAB */
     }
     
     #chat-modal #chat-messages {

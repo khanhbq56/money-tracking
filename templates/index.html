@@ -5,25 +5,129 @@
 {% block title %}{% trans "Expense Tracker" %} - {% trans "AI Assistant" %}{% endblock %}
 
 {% block content %}
-    <!-- Header Stats -->
-    <div class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <!-- Language Switcher -->
-            <div class="flex justify-end mb-4">
-                <div class="relative">
-                    <div id="language-switcher" class="bg-white border border-gray-300 rounded-xl px-4 py-2 pr-8 text-sm font-medium text-gray-700 shadow-sm hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 cursor-pointer flex items-center justify-between min-w-[80px]">
-                        <span id="current-flag">🇻🇳</span>
-                        <svg class="w-4 h-4 text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
+    <!-- Modern Top Navigation Bar -->
+    <div class="bg-white shadow-sm border-b sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Left: App Logo & Title -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg app-logo">
+                        <span class="text-white text-xl font-bold">💰</span>
                     </div>
-                    <div id="language-dropdown" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded-xl shadow-lg z-10 hidden">
-                        <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-t-xl" data-lang="vi">🇻🇳</div>
-                        <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center text-lg rounded-b-xl" data-lang="en">🇺🇸</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800 app-title" data-i18n="app_title">Money Tracker</h1>
+                        <p class="text-xs text-gray-500 hidden sm:block app-subtitle" data-i18n="app_subtitle">{% trans "Quản lý tài chính thông minh" %}</p>
                     </div>
                 </div>
+
+                <!-- Right: User Info & Actions -->
+                {% if user.is_authenticated %}
+                <div class="flex items-center space-x-4">
+                    <!-- Demo Status (if applicable) -->
+                    {% if user.is_demo_user %}
+                    <div class="hidden sm:flex items-center space-x-2 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-1 demo-status">
+                        <span class="text-yellow-600 text-sm font-medium">🚀 Demo</span>
+                        {% if user.demo_expires_at %}
+                        <span class="text-yellow-600 text-xs" id="demo-countdown" data-expires="{{ user.demo_expires_at|date:'c' }}">--</span>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Language Switcher -->
+                    <div class="relative">
+                        <button id="language-switcher" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
+                            <span id="current-flag" class="text-lg">🇻🇳</span>
+                        </button>
+                        <div id="language-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[120px]">
+                            <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-t-lg" data-lang="vi">
+                                <span class="text-lg">🇻🇳</span>
+                                <span class="text-sm">Tiếng Việt</span>
+                            </div>
+                            <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-b-lg" data-lang="en">
+                                <span class="text-lg">🇺🇸</span>
+                                <span class="text-sm">English</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button id="user-menu-button" class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 transition-colors">
+                            <!-- User Avatar -->
+                            <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                                {% if user.profile_picture %}
+                                    <img src="{{ user.profile_picture }}" alt="Profile" class="w-8 h-8 rounded-full object-cover">
+                                {% else %}
+                                    <span>{{ user.get_short_name|first|upper|default:"U" }}</span>
+                                {% endif %}
+                            </div>
+                            <!-- User Name (hidden on mobile) -->
+                            <span class="hidden md:block text-sm font-medium text-gray-700">{{ user.get_short_name|default:user.username }}</span>
+                            <!-- Dropdown Arrow -->
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        
+                        <!-- User Dropdown Menu -->
+                        <div id="user-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[200px]">
+                            <div class="p-3 border-b border-gray-100">
+                                <p class="text-sm font-medium text-gray-800">{{ user.get_short_name|default:user.username }}</p>
+                                <p class="text-xs text-gray-500">{{ user.email }}</p>
+                                {% if user.is_demo_user %}
+                                <span class="inline-block mt-1 bg-yellow-100 text-yellow-800 text-xs font-medium px-2 py-1 rounded-full">
+                                    🚀 {% trans "Tài khoản demo" %}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <div class="py-2">
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2" onclick="showUserProfile()">
+                                    <i class="fas fa-user w-4"></i>
+                                    <span data-i18n="profile">{% trans "Hồ sơ" %}</span>
+                                </button>
+                                <button class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center space-x-2" onclick="showSettings()">
+                                    <i class="fas fa-cog w-4"></i>
+                                    <span data-i18n="settings">{% trans "Cài đặt" %}</span>
+                                </button>
+                                <div class="border-t border-gray-100 mt-2 pt-2">
+                                    <div class="header-actions">
+                                        <!-- Logout button will be added here by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Non-authenticated user: just language switcher -->
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="language-switcher" class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 rounded-lg px-3 py-2 transition-colors">
+                            <span id="current-flag" class="text-lg">🇻🇳</span>
+                            <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div id="language-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[120px]">
+                            <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-t-lg" data-lang="vi">
+                                <span class="text-lg">🇻🇳</span>
+                                <span class="text-sm">Tiếng Việt</span>
+                            </div>
+                            <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-b-lg" data-lang="en">
+                                <span class="text-lg">🇺🇸</span>
+                                <span class="text-sm">English</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
-            
+        </div>
+    </div>
+
+    <!-- Stats Section -->
+    <div class="bg-white shadow-sm border-b">
+        <div class="max-w-7xl mx-auto px-4 py-4">
             <!-- Stats Grid - 4 cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <!-- Chi tiêu -->

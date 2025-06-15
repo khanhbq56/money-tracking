@@ -25,9 +25,16 @@ ENABLE_MULTI_USER = config('ENABLE_MULTI_USER', default=True, cast=bool)
 DEFAULT_USER_LIMIT = config('DEFAULT_USER_LIMIT', default=1000, cast=int)
 
 # Enhanced user session settings for multi-user
-SESSION_COOKIE_AGE = 86400 * 7  # 1 week for better UX
-SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+# Override base.py session settings for production
+SESSION_COOKIE_AGE = 86400  # 24 hours max
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Force re-login after browser close
 SESSION_SAVE_EVERY_REQUEST = True
+
+# Google OAuth Dynamic Redirect URI for production
+GOOGLE_OAUTH2_REDIRECT_URI = config(
+    'GOOGLE_OAUTH2_REDIRECT_URI',
+    default='https://money-tracking-production.up.railway.app/auth/oauth/google/callback/'
+)
 
 # Database - use Railway's PostgreSQL if available, otherwise SQLite
 DATABASE_URL = config('DATABASE_URL', default=None)

@@ -54,8 +54,8 @@ class MonthlyTotalService:
                 'total_expense': expense_total,
                 'total_saving': saving_total,
                 'total_investment': investment_total,
-                'net_total': net_total
-            }
+            'net_total': net_total
+        }
         )
         
         # Update if exists
@@ -75,7 +75,7 @@ class MonthlyTotalService:
         
         Args:
             user: User instance
-            
+        
         Returns:
             dict: Current month totals
         """
@@ -96,7 +96,7 @@ class MonthlyTotalService:
         
         Args:
             user: User instance
-            
+        
         Returns:
             dict: Formatted totals for display
         """
@@ -132,7 +132,7 @@ class MonthlyTotalService:
             
             for date in user_date_combinations:
                 MonthlyTotalService.update_monthly_totals(user, date.year, date.month)
-                updated_count += 1
+            updated_count += 1
         
         return updated_count
     

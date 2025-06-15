@@ -11,6 +11,9 @@ urlpatterns = [
     # Demo account
     path('demo/login/', views.DemoLoginView.as_view(), name='demo_login'),
     
+    # Session management
+    path('session/status/', views.session_status_view, name='session_status'),
+    
     # Logout
     path('logout/', views.logout_view, name='logout'),
     

@@ -457,4 +457,26 @@ def terms_of_service_view(request):
     context = {
         'last_updated': '2024-01-15'
     }
-    return render(request, 'legal/terms_of_service.html', context) 
+    return render(request, 'legal/terms_of_service.html', context)
+
+
+@require_http_methods(["GET"])
+def session_status_view(request):
+    """Check session status and demo expiration"""
+    if not request.user.is_authenticated:
+        return JsonResponse({'authenticated': False}, status=401)
+    
+    data = {
+        'authenticated': True,
+        'user_id': request.user.id,
+        'username': request.user.get_short_name(),
+        'is_demo': getattr(request.user, 'is_demo_user', False),
+    }
+    
+    # Add demo expiration info if applicable
+    if hasattr(request.user, 'is_demo_user') and request.user.is_demo_user:
+        if hasattr(request.user, 'demo_expires_at') and request.user.demo_expires_at:
+            data['demo_expires_at'] = request.user.demo_expires_at.isoformat()
+            data['demo_expired'] = request.user.is_demo_expired()
+    
+    return JsonResponse(data) 

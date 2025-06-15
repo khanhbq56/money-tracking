@@ -177,3 +177,17 @@ GOOGLE_OAUTH2_REDIRECT_URI = config(
     'GOOGLE_OAUTH2_REDIRECT_URI', 
     default='http://localhost:8000/auth/google/callback/'
 ) 
+
+# Session Configuration
+# Session only lasts while browser is open (not persistent)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 86400  # 24 hours max (fallback if browser close doesn't work)
+SESSION_SAVE_EVERY_REQUEST = True  # Update session on every request
+
+# Security settings for session cookies
+SESSION_COOKIE_HTTPONLY = True  # Prevent XSS attacks
+SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)  # HTTPS only in production
+
+# Clear expired sessions more frequently
+SESSION_ENGINE = 'django.contrib.sessions.backends.db' 

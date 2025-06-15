@@ -201,7 +201,7 @@ const enTranslations = {
     'welcome_login': 'Welcome to Money Tracker',
     'login_subtitle': 'Smart financial management with AI',
     'login_with_google': 'Sign in with Google',
-    'try_demo_account': 'Try for Free',
+    'try_demo_account': 'Try Demo Account',
     'privacy_focused': 'Privacy & Security',
     'secure_oauth': 'Secure Login',
     'minimal_permissions': 'Minimal permissions',
@@ -224,7 +224,7 @@ const enTranslations = {
     'demo_session_expired': 'Demo session has expired. Please login again.',
     'oauth_state_mismatch_error': 'OAuth security error. Please try again.',
     'oauth_callback_error': 'OAuth authentication error. Please try again.',
-    'session_expired': 'Session has expired. Please login again.',
+    'session_expired': 'Session has expired',
     'network_error': 'Network error. Please check your connection.',
     
     // Login benefits
@@ -288,13 +288,19 @@ const enTranslations = {
     
     // Logout
     'logout': 'Logout',
-    'confirm_logout': 'Are you sure you want to logout?',
-    'logout_warning': 'You will need to login again to continue using the application.',
+    'logout_confirmation': 'Are you sure you want to logout?',
+    'logout_success': 'Logged out successfully!',
+    'logout_error': 'Error during logout',
+    'demo_account_info': 'Demo account',
+    'expires_in': 'Expires in',
+    'expired': 'Expired',
+    'welcome_back': 'Welcome back!',
     
     // Session monitoring
     'session_timeout_warning': 'Your session will expire in {minutes} minutes due to inactivity. Do you want to extend your session?',
     'extend_session': 'Extend Session',
     'logout_now': 'Logout Now',
+    'demo_expiring_soon': 'Demo account will expire in {minutes} minutes',
 
     // Terms of Service content
     'terms_agreement_text': 'By accessing and using Money Tracker ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.',
@@ -440,7 +446,22 @@ const enTranslations = {
     'csrf_oauth_protection': 'CSRF protection and OAuth state',
     'not_intended_children': 'Money Tracker is not intended for children under 18. We do not knowingly collect personal information from children. If you believe we have collected information from a child, please contact us immediately.',
     'may_update_policy': 'We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date. Changes are effective immediately upon posting.',
-    'questions_about_policy': 'If you have questions about this Privacy Policy or our data practices:'
+    'questions_about_policy': 'If you have questions about this Privacy Policy or our data practices:',
+    'app_title': 'Money Tracker',
+    'app_subtitle': 'Smart financial management',
+    'profile': 'Profile',
+    'settings': 'Settings',
+    'user_profile': 'User Profile',
+    'feature_coming_soon': 'This feature is coming soon!',
+    // Authentication
+    'login': 'Login',
+    'logout': 'Logout',
+    'logout_confirm': 'Confirm Logout',
+    'logout_confirm_message': 'Are you sure you want to logout?',
+    'logout_success': 'Logged out successfully',
+    'logout_error': 'Error during logout',
+    'cancel': 'Cancel',
+    'confirm': 'Confirm'
 };
 
 // Export for use in i18n.js

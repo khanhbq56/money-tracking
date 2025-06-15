@@ -484,7 +484,7 @@ def monthly_analysis(request):
         # Initialize calculator
         calculator = FutureProjectionCalculator(user=request.user)
         
-        # Get monthly analysis  
+        # Get monthly analysis
         analysis_data = calculator.get_monthly_analysis(year, month)
         
         return Response({

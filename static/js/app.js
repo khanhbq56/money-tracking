@@ -83,7 +83,7 @@ class ExpenseTrackerApp {
             if (typeof window.calendar !== 'undefined' && window.calendar.loadTransactions) {
                 await window.calendar.loadTransactions();
             }
-            
+
         } catch (error) {
             console.error('Error loading initial data:', error);
         }
@@ -481,18 +481,18 @@ window.showConfirmationDialog = function(message, options = {}) {
         modal.innerHTML = `
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6" onclick="event.stopPropagation()">
                 <div class="text-center">
-                    <div class="mb-4 text-4xl">
-                        ${type === 'warning' ? '⚠️' : type === 'danger' ? '🚨' : '❓'}
-                    </div>
+                <div class="mb-4 text-4xl">
+                    ${type === 'warning' ? '⚠️' : type === 'danger' ? '🚨' : '❓'}
+                </div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-2">${title}</h3>
-                    <p class="text-gray-700 mb-6">${message}</p>
-                    <div class="flex space-x-3 justify-center">
+                <p class="text-gray-700 mb-6">${message}</p>
+                <div class="flex space-x-3 justify-center">
                         <button id="${modalId}-cancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
                             ${cancelText}
-                        </button>
+                    </button>
                         <button id="${modalId}-confirm" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                             ${confirmText}
-                        </button>
+                    </button>
                     </div>
                 </div>
             </div>

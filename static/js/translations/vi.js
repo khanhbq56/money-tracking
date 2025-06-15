@@ -198,10 +198,10 @@ const viTranslations = {
     'goal_time_not_achievable': 'Không thể đạt được với mô hình chi tiêu hiện tại',
 
     // Login dialog translations
-    'welcome_login': 'Chào mừng đến với Money Tracker',
+    'welcome_login': 'Chào Mừng Đến Money Tracker',
     'login_subtitle': 'Quản lý tài chính thông minh với AI',
     'login_with_google': 'Đăng nhập với Google',
-    'try_demo_account': 'Dùng thử miễn phí',
+    'try_demo_account': 'Dùng thử tài khoản Demo',
     'privacy_focused': 'Bảo mật & Riêng tư',
     'secure_oauth': 'Đăng nhập an toàn',
     'minimal_permissions': 'Quyền tối thiểu',
@@ -224,7 +224,8 @@ const viTranslations = {
     'demo_session_expired': 'Phiên demo đã hết hạn. Vui lòng đăng nhập lại.',
     'oauth_state_mismatch_error': 'Lỗi bảo mật OAuth. Vui lòng thử lại.',
     'oauth_callback_error': 'Lỗi xác thực OAuth. Vui lòng thử lại.',
-    'session_expired': 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+    'session_expired': 'Phiên đăng nhập đã hết hạn',
+    'demo_expiring_soon': 'Tài khoản demo sẽ hết hạn trong {minutes} phút',
     'network_error': 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.',
     
     // Login benefits
@@ -268,8 +269,15 @@ const viTranslations = {
     
     // Logout
     'logout': 'Đăng xuất',
-    'confirm_logout': 'Bạn có chắc chắn muốn đăng xuất?',
-    'logout_warning': 'Bạn sẽ cần đăng nhập lại để tiếp tục sử dụng ứng dụng.',
+    'logout_confirmation': 'Bạn có chắc chắn muốn đăng xuất?',
+    'logout_success': 'Đăng xuất thành công!',
+    'logout_error': 'Lỗi khi đăng xuất',
+    'cancel': 'Hủy',
+    'confirm': 'Xác nhận',
+    'demo_account_info': 'Tài khoản demo',
+    'expires_in': 'Hết hạn trong',
+    'expired': 'Đã hết hạn',
+    'welcome_back': 'Chào mừng trở lại!',
     
     // Session monitoring
     'session_timeout_warning': 'Phiên của bạn sẽ hết hạn trong {minutes} phút do không hoạt động. Bạn có muốn gia hạn phiên?',
@@ -420,7 +428,17 @@ const viTranslations = {
     'csrf_oauth_protection': 'Bảo vệ CSRF và trạng thái OAuth',
     'not_intended_children': 'Money Tracker không dành cho trẻ em dưới 18 tuổi. Chúng tôi không cố ý thu thập thông tin cá nhân từ trẻ em. Nếu bạn tin rằng chúng tôi đã thu thập thông tin từ một đứa trẻ, vui lòng liên hệ với chúng tôi ngay lập tức.',
     'may_update_policy': 'Chúng tôi có thể cập nhật Chính sách Bảo mật này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi nào bằng cách đăng Chính sách Bảo mật mới trên trang này và cập nhật ngày "Cập nhật lần cuối". Các thay đổi có hiệu lực ngay lập tức sau khi đăng.',
-    'questions_about_policy': 'Nếu bạn có câu hỏi về Chính sách Bảo mật này hoặc thực tiễn dữ liệu của chúng tôi:'
+    'questions_about_policy': 'Nếu bạn có câu hỏi về Chính sách Bảo mật này hoặc thực tiễn dữ liệu của chúng tôi:',
+    'app_title': 'Money Tracker',
+    'app_subtitle': 'Quản lý tài chính thông minh',
+    'profile': 'Hồ sơ',
+    'settings': 'Cài đặt',
+    'user_profile': 'Hồ sơ người dùng',
+    'feature_coming_soon': 'Tính năng này sẽ sớm được ra mắt!',
+    // Authentication
+    'login': 'Đăng nhập',
+    'logout_confirm': 'Xác nhận đăng xuất',
+    'logout_confirm_message': 'Bạn có chắc chắn muốn đăng xuất không?'
 };
 
 // Export for ES modules

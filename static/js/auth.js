@@ -3,10 +3,9 @@
  * Handles Google OAuth and Demo account login
  */
 
-class AuthenticationManager {
+class AuthManager {
     constructor() {
         this.loginModal = null;
-        this.isAuthenticating = false;
         this.init();
     }
 
@@ -335,7 +334,7 @@ class AuthenticationManager {
         this.showLoadingState(window.i18n.t('logging_in'));
         
         // Redirect to Google OAuth
-        window.location.href = '/auth/google/login/';
+        window.location.href = '/auth/oauth/google/';
     }
 
     async handleDemoLogin() {
@@ -411,6 +410,9 @@ class AuthenticationManager {
         // Add logout button to header if user is authenticated
         if (this.isUserAuthenticated()) {
             this.addLogoutButton();
+            this.setupDemoCountdown();
+            this.setupUserProfileFeatures();
+            this.setupUserDropdown();
         }
     }
 
@@ -420,21 +422,89 @@ class AuthenticationManager {
             return;
         }
 
-        // Create logout button
-        const logoutBtn = UIComponents.createButton(
-            window.i18n.t('logout'), 
-            'danger', 
-            () => this.handleLogout(),
-            { small: true }
-        );
+        // Create logout button with enhanced styling for dropdown menu
+        const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logout-btn';
-        logoutBtn.className += ' logout-btn';
+        logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
+        logoutBtn.innerHTML = `
+            <i class="fas fa-sign-out-alt w-4"></i>
+            <span>${window.i18n.t('logout')}</span>
+        `;
+        logoutBtn.onclick = () => this.handleLogout();
 
-        // Add to navigation area
-        const navArea = document.querySelector('.nav-area') || document.querySelector('.header-actions');
+        // Try multiple selectors for logout button placement
+        const navArea = document.querySelector('.header-actions') || 
+                       document.querySelector('.nav-area') ||
+                       document.querySelector('.user-actions') ||
+                       document.querySelector('[data-user-actions]');
+        
         if (navArea) {
             navArea.appendChild(logoutBtn);
+        } else {
+            // Fallback: add to top right corner
+            console.warn('⚠️ Header actions area not found, adding logout button to body');
+            const fallbackContainer = document.createElement('div');
+            fallbackContainer.className = 'fixed top-4 right-4 z-50';
+            const fallbackBtn = UIComponents.createButton(
+                `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`, 
+                'danger', 
+                () => this.handleLogout(),
+                { small: true }
+            );
+            fallbackBtn.id = 'logout-btn-fallback';
+            fallbackContainer.appendChild(fallbackBtn);
+            document.body.appendChild(fallbackContainer);
         }
+    }
+
+    setupUserDropdown() {
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        const headerActions = document.querySelector('.header-actions');
+
+        if (!userMenuButton || !userDropdown || !headerActions) {
+            console.error('❌ Missing user dropdown elements');
+            return;
+        }
+
+        // Check if logout button already exists
+        let logoutBtn = document.getElementById('logout-btn');
+        if (!logoutBtn) {
+            // Create logout button manually
+            logoutBtn = document.createElement('button');
+            logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
+            logoutBtn.innerHTML = `
+                <i class="fas fa-sign-out-alt w-4"></i>
+                <span>${window.i18n.t('logout')}</span>
+            `;
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.handleLogout();
+            });
+            logoutBtn.id = 'logout-btn';
+            headerActions.appendChild(logoutBtn);
+        }
+
+        // Toggle dropdown
+        userMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Close dropdown on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                userDropdown.classList.add('hidden');
+            }
+        });
     }
 
     async handleLogout() {
@@ -452,7 +522,8 @@ class AuthenticationManager {
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': this.getCSRFToken()
-                }
+                },
+                credentials: 'same-origin'
             });
 
             if (response.ok) {
@@ -479,28 +550,35 @@ class AuthenticationManager {
 
     showLogoutConfirmation() {
         return new Promise((resolve) => {
-            // Wait for dependencies
-            const checkDependencies = () => {
-                if (typeof showConfirmationDialog === 'function') {
-                    // Show confirmation dialog
-                    showConfirmationDialog(
-                        window.i18n.t('logout_confirmation'),
-                        {
-                            type: 'warning',
-                            confirmText: window.i18n.t('logout'),
-                            cancelText: window.i18n.t('cancel'),
-                            onConfirm: () => resolve(true),
-                            onCancel: () => resolve(false)
-                        }
-                    );
-                } else {
-                    // Fallback to browser confirm
-                    const confirmed = confirm(window.i18n.t('logout_confirmation'));
-                    resolve(confirmed);
-                }
-            };
+            // Check if showConfirmationDialog exists
+            if (typeof window.showConfirmationDialog !== 'function') {
+                console.error('❌ showConfirmationDialog function not found, using fallback');
+                const confirmed = confirm(window.i18n.t('logout_confirm_message'));
+                resolve(confirmed);
+                return;
+            }
 
-            checkDependencies();
+            // IMPORTANT: showConfirmationDialog uses callback-style API, not Promise-style
+            // Signature: showConfirmationDialog(message, onConfirm, options)
+            // - message: string - the confirmation message
+            // - onConfirm: function - callback when user confirms
+            // - options: object - { title, confirmText, cancelText, onCancel }
+            window.showConfirmationDialog(
+                window.i18n.t('logout_confirm_message'),
+                () => {
+                    // User confirmed logout
+                    resolve(true);
+                },
+                {
+                    title: window.i18n.t('logout_confirm'),
+                    confirmText: window.i18n.t('logout'),
+                    cancelText: window.i18n.t('cancel'),
+                    onCancel: () => {
+                        // User cancelled logout
+                        resolve(false);
+                    }
+                }
+            );
         });
     }
 
@@ -570,25 +648,96 @@ class AuthenticationManager {
     }
 
     getCSRFToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-               document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        // Try multiple methods to get CSRF token
+        let token = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                   document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
+                   '';
+        
+        // If no token found, try to get from cookie
+        if (!token) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    token = value;
+                    break;
+                }
+            }
+        }
+        
+        return token;
+    }
+
+    setupDemoCountdown() {
+        const demoCountdown = document.getElementById('demo-countdown');
+        if (!demoCountdown) return;
+
+        const expiresAt = demoCountdown.getAttribute('data-expires');
+        if (!expiresAt) return;
+
+        const updateCountdown = () => {
+            const now = new Date().getTime();
+            const expiry = new Date(expiresAt).getTime();
+            const distance = expiry - now;
+
+            if (distance < 0) {
+                demoCountdown.textContent = window.i18n.t('expired');
+                demoCountdown.className += ' text-red-600 font-semibold';
+                return;
+            }
+
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            demoCountdown.textContent = `${hours}h ${minutes}m ${seconds}s`;
+            
+            // Color coding based on time remaining
+            if (distance < 30 * 60 * 1000) { // Less than 30 minutes
+                demoCountdown.className = demoCountdown.className.replace(/text-\w+-\d+/, 'text-red-600 font-semibold animate-pulse');
+            } else if (distance < 60 * 60 * 1000) { // Less than 1 hour
+                demoCountdown.className = demoCountdown.className.replace(/text-\w+-\d+/, 'text-yellow-600 font-semibold');
+            } else {
+                demoCountdown.className = demoCountdown.className.replace(/text-\w+-\d+/, 'text-gray-600');
+            }
+        };
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    }
+
+    setupUserProfileFeatures() {
+        // Add user profile dropdown functionality if needed
+        const userAvatar = document.querySelector('[data-user-avatar]');
+        if (userAvatar) {
+            userAvatar.addEventListener('click', () => {
+                this.showUserMenu();
+            });
+        }
+
+        // Add keyboard shortcut for quick logout
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'L') {
+                e.preventDefault();
+                this.handleLogout();
+            }
+        });
+    }
+
+    showUserMenu() {
+        // Future: Add user profile dropdown menu
+        console.log('User menu clicked - can add profile options here');
     }
 }
 
-// Initialize authentication manager when DOM is ready
-let authManager;
-document.addEventListener('DOMContentLoaded', () => {
-    // Wait for dependencies to be ready
+// Initialize AuthManager when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for i18n to be ready
     const initAuth = () => {
-        if (window.i18n && window.UIComponents && window.showAlertDialog) {
-            authManager = new AuthenticationManager();
-            window.authManager = authManager;
+        if (window.i18n && typeof window.i18n.t === 'function') {
+            window.authManager = new AuthManager();
         } else {
-            console.log('⏳ Waiting for dependencies...', {
-                i18n: !!window.i18n,
-                UIComponents: !!window.UIComponents,
-                showAlertDialog: !!window.showAlertDialog
-            });
             setTimeout(initAuth, 100);
         }
     };
@@ -597,4 +746,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Export for global access (will be set after initialization)
-window.authManager = null; 
+window.authManager = null;
+
+// Global functions for user menu actions
+function showUserProfile() {
+    if (typeof showAlertDialog === 'function') {
+        showAlertDialog(window.i18n.t('feature_coming_soon'), { 
+            type: 'info',
+            title: window.i18n.t('user_profile')
+        });
+    } else {
+        alert('User Profile feature coming soon!');
+    }
+}
+
+function showSettings() {
+    if (typeof showAlertDialog === 'function') {
+        showAlertDialog(window.i18n.t('feature_coming_soon'), { 
+            type: 'info',
+            title: window.i18n.t('settings')
+        });
+    } else {
+        alert('Settings feature coming soon!');
+    }
+} 

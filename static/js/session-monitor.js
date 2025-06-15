@@ -1,175 +1,135 @@
 /**
- * Session Monitor - Activity Tracking and Timeout Handling
- * Handles user inactivity detection and session expiration
+ * Session Monitor - Tracks session status and demo account expiration
  */
-
 class SessionMonitor {
     constructor() {
-        this.IDLE_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-        this.WARNING_TIME = 5 * 60 * 1000;  // 5 minutes before timeout
-        this.CHECK_INTERVAL = 60 * 1000;    // Check every minute
-        
-        this.lastActivity = Date.now();
+        this.checkInterval = 60000; // Check every minute
         this.warningShown = false;
-        this.timeoutTimer = null;
-        this.checkTimer = null;
-        
         this.init();
     }
-    
+
     init() {
-        // Skip for unauthenticated users
+        // Only monitor if user is authenticated
         if (!document.body.classList.contains('authenticated')) {
             return;
         }
-        
-        // Track activity events
-        this.setupActivityTracking();
-        
+
         // Start monitoring
         this.startMonitoring();
         
-        // Handle visibility change (tab switching)
+        // Monitor page visibility to refresh session when user returns
         document.addEventListener('visibilitychange', () => {
             if (!document.hidden) {
-                this.updateActivity();
+                this.checkSessionStatus();
             }
         });
     }
-    
-    setupActivityTracking() {
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
-        
-        events.forEach(event => {
-            document.addEventListener(event, () => this.updateActivity(), true);
-        });
-    }
-    
-    updateActivity() {
-        this.lastActivity = Date.now();
-        this.warningShown = false;
-        
-        // Clear any existing warning
-        this.hideWarning();
-    }
-    
+
     startMonitoring() {
-        this.checkTimer = setInterval(() => {
-            this.checkInactivity();
-        }, this.CHECK_INTERVAL);
+        setInterval(() => {
+            this.checkSessionStatus();
+        }, this.checkInterval);
     }
-    
-    checkInactivity() {
-        const now = Date.now();
-        const inactiveTime = now - this.lastActivity;
-        
-        // Show warning before timeout
-        if (inactiveTime >= (this.IDLE_TIMEOUT - this.WARNING_TIME) && !this.warningShown) {
-            this.showInactivityWarning();
-        }
-        
-        // Handle timeout
-        if (inactiveTime >= this.IDLE_TIMEOUT) {
-            this.handleTimeout();
-        }
-    }
-    
-    async showInactivityWarning() {
-        this.warningShown = true;
-        
-        const remainingMinutes = Math.ceil((this.IDLE_TIMEOUT - (Date.now() - this.lastActivity)) / (60 * 1000));
-        
-        const extendSession = await showConfirmationDialog(
-            window.i18n.t('session_timeout_warning').replace('{minutes}', remainingMinutes),
-            {
-                type: 'warning',
-                confirmText: window.i18n.t('extend_session'),
-                cancelText: window.i18n.t('logout_now')
-            }
-        );
-        
-        if (extendSession) {
-            this.updateActivity();
-            // Ping server to extend session
-            this.pingServer();
-        } else {
-            // User chose to logout
-            this.handleTimeout();
-        }
-    }
-    
-    hideWarning() {
-        // Implementation would hide any active warning modal
-        // This depends on your modal system
-    }
-    
-    async pingServer() {
+
+    async checkSessionStatus() {
         try {
-            await fetch('/api/ping', {
-                method: 'POST',
+            const response = await fetch('/auth/session/status/', {
+                method: 'GET',
+                credentials: 'same-origin',
                 headers: {
-                    'Content-Type': 'application/json',
                     'X-CSRFToken': this.getCSRFToken()
                 }
             });
-        } catch (error) {
-            console.warn('Failed to ping server:', error);
-        }
-    }
-    
-    async handleTimeout() {
-        // Stop monitoring
-        if (this.checkTimer) {
-            clearInterval(this.checkTimer);
-        }
-        
-        showAlertDialog(window.i18n.t('session_expired'), { type: 'warning' });
-        
-        // Auto logout after showing message
-        setTimeout(() => {
-            if (window.authManager) {
-                window.authManager.handleLogout();
-            } else {
-                // Fallback: reload page to trigger authentication
-                window.location.reload();
+
+            if (response.status === 401) {
+                // Session expired
+                this.handleSessionExpired();
+                return;
             }
-        }, 2000);
+
+            if (response.ok) {
+                const data = await response.json();
+                
+                if (data.is_demo && data.demo_expires_at) {
+                    this.checkDemoExpiration(data.demo_expires_at);
+                }
+            }
+        } catch (error) {
+            console.warn('Session status check failed:', error);
+        }
     }
-    
+
+    checkDemoExpiration(expiresAt) {
+        const now = new Date().getTime();
+        const expiry = new Date(expiresAt).getTime();
+        const timeLeft = expiry - now;
+
+        // Show warning 5 minutes before expiration
+        if (timeLeft < 5 * 60 * 1000 && timeLeft > 0 && !this.warningShown) {
+            this.showDemoExpirationWarning(Math.floor(timeLeft / 60000));
+            this.warningShown = true;
+        }
+
+        // Handle expiration
+        if (timeLeft <= 0) {
+            this.handleDemoExpired();
+        }
+    }
+
+    showDemoExpirationWarning(minutesLeft) {
+        if (typeof showAlertDialog === 'function') {
+            showAlertDialog(
+                window.i18n.t('demo_expiring_soon').replace('{minutes}', minutesLeft),
+                { 
+                    type: 'warning',
+                    persistent: true 
+                }
+            );
+        }
+    }
+
+    handleSessionExpired() {
+        if (typeof showAlertDialog === 'function') {
+            showAlertDialog(window.i18n.t('session_expired'), { 
+                type: 'error',
+                onClose: () => {
+                    window.location.reload();
+                }
+            });
+        } else {
+            window.location.reload();
+        }
+    }
+
+    handleDemoExpired() {
+        if (typeof showAlertDialog === 'function') {
+            showAlertDialog(window.i18n.t('demo_session_expired'), { 
+                type: 'warning',
+                onClose: () => {
+                    window.location.href = '/?demo_expired=true';
+                }
+            });
+        } else {
+            window.location.href = '/?demo_expired=true';
+        }
+    }
+
     getCSRFToken() {
         return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
                document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
     }
-    
-    // Method to manually extend session (called by user activity)
-    extendSession() {
-        this.updateActivity();
-        this.pingServer();
-    }
-    
-    // Cleanup method
-    destroy() {
-        if (this.checkTimer) {
-            clearInterval(this.checkTimer);
-        }
-    }
 }
 
 // Initialize session monitor when DOM is ready
-let sessionMonitor;
 document.addEventListener('DOMContentLoaded', () => {
     // Wait for dependencies
     const initSessionMonitor = () => {
-        if (window.i18n && window.showConfirmationDialog && window.showAlertDialog) {
-            sessionMonitor = new SessionMonitor();
-            window.sessionMonitor = sessionMonitor;
+        if (window.i18n) {
+            window.sessionMonitor = new SessionMonitor();
         } else {
             setTimeout(initSessionMonitor, 100);
         }
     };
     
     initSessionMonitor();
-});
-
-// Export for global access
-window.sessionMonitor = null; 
+}); 

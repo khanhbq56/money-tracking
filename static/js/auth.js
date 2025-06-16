@@ -432,12 +432,9 @@ class AuthManager {
         const logoutBtn = document.createElement('button');
         logoutBtn.id = 'logout-btn';
         logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
-        
-        // Use proper translation with initial content like other buttons in template
-        const logoutText = window.i18n ? window.i18n.t('logout') : 'Logout';
         logoutBtn.innerHTML = `
             <i class="fas fa-sign-out-alt w-4"></i>
-            <span data-i18n="logout">${logoutText}</span>
+            <span data-i18n="logout">${window.i18n.t('logout')}</span>
         `;
         logoutBtn.onclick = () => this.handleLogout();
 
@@ -449,22 +446,13 @@ class AuthManager {
         
         if (navArea) {
             navArea.appendChild(logoutBtn);
-            
-            // Manually update text to ensure it's in sync with current language
-            if (window.i18n && window.i18n.updatePageTexts) {
-                const logoutSpan = logoutBtn.querySelector('[data-i18n="logout"]');
-                if (logoutSpan) {
-                    logoutSpan.textContent = window.i18n.t('logout');
-                }
-            }
         } else {
             // Fallback: add to top right corner
             console.warn('⚠️ Header actions area not found, adding logout button to body');
             const fallbackContainer = document.createElement('div');
             fallbackContainer.className = 'fixed top-4 right-4 z-50';
-            const fallbackLogoutText = window.i18n ? window.i18n.t('logout') : 'Logout';
             const fallbackBtn = UIComponents.createButton(
-                `<i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="logout">${fallbackLogoutText}</span>`, 
+                `<i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="logout">${window.i18n.t('logout')}</span>`, 
                 'danger', 
                 () => this.handleLogout(),
                 { small: true }
@@ -488,15 +476,12 @@ class AuthManager {
         // Check if logout button already exists
         let logoutBtn = document.getElementById('logout-btn');
         if (!logoutBtn) {
-            // Create logout button manually with proper i18n
+            // Create logout button manually
             logoutBtn = document.createElement('button');
             logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
-            
-            // Use proper translation with initial content
-            const logoutText = window.i18n ? window.i18n.t('logout') : 'Logout';
             logoutBtn.innerHTML = `
                 <i class="fas fa-sign-out-alt w-4"></i>
-                <span data-i18n="logout">${logoutText}</span>
+                <span data-i18n="logout">${window.i18n.t('logout')}</span>
             `;
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -505,14 +490,6 @@ class AuthManager {
             });
             logoutBtn.id = 'logout-btn';
             headerActions.appendChild(logoutBtn);
-            
-            // Manually update text to ensure it's in sync with current language
-            if (window.i18n && window.i18n.updatePageTexts) {
-                const logoutSpan = logoutBtn.querySelector('[data-i18n="logout"]');
-                if (logoutSpan) {
-                    logoutSpan.textContent = window.i18n.t('logout');
-                }
-            }
         }
 
         // Toggle dropdown

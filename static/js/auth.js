@@ -418,6 +418,7 @@ class AuthManager {
             this.setupDemoCountdown();
             this.setupUserProfileFeatures();
             this.setupUserDropdown();
+            this.setupLanguageChangeListener();
         }
     }
 
@@ -733,6 +734,30 @@ class AuthManager {
     showUserMenu() {
         // Future: Add user profile dropdown menu
         console.log('User menu clicked - can add profile options here');
+    }
+
+    setupLanguageChangeListener() {
+        // Add language change listener to update logout button text
+        document.addEventListener('languageChanged', (e) => {
+            this.updateLogoutButtonText();
+        });
+    }
+    
+    updateLogoutButtonText() {
+        // Update logout button text in dropdown
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            const textSpan = logoutBtn.querySelector('span');
+            if (textSpan) {
+                textSpan.textContent = window.i18n.t('logout');
+            }
+        }
+        
+        // Update fallback logout button if exists
+        const fallbackBtn = document.getElementById('logout-btn-fallback');
+        if (fallbackBtn) {
+            fallbackBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`;
+        }
     }
 }
 

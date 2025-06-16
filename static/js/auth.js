@@ -32,9 +32,6 @@ class AuthManager {
             this.setupDemoCountdown();
             this.setupUserProfileFeatures();
             this.setupUserDropdown();
-            
-            // Add language change event listener for logout button
-            this.setupLanguageChangeListener();
         }
     }
 
@@ -437,7 +434,7 @@ class AuthManager {
         logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
         logoutBtn.innerHTML = `
             <i class="fas fa-sign-out-alt w-4"></i>
-            <span>${window.i18n.t('logout')}</span>
+            <span data-i18n="logout">${window.i18n.t('logout')}</span>
         `;
         logoutBtn.onclick = () => this.handleLogout();
 
@@ -455,7 +452,7 @@ class AuthManager {
             const fallbackContainer = document.createElement('div');
             fallbackContainer.className = 'fixed top-4 right-4 z-50';
             const fallbackBtn = UIComponents.createButton(
-                `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`, 
+                `<i class="fas fa-sign-out-alt mr-2"></i><span data-i18n="logout">${window.i18n.t('logout')}</span>`, 
                 'danger', 
                 () => this.handleLogout(),
                 { small: true }
@@ -484,7 +481,7 @@ class AuthManager {
             logoutBtn.className = 'w-full text-left px-4 py-2 text-sm text-red-700 hover:bg-red-50 flex items-center space-x-2 rounded-lg transition-colors';
             logoutBtn.innerHTML = `
                 <i class="fas fa-sign-out-alt w-4"></i>
-                <span>${window.i18n.t('logout')}</span>
+                <span data-i18n="logout">${window.i18n.t('logout')}</span>
             `;
             logoutBtn.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -719,34 +716,6 @@ class AuthManager {
     showUserMenu() {
         // Future: Add user profile dropdown menu
         console.log('User menu clicked - can add profile options here');
-    }
-
-    /**
-     * Setup language change listener to update logout button text
-     */
-    setupLanguageChangeListener() {
-        document.addEventListener('languageChanged', () => {
-            this.updateLogoutButtonText();
-        });
-    }
-
-    /**
-     * Update logout button text when language changes
-     */
-    updateLogoutButtonText() {
-        const logoutBtn = document.getElementById('logout-btn');
-        const fallbackBtn = document.getElementById('logout-btn-fallback');
-        
-        if (logoutBtn) {
-            const spanElement = logoutBtn.querySelector('span');
-            if (spanElement) {
-                spanElement.textContent = window.i18n.t('logout');
-            }
-        }
-        
-        if (fallbackBtn) {
-            fallbackBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`;
-        }
     }
 }
 

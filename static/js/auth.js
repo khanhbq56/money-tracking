@@ -10,7 +10,6 @@ class AuthManager {
     }
 
     init() {
-        
         // Skip authentication for legal pages
         const currentPath = window.location.pathname;
         const legalPages = ['/auth/privacy/', '/auth/terms/'];
@@ -18,7 +17,7 @@ class AuthManager {
         if (legalPages.includes(currentPath)) {
             return;
         }
-        
+
         // Check if user is already authenticated
         this.checkAuthenticationStatus();
         
@@ -28,10 +27,15 @@ class AuthManager {
         if (!isAuthenticated) {
             this.showLoginModal();
         } else {
+            // Initialize auth-related features for authenticated users
+            this.setupLogoutHandlers();
+            this.setupDemoCountdown();
+            this.setupUserProfileFeatures();
+            this.setupUserDropdown();
+            
+            // Add language change event listener for logout button
+            this.setupLanguageChangeListener();
         }
-        
-        // Set up logout handlers
-        this.setupLogoutHandlers();
     }
 
     isUserAuthenticated() {
@@ -715,6 +719,34 @@ class AuthManager {
     showUserMenu() {
         // Future: Add user profile dropdown menu
         console.log('User menu clicked - can add profile options here');
+    }
+
+    /**
+     * Setup language change listener to update logout button text
+     */
+    setupLanguageChangeListener() {
+        document.addEventListener('languageChanged', () => {
+            this.updateLogoutButtonText();
+        });
+    }
+
+    /**
+     * Update logout button text when language changes
+     */
+    updateLogoutButtonText() {
+        const logoutBtn = document.getElementById('logout-btn');
+        const fallbackBtn = document.getElementById('logout-btn-fallback');
+        
+        if (logoutBtn) {
+            const spanElement = logoutBtn.querySelector('span');
+            if (spanElement) {
+                spanElement.textContent = window.i18n.t('logout');
+            }
+        }
+        
+        if (fallbackBtn) {
+            fallbackBtn.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>${window.i18n.t('logout')}`;
+        }
     }
 }
 

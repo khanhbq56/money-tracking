@@ -141,10 +141,7 @@ class ExpenseCalendar {
                 `/api/chat/calendar/${this.currentYear}/${this.currentMonth + 1}/`,
                 {
                     method: 'GET',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken(),
-                        'Content-Type': 'application/json',
-                    },
+                    headers: getCommonHeaders(),
                     credentials: 'same-origin'
                 }
             );
@@ -980,12 +977,6 @@ function nextMonth() {
     }
 }
 
-// Helper function to get CSRF token
-function getCSRFToken() {
-    const cookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
-    return cookie ? cookie.split('=')[1] : '';
-}
-
 // Modal functions
 function closeDayDetailsModal() {
     const modal = document.getElementById('day-details-modal');
@@ -1027,10 +1018,7 @@ async function deleteTransaction() {
             try {
                 const response = await fetch(`/api/transactions/${window.calendar.currentTransaction.id}/`, {
                     method: 'DELETE',
-                    headers: {
-                        'X-CSRFToken': getCSRFToken(),
-                        'Content-Type': 'application/json'
-                    }
+                    headers: getCommonHeaders()
                 });
                 
                 if (response.ok) {
@@ -1247,10 +1235,7 @@ async function saveTransaction() {
         
         const response = await fetch(url, {
             method: method,
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCSRFToken()
-            },
+            headers: getCommonHeaders(),
             body: JSON.stringify(data)
         });
         

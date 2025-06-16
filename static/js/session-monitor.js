@@ -37,7 +37,7 @@ class SessionMonitor {
                 method: 'GET',
                 credentials: 'same-origin',
                 headers: {
-                    'X-CSRFToken': this.getCSRFToken()
+                    'X-CSRFToken': getCSRFToken()
                 }
             });
 
@@ -112,11 +112,6 @@ class SessionMonitor {
         } else {
             window.location.href = '/?demo_expired=true';
         }
-    }
-
-    getCSRFToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-               document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
     }
 }
 

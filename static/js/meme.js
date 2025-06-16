@@ -573,10 +573,7 @@ class MemeGenerator {
             
             const response = await fetch('/api/meme/share/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCSRFToken()
-                },
+                headers: getCommonHeaders(),
                 body: JSON.stringify(shareData)
             });
             
@@ -616,11 +613,6 @@ class MemeGenerator {
         setTimeout(() => {
             notification.remove();
         }, 3000);
-    }
-    
-    getCSRFToken() {
-        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-               document.querySelector('meta[name="csrf-token"]')?.content || '';
     }
 }
 

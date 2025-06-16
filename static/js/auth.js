@@ -350,10 +350,7 @@ class AuthManager {
         try {
             const response = await fetch('/auth/demo/login/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCSRFToken()
-                },
+                headers: getCommonHeaders(),
                 body: JSON.stringify({
                     legal_accepted: true
                 })
@@ -525,10 +522,7 @@ class AuthManager {
             // Send logout request
             const response = await fetch('/auth/logout/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCSRFToken()
-                },
+                headers: getCommonHeaders(),
                 credentials: 'same-origin'
             });
 
@@ -651,28 +645,6 @@ class AuthManager {
             privacyContent
         );
         privacyModal.show();
-    }
-
-    getCSRFToken() {
-        // Try multiple methods to get CSRF token
-        let token = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
-                   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
-                   document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
-                   '';
-        
-        // If no token found, try to get from cookie
-        if (!token) {
-            const cookies = document.cookie.split(';');
-            for (let cookie of cookies) {
-                const [name, value] = cookie.trim().split('=');
-                if (name === 'csrftoken') {
-                    token = value;
-                    break;
-                }
-            }
-        }
-        
-        return token;
     }
 
     setupDemoCountdown() {

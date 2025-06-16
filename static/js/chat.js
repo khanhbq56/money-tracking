@@ -176,12 +176,9 @@ class AIChat {
             language: this.currentLanguage
         };
         
-        const response = await fetch('/api/chat/process/', {
+        const response = await fetch('/api/chat/message/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': this.getCSRFToken()
-            },
+            headers: getCommonHeaders(),
             body: JSON.stringify(payload)
         });
         
@@ -451,10 +448,7 @@ class AIChat {
             
             const response = await fetch('/api/chat/confirm/', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCSRFToken()
-                },
+                headers: getCommonHeaders(),
                 body: JSON.stringify(payload)
             });
             
@@ -580,21 +574,6 @@ class AIChat {
     
     escapeJson(obj) {
         return JSON.stringify(obj).replace(/"/g, '&quot;');
-    }
-    
-    getCSRFToken() {
-        // Get CSRF token from Django
-        const cookies = document.cookie.split(';');
-        for (let cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === 'csrftoken') {
-                return value;
-            }
-        }
-        
-        // Fallback: try to get from meta tag
-        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-        return csrfMeta ? csrfMeta.getAttribute('content') : '';
     }
     
     updateLanguage(newLanguage) {

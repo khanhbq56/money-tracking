@@ -74,7 +74,7 @@ else:
     }
 
 # Security settings for production
-SECURE_SSL_REDIRECT = False  # Disable for Railway health checks
+SECURE_SSL_REDIRECT = True  # Enable HTTPS redirect
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 31536000
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -83,16 +83,22 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'DENY'
 
-# Health check exemption for Railway
-SECURE_SSL_REDIRECT_EXEMPT = ['/health/']
+# Health check exemption for Railway (specific paths only)
+SECURE_SSL_REDIRECT_EXEMPT = ['/health/', '/healthcheck/']
+
+# CSRF settings optimized for production
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF token via cookie as fallback
+CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_TRUSTED_ORIGINS = [
+    'https://money-tracking-production.up.railway.app',
+    'https://*.railway.app',
+]
 
 # Session settings
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_SAMESITE = 'Lax'
 
 # CORS settings for production
 CORS_ALLOW_ALL_ORIGINS = False

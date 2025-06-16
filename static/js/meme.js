@@ -619,7 +619,8 @@ class MemeGenerator {
     }
     
     getCSRFToken() {
-        return window.getCSRFToken();
+        return document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+               document.querySelector('meta[name="csrf-token"]')?.content || '';
     }
 }
 

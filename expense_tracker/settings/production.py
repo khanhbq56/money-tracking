@@ -90,20 +90,9 @@ SECURE_SSL_REDIRECT_EXEMPT = ['/health/']
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = False  # Allow JavaScript access to CSRF token (required for AJAX calls)
+CSRF_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 CSRF_COOKIE_SAMESITE = 'Lax'
-
-# Additional CSRF settings for production
-CSRF_COOKIE_NAME = 'csrftoken'
-CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
-CSRF_USE_SESSIONS = False  # Use cookies for CSRF tokens
-
-# CSRF trusted origins for production
-CSRF_TRUSTED_ORIGINS = [
-    'https://money-tracking-production.up.railway.app',
-    'https://*.railway.app',
-]
 
 # CORS settings for production
 CORS_ALLOW_ALL_ORIGINS = False

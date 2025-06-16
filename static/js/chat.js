@@ -583,7 +583,18 @@ class AIChat {
     }
     
     getCSRFToken() {
-        return window.getCSRFToken();
+        // Get CSRF token from Django
+        const cookies = document.cookie.split(';');
+        for (let cookie of cookies) {
+            const [name, value] = cookie.trim().split('=');
+            if (name === 'csrftoken') {
+                return value;
+            }
+        }
+        
+        // Fallback: try to get from meta tag
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        return csrfMeta ? csrfMeta.getAttribute('content') : '';
     }
     
     updateLanguage(newLanguage) {

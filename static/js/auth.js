@@ -653,7 +653,25 @@ class AuthManager {
     }
 
     getCSRFToken() {
-        return window.getCSRFToken();
+        // Try multiple methods to get CSRF token
+        let token = document.querySelector('[name=csrfmiddlewaretoken]')?.value || 
+                   document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || 
+                   document.querySelector('input[name="csrfmiddlewaretoken"]')?.value ||
+                   '';
+        
+        // If no token found, try to get from cookie
+        if (!token) {
+            const cookies = document.cookie.split(';');
+            for (let cookie of cookies) {
+                const [name, value] = cookie.trim().split('=');
+                if (name === 'csrftoken') {
+                    token = value;
+                    break;
+                }
+            }
+        }
+        
+        return token;
     }
 
     setupDemoCountdown() {

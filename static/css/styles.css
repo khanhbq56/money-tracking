@@ -905,4 +905,82 @@
     }
 }
 
+/* ==========================================================================
+   LOGIN MODAL MOBILE OPTIMIZATIONS
+   ========================================================================== */
+
+/* Make login modal more compact on mobile */
+@media (max-width: 768px) {
+    .login-modal .modal-overlay {
+        padding: 12px;
+    }
+    
+    .login-modal-content {
+        max-width: 400px;
+        padding: 16px;
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    
+    .login-modal-content h2 {
+        font-size: 1.125rem;
+        margin-bottom: 8px;
+    }
+    
+    .login-modal-content .text-2xl {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-modal .modal-overlay {
+        padding: 8px;
+    }
+    
+    .login-modal-content {
+        max-width: 320px;
+        padding: 12px;
+        max-height: 75vh;
+    }
+    
+    .login-modal-content h2 {
+        font-size: 1rem;
+        margin-bottom: 6px;
+    }
+    
+    .login-modal-content p {
+        font-size: 0.875rem;
+        line-height: 1.3;
+    }
+    
+    .login-modal-content .text-2xl {
+        font-size: 0.875rem;
+    }
+    
+    /* Compact benefits section */
+    .login-modal-content .bg-gradient-to-br {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+    
+    .login-modal-content .text-xs {
+        font-size: 0.75rem;
+    }
+    
+    /* Smaller buttons */
+    .login-modal-content button {
+        height: 2.25rem;
+        font-size: 0.8rem;
+    }
+    
+    /* Compact spacing */
+    .login-modal-content .space-y-4 > * + * {
+        margin-top: 10px;
+    }
+    
+    .login-modal-content .space-y-2 > * + * {
+        margin-top: 4px;
+    }
+}
+
  

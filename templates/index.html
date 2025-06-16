@@ -937,9 +937,40 @@
         window.updateAutoConfirmTooltip = updateAutoConfirmTooltip;
 
         // Initialize UI Components on page load
+        // Initialize mobile dashboard grid
+        function initMobileDashboard() {
+            let gridContainer = document.querySelector('.grid.grid-cols-1.md\\:grid-cols-4');
+            if (!gridContainer) {
+                // Try alternative selector
+                gridContainer = document.querySelector('.bg-white.shadow-sm.border-b .grid');
+                if (!gridContainer) {
+                    return;
+                }
+            }
+            
+            function updateMobileGrid() {
+                if (window.innerWidth <= 768) {
+                    if (window.innerWidth <= 480) {
+                        gridContainer.className = 'grid mobile-dashboard-grid-small';
+                    } else {
+                        gridContainer.className = 'grid mobile-dashboard-grid';
+                    }
+                } else {
+                    gridContainer.className = 'grid grid-cols-1 md:grid-cols-4 gap-4';
+                }
+            }
+            
+            // Initial check
+            updateMobileGrid();
+            
+            // Listen for resize
+            window.addEventListener('resize', updateMobileGrid);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             initializeUIComponents();
             initializeAutoConfirm();
+            initMobileDashboard();
         });
 
         function initializeUIComponents() {

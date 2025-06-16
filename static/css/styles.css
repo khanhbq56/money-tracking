@@ -930,6 +930,12 @@
     .login-modal-content .text-2xl {
         font-size: 1rem;
     }
+    
+    /* Make logo slightly larger for better visibility */
+    .login-modal-content .relative.w-16.h-16 {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -957,6 +963,12 @@
         font-size: 0.875rem;
     }
     
+    /* Adjust logo size for small mobile */
+    .login-modal-content .relative.w-16.h-16 {
+        width: 4rem;
+        height: 4rem;
+    }
+    
     /* Compact benefits section */
     .login-modal-content .bg-gradient-to-br {
         padding: 10px;
@@ -980,6 +992,144 @@
     
     .login-modal-content .space-y-2 > * + * {
         margin-top: 4px;
+    }
+}
+
+/* ==========================================================================
+   DASHBOARD CARDS MOBILE OPTIMIZATION - SIMPLE COMPACT GRID
+   ========================================================================== */
+
+/* Mobile Dashboard Cards: Simple & Clean Compact Grid */
+
+/* Custom mobile grid class - higher specificity than Tailwind */
+.mobile-dashboard-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+}
+
+.mobile-dashboard-grid-small {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+}
+
+@media (max-width: 768px) {
+    /* Reduce stats section padding */
+    .bg-white.shadow-sm.border-b .py-4 {
+        padding-top: 16px;
+        padding-bottom: 16px;
+    }
+    
+    /* Compact dashboard cards */
+    .dashboard-card {
+        padding: 12px !important;
+        border-radius: 12px !important;
+        min-height: 70px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Adjust card content layout - force center alignment with better spacing */
+    .dashboard-card .flex.items-center.justify-between {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        gap: 8px !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    /* Center the left content div */
+    .dashboard-card > div > div:first-child {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    
+    /* Hide background icons to save space */
+    .dashboard-card .w-12.h-12 {
+        display: none;
+    }
+    
+    /* Improved text sizes for better readability */
+    .dashboard-card .text-sm {
+        font-size: 0.875rem !important;
+        font-weight: 600 !important;
+        margin: 0 !important;
+        margin-bottom: 6px !important;
+        line-height: 1.2 !important;
+    }
+    
+    .dashboard-card .text-3xl {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Hide "This month" text */
+    .dashboard-card .text-xs {
+        display: none;
+    }
+}
+
+/* Extra small mobile - even more compact */
+@media (max-width: 480px) {
+    /* Tighter spacing */
+    .bg-white.shadow-sm.border-b .py-4 {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+    
+    .bg-white.shadow-sm.border-b .px-4 {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    
+    .bg-white.shadow-sm.border-b .grid {
+        gap: 8px !important;
+    }
+    
+    /* Ultra compact cards */
+    .dashboard-card {
+        padding: 8px !important;
+        min-height: 60px !important;
+        border-radius: 10px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .dashboard-card .flex.items-center.justify-between {
+        gap: 2px !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+    
+    .dashboard-card > div > div:first-child {
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* Better text sizes for small screens */
+    .dashboard-card .text-sm {
+        font-size: 0.75rem !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .dashboard-card .text-3xl {
+        font-size: 1.125rem !important;
+    }
+    
+    .dashboard-card .flex.items-center.justify-between {
+        gap: 6px !important;
     }
 }
 

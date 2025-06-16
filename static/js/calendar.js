@@ -982,8 +982,7 @@ function nextMonth() {
 
 // Helper function to get CSRF token
 function getCSRFToken() {
-    const cookie = document.cookie.split(';').find(cookie => cookie.trim().startsWith('csrftoken='));
-    return cookie ? cookie.split('=')[1] : '';
+    return window.getCSRFToken();
 }
 
 // Modal functions

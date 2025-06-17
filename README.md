@@ -38,7 +38,7 @@ A modern multi-user web application for personal finance tracking that replaces 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.11+ 
+- Python 3.11+
 - UV package manager
 - PostgreSQL (production) or SQLite (development)
 - Google Gemini API key
@@ -123,42 +123,57 @@ REDIS_URL=redis://localhost:6379/0
 money-tracking/
 ├── docs/                           # 📖 Documentation
 │   ├── CHANGELOG.md               # Version history
-│   ├── MULTI_USER_MIGRATION_PLAN.md
-│   ├── LOGIN_IMPLEMENTATION_PLAN.md
-│   └── GOOGLE_OAUTH_SETUP.md
+│   └── ...
 ├── scripts/                        # 🔧 Deployment Scripts
-│   ├── build.sh                   # Railway build script
-│   ├── start.sh                   # Railway start script
-│   ├── migrate.sh                 # Database migration
-│   └── deploy_migrations.sh       # Multi-user deployment
+│   ├── build.sh
+│   └── start.sh
 ├── expense_tracker/                # ⚙️ Django Configuration
 │   ├── settings/
-│   │   ├── base.py               # Base settings
-│   │   ├── development.py        # Development settings
-│   │   └── production.py         # Production settings
-│   ├── urls.py                   # URL routing
-│   └── wsgi.py                   # WSGI application
+│   │   ├── base.py
+│   │   ├── development.py
+│   │   └── production.py
+│   └── urls.py
 ├── authentication/                 # 🔐 User Management & Google OAuth
+│   ├── management/
+│   │   └── commands/
+│   │       └── cleanup_expired_demos.py
 │   ├── models.py
 │   ├── views.py
 │   └── urls.py
 ├── transactions/                   # 💰 Transaction & Monthly Total Management
+│   ├── management/
+│   │   └── commands/
+│   │       └── setup_initial_data.py
 │   ├── models.py
 │   ├── views.py
-│   ├── api_urls.py
-│   └── monthly_service.py
+│   └── api_urls.py
 ├── ai_chat/                        # 🤖 AI Integration (Gemini, Voice, Memes)
 │   ├── views.py
-│   ├── gemini_service.py
-│   └── urls.py
-├── static/                         # 🎨 Static Assets (CSS, JS, Images)
+│   └── gemini_service.py
+├── static/                         # 🎨 Static Assets
+│   ├── css/
+│   ├── js/
+│   │   └── translations/
+│   └── images/
+│       └── flags/
 ├── templates/                      # 📄 HTML Templates
-├── locale/                         # 🌍 Translations
-├── staticfiles/                   # 📁 Collected Static Files
-├── requirements.txt               # 📦 Python Dependencies
-├── pyproject.toml                 # 🔧 UV Configuration
-├── railway.toml                   # 🚀 Railway Config
-└── README.md                      # 📋 This File
+│   ├── base.html
+│   ├── index.html
+│   ├── includes/
+│   │   └── _language_switcher.html
+│   └── legal/
+│       ├── privacy_policy.html
+│       └── terms_of_service.html
+├── locale/                         # 🌍 Translations (en, vi)
+│   ├── en/LC_MESSAGES/
+│   └── vi/LC_MESSAGES/
+├── .env.example                    # Example environment variables
+├── manage.py                       # Django management script
+├── requirements.txt                # 📦 Python Dependencies
+├── pyproject.toml                  # 🔧 UV Configuration
+├── railway.toml                    # 🚀 Railway Config
+├── LOGIN_IMPLEMENTATION_PLAN.md    # 📋 Login Implementation Plan
+└── GOOGLE_OAUTH_SETUP.md          # 📋 Google OAuth Setup
 ```
 
 ## 🔐 Multi-User Security
@@ -193,7 +208,7 @@ chat_messages = ChatMessage.objects.filter(user=request.user)
 Input: "ăn trưa hôm nay 75k"
 Output: {
     "type": "expense",
-    "category": "Ăn uống", 
+    "category": "Ăn uống",
     "amount": 75000,
     "description": "Ăn trưa",
     "confidence": 0.95
@@ -248,162 +263,5 @@ fetch('/api/transactions/', {
 - `POST /api/chat/process/` - Process natural language input using AI for transaction creation.
 - `GET /api/monthly-totals/` - Retrieve aggregated monthly totals (expense, saving, investment) for the user.
 - `POST /api/chat/confirm/` - Confirm an AI-suggested transaction.
-- `GET /api/meme/weekly/` - Generate a personalized weekly financial meme for the user.
 
-A full, interactive API documentation is available via DRF Spectacular when running the server in development mode.
-
-## 🧪 Testing
-
-```bash
-# Run all tests
-uv run pytest
-
-# Run with coverage
-uv run pytest --cov=.
-
-# Test specific app
-uv run python manage.py test authentication
-uv run python manage.py test transactions
-
-# Test multi-user isolation
-uv run python manage.py test authentication.tests.MultiUserIsolationTestCase
-```
-
-## 🚀 Deployment
-
-### Railway Deployment (Recommended)
-
-1. **Fork this repository**
-2. **Connect to Railway**
-   - Go to [Railway.app](https://railway.app)
-   - Create new project from GitHub repo
-3. **Set environment variables**:
-   ```env
-   DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
-   GEMINI_API_KEY=your-gemini-key
-   ENABLE_MULTI_USER=true
-   DEFAULT_USER_LIMIT=1000
-   ```
-4. **Deploy automatically** - Railway will use `railway.toml` configuration
-
-### Manual Production Deployment
-
-```bash
-# Install dependencies
-uv sync --frozen
-
-# Set production environment
-export DJANGO_SETTINGS_MODULE=expense_tracker.settings.production
-
-# Run deployment migrations
-chmod +x scripts/deploy_migrations.sh
-uv run ./scripts/deploy_migrations.sh
-
-# Collect static files
-uv run python manage.py collectstatic --noinput
-
-# Start with gunicorn
-uv run gunicorn expense_tracker.wsgi:application
-```
-
-### Migration from Single-User Version
-
-If upgrading from v1.x:
-
-```bash
-# 1. Backup your database
-pg_dump your_database > backup.sql
-
-# 2. Run migration script
-chmod +x scripts/deploy_migrations.sh
-uv run ./scripts/deploy_migrations.sh
-
-# 3. Verify data integrity
-uv run python manage.py shell -c "
-from transactions.models import Transaction
-print(f'Total transactions: {Transaction.objects.count()}')
-print(f'Users with transactions: {Transaction.objects.values_list(\"user\", flat=True).distinct().count()}')
-"
-```
-
-## 📊 Performance
-
-### Optimizations
-- **Database**: Connection pooling and optimized queries
-- **Caching**: Redis support for production
-- **Static Files**: Whitenoise for efficient serving
-- **Compression**: Gzip compression enabled
-- **Indexes**: Database indexes on user foreign keys
-
-### Monitoring
-```bash
-# Check application health
-curl https://your-app.railway.app/health/
-
-# Monitor logs
-railway logs --tail
-
-# Check database connections
-uv run python manage.py dbshell -c "SELECT count(*) FROM pg_stat_activity;"
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. **Fork the repository**
-2. **Create a feature branch**
-   ```bash
-   git checkout -b feature/amazing-feature
-   ```
-3. **Install development dependencies**
-   ```bash
-   uv sync --dev
-   ```
-4. **Make your changes**
-5. **Run tests**
-   ```bash
-   uv run pytest
-   ```
-6. **Commit your changes**
-   ```bash
-   git commit -m 'Add amazing feature'
-   ```
-7. **Push to your branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-8. **Open a Pull Request**
-
-### Development Guidelines
-- All new APIs must include authentication
-- Database queries must filter by user
-- Write tests for multi-user scenarios
-- Follow the established security patterns
-- Use UV for dependency management
-
-## 📋 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙋‍♀️ Support & Community
-
-- 📧 **Email**: support@money-tracking.app
-- 📖 **Documentation**: Browse the `/docs/` folder
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/yourusername/money-tracking/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/money-tracking/discussions)
-- 🚀 **Feature Requests**: [GitHub Issues](https://github.com/yourusername/money-tracking/issues/new)
-
-## 🏆 Acknowledgments
-
-- **Google Gemini AI** for natural language processing
-- **Railway.app** for seamless deployment
-- **UV** for ultrafast Python package management
-- **Django Community** for the amazing framework
-- **Tailwind CSS** for beautiful styling
-
----
-
-**Made with ❤️ for better personal finance management**
-
-*Transform your financial tracking from spreadsheets to AI-powered insights!*
+<!-- EOF -->

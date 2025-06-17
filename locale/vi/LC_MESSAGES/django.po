@@ -726,10 +726,8 @@ msgid "Last updated"
 msgstr "Cập nhật lần cuối"
 
 #: .\templates\legal\privacy_policy.html:55
-#, fuzzy
-#| msgid "category_education"
 msgid "Introduction"
-msgstr "Giáo dục"
+msgstr "Giới thiệu"
 
 #: .\templates\legal\privacy_policy.html:58
 msgid "privacy_intro_text"

@@ -16,27 +16,7 @@
             </a>
             
             <!-- Language Switcher -->
-            <div class="relative">
-                <button id="language-switcher" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
-                    <span id="current-flag">
-                        {% if LANGUAGE_CODE == 'vi' %}
-                            <img src="{% static 'images/flags/vi.svg' %}" alt="flag" style="width: 20px; height: 20px; max-width: none;">
-                        {% else %}
-                            <img src="{% static 'images/flags/en.svg' %}" alt="flag" style="width: 20px; height: 20px; max-width: none;">
-                        {% endif %}
-                    </span>
-                </button>
-                <div id="language-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[140px]">
-                    <a href="?lang=vi" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-t-lg no-underline text-gray-700">
-                        <img src="{% static 'images/flags/vi.svg' %}" alt="Tiếng Việt" class="w-5 h-5">
-                        <span class="text-sm">Tiếng Việt</span>
-                    </a>
-                    <a href="?lang=en" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 rounded-b-lg no-underline text-gray-700">
-                        <img src="{% static 'images/flags/en.svg' %}" alt="English" class="w-5 h-5">
-                        <span class="text-sm">English</span>
-                    </a>
-                </div>
-            </div>
+            {% include 'includes/_language_switcher.html' with switcher_type='link' %}
         </div>
     </div>
 </div>

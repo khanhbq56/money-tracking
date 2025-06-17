@@ -724,10 +724,8 @@ msgid "Last updated"
 msgstr "Last updated"
 
 #: .\templates\legal\privacy_policy.html:55
-#, fuzzy
-#| msgid "category_education"
 msgid "Introduction"
-msgstr "Education"
+msgstr "Introduction"
 
 #: .\templates\legal\privacy_policy.html:58
 msgid "privacy_intro_text"

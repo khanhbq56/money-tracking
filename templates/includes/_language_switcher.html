@@ -1,0 +1,31 @@
+{% load static %}
+{% load i18n %}
+
+<div class="relative">
+    <button id="language-switcher" class="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors">
+        <span id="current-flag">
+            <img src="{% static 'images/flags/' %}{{ LANGUAGE_CODE }}.svg" alt="flag" style="width: 32px; height: 32px; max-width: none;">
+        </span>
+    </button>
+    <div id="language-dropdown" class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg dropdown-shadow z-50 hidden min-w-[140px]">
+        {% if switcher_type == 'js' %}
+            {% for lang_code, lang_name in LANGUAGES %}
+            <div class="language-option px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 {% if forloop.first %}rounded-t-lg{% endif %} {% if forloop.last %}rounded-b-lg{% endif %}" data-lang="{{ lang_code }}">
+                <img src="{% static 'images/flags/' %}{{ lang_code }}.svg" alt="{{ lang_name }}" class="w-5 h-5">
+                <span class="text-sm">
+                    {% if lang_code == 'vi' %}Tiếng Việt{% elif lang_code == 'en' %}English{% else %}{{ lang_name }}{% endif %}
+                </span>
+            </div>
+            {% endfor %}
+        {% else %} {# Defaults to link type for legal pages #}
+            {% for lang_code, lang_name in LANGUAGES %}
+            <a href="?lang={{ lang_code }}" class="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center space-x-2 {% if forloop.first %}rounded-t-lg{% endif %} {% if forloop.last %}rounded-b-lg{% endif %} no-underline text-gray-700">
+                <img src="{% static 'images/flags/' %}{{ lang_code }}.svg" alt="{{ lang_name }}" class="w-5 h-5">
+                <span class="text-sm">
+                    {% if lang_code == 'vi' %}Tiếng Việt{% elif lang_code == 'en' %}English{% else %}{{ lang_name }}{% endif %}
+                </span>
+            </a>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div> 

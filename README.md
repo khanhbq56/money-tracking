@@ -13,7 +13,7 @@ A modern multi-user web application for personal finance tracking that replaces 
 ### 💡 Smart Finance Management
 - **📊 3-Type Transaction System**: Expenses (🔴), Savings (🟢), Investments (🔵)
 - **🤖 AI-Powered Categorization**: Google Gemini API for automatic transaction categorization
-- **📅 Calendar Interface**: FullCalendar.js integration with color-coded transactions
+- **📅 Calendar Interface**: Custom-built calendar with color-coded transactions
 - **🎯 Future Projection**: Interactive scenarios and financial planning
 - **🗣️ Voice Input**: Speech-to-text for quick transaction entry
 
@@ -21,19 +21,19 @@ A modern multi-user web application for personal finance tracking that replaces 
 - **Multi-Language Support**: Vietnamese and English localization
 - **📱 Mobile-First Design**: Responsive design with Tailwind CSS
 - **🎨 AI Meme Generator**: Weekly personalized financial memes
-- **📊 Analytics Dashboard**: Charts and insights for spending patterns
+- **📊 Analytics Dashboard (Future)**: Charts and insights for spending patterns
 
 ## 🛠 Technology Stack
 
-- **Backend**: Django 5.x + Django REST Framework
+- **Backend**: Django 5.x, Django REST Framework, Celery
 - **Package Manager**: UV (ultrafast Python package installer)
-- **Frontend**: Django Templates + Tailwind CSS + JavaScript
+- **Frontend**: Django Templates, Tailwind CSS (via CDN), Vanilla JavaScript
 - **Database**: PostgreSQL (production) / SQLite (development)
-- **AI**: Google Gemini API
-- **Calendar**: FullCalendar.js
-- **Charts**: Chart.js
+- **AI**: Google Gemini API, NLTK
+- **Caching**: Redis
+- **Calendar**: Custom-built JavaScript component
 - **Authentication**: Google OAuth + Custom Demo System
-- **Deployment**: Railway.app
+- **Deployment**: Railway.app with Gunicorn & Whitenoise
 
 ## 🚀 Quick Start
 
@@ -138,12 +138,22 @@ money-tracking/
 │   │   └── production.py         # Production settings
 │   ├── urls.py                   # URL routing
 │   └── wsgi.py                   # WSGI application
-├── authentication/                 # 🔐 User Management
-├── transactions/                   # 💰 Transaction Management
-├── ai_chat/                       # 🤖 AI Integration
-├── static/                        # 🎨 Static Assets
-├── templates/                     # 📄 HTML Templates
-├── locale/                        # 🌍 Translations
+├── authentication/                 # 🔐 User Management & Google OAuth
+│   ├── models.py
+│   ├── views.py
+│   └── urls.py
+├── transactions/                   # 💰 Transaction & Monthly Total Management
+│   ├── models.py
+│   ├── views.py
+│   ├── api_urls.py
+│   └── monthly_service.py
+├── ai_chat/                        # 🤖 AI Integration (Gemini, Voice, Memes)
+│   ├── views.py
+│   ├── gemini_service.py
+│   └── urls.py
+├── static/                         # 🎨 Static Assets (CSS, JS, Images)
+├── templates/                      # 📄 HTML Templates
+├── locale/                         # 🌍 Translations
 ├── staticfiles/                   # 📁 Collected Static Files
 ├── requirements.txt               # 📦 Python Dependencies
 ├── pyproject.toml                 # 🔧 UV Configuration
@@ -232,12 +242,15 @@ fetch('/api/transactions/', {
 ```
 
 ### Key Endpoints
-- `GET /api/transactions/` - List user's transactions
-- `POST /api/transactions/` - Create transaction for current user
-- `GET /api/chat/calendar/{year}/{month}/` - Calendar data for user
-- `POST /api/chat/process/` - AI categorization for user
-- `GET /api/monthly-totals/` - User's monthly totals
-- `POST /api/chat/confirm/` - Confirm AI-suggested transaction
+- `GET /api/transactions/` - List all transactions for the authenticated user.
+- `POST /api/transactions/` - Create a new transaction for the current user.
+- `GET /api/chat/calendar/{year}/{month}/` - Get calendar data with daily transaction totals for the user.
+- `POST /api/chat/process/` - Process natural language input using AI for transaction creation.
+- `GET /api/monthly-totals/` - Retrieve aggregated monthly totals (expense, saving, investment) for the user.
+- `POST /api/chat/confirm/` - Confirm an AI-suggested transaction.
+- `GET /api/meme/weekly/` - Generate a personalized weekly financial meme for the user.
+
+A full, interactive API documentation is available via DRF Spectacular when running the server in development mode.
 
 ## 🧪 Testing
 
@@ -388,7 +401,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **UV** for ultrafast Python package management
 - **Django Community** for the amazing framework
 - **Tailwind CSS** for beautiful styling
-- **FullCalendar.js** for calendar functionality
 
 ---
 

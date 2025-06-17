@@ -27,8 +27,8 @@ class GoogleOAuthInitView(View):
     """Initialize Google OAuth flow"""
     
     def get(self, request):
-        # Check if we're in development mode
-        if settings.GOOGLE_OAUTH2_CLIENT_ID == 'development-client-id':
+        # Check if OAuth is properly configured
+        if not settings.GOOGLE_OAUTH2_CLIENT_ID or not settings.GOOGLE_OAUTH2_CLIENT_SECRET:
             logger.warning("Google OAuth not configured - redirecting to setup guide")
             return redirect('/?error=oauth_not_configured')
         
@@ -67,8 +67,8 @@ class GoogleOAuthCallbackView(View):
     
     def get(self, request):
         try:
-            # Check if we're in development mode
-            if settings.GOOGLE_OAUTH2_CLIENT_ID == 'development-client-id':
+            # Check if OAuth is properly configured
+            if not settings.GOOGLE_OAUTH2_CLIENT_ID or not settings.GOOGLE_OAUTH2_CLIENT_SECRET:
                 logger.warning("Google OAuth not configured - redirecting to setup guide")
                 return redirect('/?error=oauth_not_configured')
                 

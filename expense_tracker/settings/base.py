@@ -161,9 +161,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 AUTH_USER_MODEL = 'authentication.User'
 
 # Google OAuth 2.0 Settings
-GOOGLE_OAUTH2_CLIENT_ID = config('GOOGLE_OAUTH2_CLIENT_ID', default='development-client-id')
-GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET', default='development-client-secret')
-GOOGLE_OAUTH2_PROJECT_ID = config('GOOGLE_OAUTH2_PROJECT_ID', default='development-project')
+GOOGLE_OAUTH2_CLIENT_ID = config('GOOGLE_OAUTH2_CLIENT_ID', default=None)
+GOOGLE_OAUTH2_CLIENT_SECRET = config('GOOGLE_OAUTH2_CLIENT_SECRET', default=None)
+GOOGLE_OAUTH2_PROJECT_ID = config('GOOGLE_OAUTH2_PROJECT_ID', default=None)
 
 # OAuth Scopes - minimal permissions for privacy
 GOOGLE_OAUTH2_SCOPES = [

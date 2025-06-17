@@ -24,10 +24,11 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
-# Google OAuth settings for development (HTTP allowed)
-GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', os.environ.get('GOOGLE_OAUTH2_CLIENT_ID'))
-GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET', os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET'))
-GOOGLE_OAUTH_REDIRECT_URI = 'http://localhost:8000/auth/oauth/google/callback/'
+# Google OAuth settings for development
+# Override base.py settings to allow development without OAuth setup
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID', 'development-client-id')
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET', 'development-client-secret')
+GOOGLE_OAUTH2_REDIRECT_URI = 'http://localhost:8000/auth/oauth/google/callback/'
 
 # Disable HTTPS requirement for OAuth in development
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'

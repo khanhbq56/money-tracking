@@ -39,18 +39,11 @@ SESSION_COOKIE_AGE = 86400  # 24 hours max
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Force re-login after browser close
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Google OAuth Settings - support both naming conventions
-GOOGLE_OAUTH_CLIENT_ID = (
-    os.environ.get('GOOGLE_OAUTH_CLIENT_ID') or 
-    os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
-)
-GOOGLE_OAUTH_CLIENT_SECRET = (
-    os.environ.get('GOOGLE_OAUTH_CLIENT_SECRET') or 
-    os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET')
-)
-GOOGLE_OAUTH_REDIRECT_URI = (
-    os.environ.get('GOOGLE_OAUTH_REDIRECT_URI') or 
-    os.environ.get('GOOGLE_OAUTH2_REDIRECT_URI') or
+# Google OAuth Settings for production  
+GOOGLE_OAUTH2_CLIENT_ID = os.environ.get('GOOGLE_OAUTH2_CLIENT_ID')
+GOOGLE_OAUTH2_CLIENT_SECRET = os.environ.get('GOOGLE_OAUTH2_CLIENT_SECRET')
+GOOGLE_OAUTH2_REDIRECT_URI = os.environ.get(
+    'GOOGLE_OAUTH2_REDIRECT_URI',
     'https://money-tracking-production.up.railway.app/auth/oauth/google/callback/'
 )
 

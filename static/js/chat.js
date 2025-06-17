@@ -176,7 +176,7 @@ class AIChat {
             language: this.currentLanguage
         };
         
-        const response = await fetch('/api/chat/message/', {
+        const response = await fetch('/api/chat/process/', {
             method: 'POST',
             headers: getCommonHeaders(),
             body: JSON.stringify(payload)

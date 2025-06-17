@@ -139,8 +139,14 @@ class I18n {
         
         // Update language switcher flag
         const currentFlag = document.getElementById('current-flag');
-        if (currentFlag && window.FlagIcons) {
-            currentFlag.innerHTML = window.FlagIcons[lang] || window.FlagIcons['en'];
+        if (currentFlag) {
+            const flagImg = currentFlag.querySelector('img');
+            if (flagImg) {
+                const currentSrc = flagImg.src;
+                const newSrc = currentSrc.replace(/\/(vi|en)\.svg/, `/${lang}.svg`);
+                flagImg.src = newSrc;
+                flagImg.alt = lang;
+            }
         }
         
         // Reload translations
@@ -213,11 +219,6 @@ class I18n {
         const currentFlag = document.getElementById('current-flag');
         
         if (switcher && dropdown && currentFlag) {
-            // Set initial flag using FlagIcons
-            if (window.FlagIcons) {
-                currentFlag.innerHTML = window.FlagIcons[this.currentLang] || window.FlagIcons['en'];
-            }
-            
             // Toggle dropdown on click
             switcher.addEventListener('click', (e) => {
                 e.stopPropagation();

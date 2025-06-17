@@ -110,8 +110,8 @@ ENABLE_MULTI_USER=True
 DEFAULT_USER_LIMIT=1000
 
 # Google OAuth (Optional)
-GOOGLE_OAUTH_CLIENT_ID=your-google-client-id
-GOOGLE_OAUTH_CLIENT_SECRET=your-google-client-secret
+GOOGLE_OAUTH2_CLIENT_ID=your-google-client-id
+GOOGLE_OAUTH2_CLIENT_SECRET=your-google-client-secret
 
 # Cache (Optional - Redis for production)
 REDIS_URL=redis://localhost:6379/0

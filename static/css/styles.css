@@ -97,6 +97,12 @@
     box-shadow: 0 4px 15px rgba(255,106,136,0.4);
 }
 
+.calendar-day.today:hover {
+    background: linear-gradient(135deg, #ff8a7b 0%, #ff5a78 100%); /* Slightly brighter for hover */
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(255,106,136,0.5);
+}
+
 .calendar-day.other-month {
     opacity: 0.3;
 }

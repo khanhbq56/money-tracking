@@ -1725,3 +1725,89 @@ msgstr "Liên hệ chúng tôi"
 msgid "privacy_contact_intro"
 msgstr "Nếu bạn có câu hỏi về Chính sách Bảo mật này hoặc thực tiễn dữ liệu của chúng tôi:"
 
+# Settings Page
+msgid "Settings"
+msgstr "Cài đặt"
+
+msgid "Manage your account preferences and integrations"
+msgstr "Quản lý tùy chọn tài khoản và tích hợp của bạn"
+
+msgid "Profile"
+msgstr "Hồ sơ"
+
+msgid "Bank Integration"
+msgstr "Tích hợp Ngân hàng"
+
+msgid "Notifications"
+msgstr "Thông báo"
+
+msgid "Profile Information"
+msgstr "Thông tin Hồ sơ"
+
+msgid "Demo Account"
+msgstr "Tài khoản Demo"
+
+msgid "Bank Email Integration"
+msgstr "Tích hợp Email Ngân hàng"
+
+msgid "Automatically import transactions from your bank emails. We only request Gmail permission when you enable a bank."
+msgstr "Tự động nhập giao dịch từ email ngân hàng. Chúng tôi chỉ yêu cầu quyền Gmail khi bạn kích hoạt một ngân hàng."
+
+msgid "Gmail Permission"
+msgstr "Quyền Gmail"
+
+msgid "Required to read bank transaction emails"
+msgstr "Cần thiết để đọc email giao dịch ngân hàng"
+
+msgid "Not Connected"
+msgstr "Chưa kết nối"
+
+msgid "Supported Banks"
+msgstr "Ngân hàng được hỗ trợ"
+
+msgid "Status"
+msgstr "Trạng thái"
+
+msgid "Enabled"
+msgstr "Đã bật"
+
+msgid "Last Sync"
+msgstr "Đồng bộ lần cuối"
+
+msgid "Never"
+msgstr "Chưa bao giờ"
+
+msgid "Sync Now"
+msgstr "Đồng bộ ngay"
+
+msgid "View History"
+msgstr "Xem lịch sử"
+
+msgid "More banks coming soon"
+msgstr "Thêm ngân hàng sẽ sớm được hỗ trợ"
+
+msgid "Notification preferences will be available soon."
+msgstr "Tùy chọn thông báo sẽ sớm có sẵn."
+
+# Demo Account Limitations
+msgid "Demo Account Limitation"
+msgstr "Giới hạn Tài khoản Demo"
+
+msgid "Bank integration is not available for demo accounts. To use this feature:"
+msgstr "Tích hợp ngân hàng không khả dụng cho tài khoản demo. Để sử dụng tính năng này:"
+
+msgid "Create a regular account with your Google account"
+msgstr "Tạo tài khoản thường với tài khoản Google của bạn"
+
+msgid "Grant Gmail permission for email reading"
+msgstr "Cấp quyền Gmail để đọc email"
+
+msgid "Configure your preferred banks"
+msgstr "Cấu hình ngân hàng ưa thích"
+
+msgid "Logout and Login with Gmail"
+msgstr "Đăng xuất và Đăng nhập với Gmail"
+
+msgid "Back to Dashboard"
+msgstr "Quay lại Dashboard"
+

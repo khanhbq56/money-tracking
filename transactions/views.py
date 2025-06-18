@@ -5,6 +5,7 @@ from rest_framework.decorators import api_view, action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from django.db.models import Sum, Q, Count
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404
@@ -496,4 +497,104 @@ def monthly_analysis(request):
         return Response(
             {'error': _(f'Error analyzing month: {str(e)}')},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
-        ) 
+        )
+
+
+# =============================================================================
+# BANK INTEGRATION API VIEWS (Phase 2)
+# =============================================================================
+
+# Bank integration service - lazy import to avoid circular imports
+BankIntegrationService = None
+
+class BankSyncView(APIView):
+    """Manual bank email sync endpoint"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Trigger manual bank sync"""
+        try:
+            # Lazy import bank integration service
+            from .bank_integration_service import BankIntegrationService
+            
+            bank_code = request.data.get('bank_code')  # Optional: specific bank
+            
+            # Initialize bank integration service
+            service = BankIntegrationService(request.user)
+            
+            # Perform sync
+            result = service.sync_user_bank_emails(bank_code)
+            
+            if result.get('success'):
+                return Response({
+                    'success': True,
+                    'message': _('Bank sync completed successfully'),
+                    'data': result
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'error': result.get('error', 'Unknown error'),
+                    'requires_gmail_auth': result.get('requires_gmail_auth', False)
+                }, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': f'Sync failed: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BankSyncHistoryView(APIView):
+    """Get bank sync history"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get sync history for user"""
+        try:
+            # Lazy import bank integration service
+            from .bank_integration_service import BankIntegrationService
+            
+            bank_code = request.query_params.get('bank_code')
+            limit = int(request.query_params.get('limit', 50))
+            
+            service = BankIntegrationService(request.user)
+            history = service.get_sync_history(bank_code, limit)
+            
+            return Response({
+                'success': True,
+                'history': history
+            })
+            
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BankIntegrationTestView(APIView):
+    """Test bank integration setup"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Test bank integration for a specific bank"""
+        try:
+            # Lazy import bank integration service
+            from .bank_integration_service import BankIntegrationService
+            
+            bank_code = request.data.get('bank_code', 'tpbank')
+            
+            service = BankIntegrationService(request.user)
+            test_result = service.test_bank_integration(bank_code)
+            
+            return Response({
+                'success': True,
+                'test_result': test_result
+            })
+            
+        except Exception as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 

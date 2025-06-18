@@ -1722,3 +1722,89 @@ msgstr "Contact Us"
 msgid "privacy_contact_intro"
 msgstr "If you have questions about this Privacy Policy or our data practices:"
 
+# Settings Page
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Manage your account preferences and integrations"
+msgstr "Manage your account preferences and integrations"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "Bank Integration"
+msgstr "Bank Integration"
+
+msgid "Notifications"
+msgstr "Notifications"
+
+msgid "Profile Information"
+msgstr "Profile Information"
+
+msgid "Demo Account"
+msgstr "Demo Account"
+
+msgid "Bank Email Integration"
+msgstr "Bank Email Integration"
+
+msgid "Automatically import transactions from your bank emails. We only request Gmail permission when you enable a bank."
+msgstr "Automatically import transactions from your bank emails. We only request Gmail permission when you enable a bank."
+
+msgid "Gmail Permission"
+msgstr "Gmail Permission"
+
+msgid "Required to read bank transaction emails"
+msgstr "Required to read bank transaction emails"
+
+msgid "Not Connected"
+msgstr "Not Connected"
+
+msgid "Supported Banks"
+msgstr "Supported Banks"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Enabled"
+msgstr "Enabled"
+
+msgid "Last Sync"
+msgstr "Last Sync"
+
+msgid "Never"
+msgstr "Never"
+
+msgid "Sync Now"
+msgstr "Sync Now"
+
+msgid "View History"
+msgstr "View History"
+
+msgid "More banks coming soon"
+msgstr "More banks coming soon"
+
+msgid "Notification preferences will be available soon."
+msgstr "Notification preferences will be available soon."
+
+# Demo Account Limitations
+msgid "Demo Account Limitation"
+msgstr "Demo Account Limitation"
+
+msgid "Bank integration is not available for demo accounts. To use this feature:"
+msgstr "Bank integration is not available for demo accounts. To use this feature:"
+
+msgid "Create a regular account with your Google account"
+msgstr "Create a regular account with your Google account"
+
+msgid "Grant Gmail permission for email reading"
+msgstr "Grant Gmail permission for email reading"
+
+msgid "Configure your preferred banks"
+msgstr "Configure your preferred banks"
+
+msgid "Logout and Login with Gmail"
+msgstr "Logout and Login with Gmail"
+
+msgid "Back to Dashboard"
+msgstr "Back to Dashboard"
+

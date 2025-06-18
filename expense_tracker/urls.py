@@ -9,8 +9,11 @@ from django.conf.urls.i18n import i18n_patterns
 from .health import health_check
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import TemplateView
+from django.contrib.auth.decorators import login_required
 
 import ai_chat.views
+import authentication.views
 
 # Main app views (template rendering) - MUST come first
 urlpatterns = i18n_patterns(
@@ -30,6 +33,7 @@ urlpatterns += [
     path('', basic_health, name='basic_health'),
     path('health/', health_check, name='health_check'),
 
+
     
     # Admin
     path('admin/', admin.site.urls),
@@ -42,7 +46,14 @@ urlpatterns += [
     path('api/chat/', include('ai_chat.urls')),  # Main AI chat endpoints
     
     # API aliases for frontend compatibility
-    path('api/meme/weekly/', ai_chat.views.generate_weekly_meme, name='meme_weekly_alias')
+    path('api/meme/weekly/', ai_chat.views.generate_weekly_meme, name='meme_weekly_alias'),
+    
+    # Settings page (new)
+    path('settings/', authentication.views.settings_view, name='settings'),
+    
+    # Legal pages
+    path('legal/privacy/', TemplateView.as_view(template_name='legal/privacy_policy.html'), name='privacy_policy'),
+    path('legal/terms/', TemplateView.as_view(template_name='legal/terms_of_service.html'), name='terms_of_service'),
 ]
 
 # Serve static and media files during development

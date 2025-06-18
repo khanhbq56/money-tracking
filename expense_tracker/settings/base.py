@@ -176,7 +176,12 @@ GOOGLE_OAUTH2_SCOPES = [
 GOOGLE_OAUTH2_REDIRECT_URI = config(
     'GOOGLE_OAUTH2_REDIRECT_URI', 
     default='http://localhost:8000/auth/google/callback/'
-) 
+)
+
+# Bank Integration Gmail OAuth Settings (reuse same credentials with different scopes)
+GOOGLE_CLIENT_ID = GOOGLE_OAUTH2_CLIENT_ID
+GOOGLE_CLIENT_SECRET = GOOGLE_OAUTH2_CLIENT_SECRET 
+SITE_URL = config('SITE_URL', default='http://localhost:8000') 
 
 # Session Configuration
 # Session only lasts while browser is open (not persistent)

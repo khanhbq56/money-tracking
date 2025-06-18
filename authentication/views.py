@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -17,6 +18,9 @@ from django.utils.decorators import method_decorator
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.contrib import messages
 
 from .models import User
 
@@ -72,8 +76,16 @@ class GoogleOAuthCallbackView(View):
                 logger.warning("Google OAuth not configured - redirecting to setup guide")
                 return redirect('/?error=oauth_not_configured')
                 
-            # Verify state parameter to prevent CSRF attacks
-            if request.GET.get('state') != request.session.get('oauth_state'):
+            # Check if this is Gmail OAuth callback (different state format)
+            state = request.GET.get('state')
+            if state and state.startswith('user_'):
+                # This is Gmail OAuth callback, redirect to Gmail OAuth handler
+                from django.urls import reverse
+                gmail_callback_view = GmailOAuthCallbackView()
+                return gmail_callback_view.get(request)
+                
+            # Verify state parameter to prevent CSRF attacks (for login OAuth)
+            if state != request.session.get('oauth_state'):
                 logger.warning("OAuth state mismatch - potential CSRF attack")
                 return redirect('/?error=oauth_state_mismatch')
             
@@ -503,4 +515,439 @@ def session_status_view(request):
             data['demo_expires_at'] = request.user.demo_expires_at.isoformat()
             data['demo_expired'] = request.user.is_demo_expired()
     
-    return JsonResponse(data) 
+    return JsonResponse(data)
+
+
+@login_required
+def settings_view(request):
+    """Render settings page - Foundation for bank integration"""
+    context = {
+        'user': request.user,
+        'page_title': _('Settings'),
+    }
+    return render(request, 'settings.html', context) 
+
+
+# =============================================================================
+# SEPARATE GMAIL OAUTH FOR BANK INTEGRATION (Phase 1)
+# =============================================================================
+
+# Separate Gmail OAuth scopes for bank integration (read-only emails)
+BANK_GMAIL_OAUTH_SCOPES = [
+    'https://www.googleapis.com/auth/gmail.readonly',
+]
+
+class GmailOAuthInitiateView(APIView):
+    """
+    Initiate separate Gmail OAuth flow for bank integration
+    
+    CRITICAL: This is separate from login OAuth
+    - Login OAuth: Profile info only (existing GoogleOAuthInitView)  
+    - Bank Gmail OAuth: Read emails only (this view)
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Initiate Gmail OAuth for bank integration"""
+        try:
+            # Check if there's a bank parameter for auto-enable after OAuth
+            bank_to_enable = request.GET.get('bank')
+            if bank_to_enable:
+                request.session['pending_bank_enable'] = bank_to_enable
+            
+            # Create OAuth flow with Gmail read-only scope
+            flow = Flow.from_client_config(
+                {
+                    "web": {
+                        "client_id": settings.GOOGLE_CLIENT_ID,
+                        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                        "redirect_uris": [f"{settings.SITE_URL}/auth/google/callback/"]
+                    }
+                },
+                scopes=BANK_GMAIL_OAUTH_SCOPES
+            )
+            
+            # Set redirect URI (reuse login OAuth callback)
+            flow.redirect_uri = f"{settings.SITE_URL}/auth/google/callback/"
+            
+            # Generate authorization URL with user context
+            authorization_url, state = flow.authorization_url(
+                access_type='offline',
+                include_granted_scopes='false',  # Only request Gmail scopes
+                prompt='consent',  # Force consent to get refresh token
+                state=f"user_{request.user.id}",  # Include user ID in state
+            )
+            
+            # Store state in session for verification
+            request.session['gmail_oauth_state'] = state
+            
+            # Log Gmail OAuth initiation
+            logger.info(f"Gmail OAuth initiated for user {request.user.email}")
+            
+            return redirect(authorization_url)
+            
+        except Exception as e:
+            logger.error(f"Gmail OAuth initiation error: {str(e)}")
+            messages.error(request, 'Failed to initiate Gmail permission request. Please try again.')
+            return redirect('/settings/#bank-integration')
+
+
+class GmailOAuthCallbackView(APIView):
+    """
+    Handle Gmail OAuth callback for bank integration
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Handle Gmail OAuth callback"""
+        try:
+            # Get authorization code and state
+            code = request.GET.get('code')
+            state = request.GET.get('state')
+            error = request.GET.get('error')
+            
+            # Check for OAuth errors
+            if error:
+                logger.warning(f"Gmail OAuth error: {error}")
+                messages.error(request, f'Gmail permission denied: {error}')
+                return redirect('/settings/#bank-integration')
+            
+            if not code:
+                logger.warning("Gmail OAuth callback missing authorization code")
+                messages.error(request, 'Missing authorization code. Please try again.')
+                return redirect('/settings/#bank-integration')
+            
+            # Verify state parameter
+            session_state = request.session.get('gmail_oauth_state')
+            if not session_state or session_state != state:
+                logger.warning(f"Gmail OAuth state mismatch: {state} vs {session_state}")
+                messages.error(request, 'Invalid state parameter. Please try again.')
+                return redirect('/settings/#bank-integration')
+            
+            # Verify user from state
+            if not state.startswith(f"user_{request.user.id}"):
+                logger.warning(f"Gmail OAuth user mismatch in state: {state}")
+                messages.error(request, 'User verification failed. Please try again.')
+                return redirect('/settings/#bank-integration')
+            
+            # Exchange authorization code for tokens
+            flow = Flow.from_client_config(
+                {
+                    "web": {
+                        "client_id": settings.GOOGLE_CLIENT_ID,
+                        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                        "redirect_uris": [f"{settings.SITE_URL}/auth/google/callback/"]
+                    }
+                },
+                scopes=BANK_GMAIL_OAUTH_SCOPES,
+                state=state
+            )
+            flow.redirect_uri = f"{settings.SITE_URL}/auth/google/callback/"
+            
+            # Get token
+            flow.fetch_token(code=code)
+            
+            # Store Gmail permission and tokens
+            self.store_gmail_permission(request.user, flow.credentials)
+            
+            # Clean up session
+            if 'gmail_oauth_state' in request.session:
+                del request.session['gmail_oauth_state']
+            
+            # Success message
+            messages.success(request, '✅ Gmail permission granted successfully! You can now enable bank integrations.')
+            logger.info(f"Gmail OAuth completed successfully for user {request.user.email}")
+            
+            # Check if there's a pending bank to enable from session
+            pending_bank = request.session.get('pending_bank_enable')
+            if pending_bank:
+                # Clean up session
+                del request.session['pending_bank_enable']
+                # Redirect with bank parameter to auto-enable
+                return redirect(f'/settings/?enable_bank={pending_bank}#bank-integration')
+            
+            return redirect('/settings/#bank-integration')
+            
+        except Exception as e:
+            logger.error(f"Gmail OAuth callback error: {str(e)}")
+            messages.error(request, 'Failed to process Gmail permission. Please try again.')
+            return redirect('/settings/#bank-integration')
+    
+    def store_gmail_permission(self, user, credentials):
+        """Store Gmail OAuth tokens for bank integration"""
+        from transactions.models import UserGmailPermission
+        
+        # Get or create Gmail permission record
+        gmail_permission, created = UserGmailPermission.objects.get_or_create(
+            user=user,
+            defaults={
+                'has_gmail_permission': True,
+                'permission_granted_at': timezone.now(),
+            }
+        )
+        
+        # Update with new tokens
+        gmail_permission.gmail_oauth_token = {
+            'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes,
+        }
+        # Handle timezone for expiry (credentials.expiry might be naive)
+        if credentials.expiry:
+            if credentials.expiry.tzinfo is None:
+                # Make it timezone-aware
+                gmail_permission.gmail_token_expires_at = timezone.make_aware(credentials.expiry)
+            else:
+                gmail_permission.gmail_token_expires_at = credentials.expiry
+        else:
+            gmail_permission.gmail_token_expires_at = None
+        gmail_permission.gmail_refresh_token = credentials.refresh_token
+        gmail_permission.has_gmail_permission = True
+        gmail_permission.permission_granted_at = timezone.now()
+        gmail_permission.permission_last_used = timezone.now()
+        
+        gmail_permission.save()
+        
+        logger.info(f"Gmail permission stored for user {user.email}")
+
+
+class GmailPermissionRevokeView(APIView):
+    """
+    Revoke Gmail permission for bank integration
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Revoke Gmail permission"""
+        try:
+            from transactions.models import UserGmailPermission, UserBankConfig
+            
+            # Get Gmail permission
+            try:
+                gmail_permission = UserGmailPermission.objects.get(user=request.user)
+            except UserGmailPermission.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No Gmail permission found'
+                }, status=404)
+            
+            # Disable all bank integrations first
+            UserBankConfig.objects.filter(user=request.user).update(is_enabled=False)
+            
+            # Revoke permission
+            gmail_permission.revoke_permission()
+            
+            logger.info(f"Gmail permission revoked for user {request.user.email}")
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Gmail permission revoked successfully'
+            })
+            
+        except Exception as e:
+            logger.error(f"Gmail permission revoke error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Failed to revoke Gmail permission'
+            }, status=500)
+
+
+# =============================================================================
+# BANK INTEGRATION API ENDPOINTS (Phase 1)
+# =============================================================================
+
+class BankIntegrationStatusView(APIView):
+    """
+    Get bank integration status for current user
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get all bank integration statuses"""
+        try:
+            from transactions.models import UserBankConfig
+            
+            statuses = {}
+            
+            # Get all bank configurations for user
+            bank_configs = UserBankConfig.objects.filter(user=request.user)
+            
+            for config in bank_configs:
+                statuses[config.bank_code] = {
+                    'enabled': config.is_enabled,
+                    'last_sync': config.last_sync_at.isoformat() if config.last_sync_at else None,
+                    'last_successful_sync': config.last_successful_sync.isoformat() if config.last_successful_sync else None,
+                    'sync_error_count': config.sync_error_count,
+                    'last_sync_error': config.last_sync_error,
+                }
+            
+            return JsonResponse(statuses)
+            
+        except Exception as e:
+            logger.error(f"Bank integration status error: {str(e)}")
+            return JsonResponse({
+                'error': 'Failed to get bank integration status'
+            }, status=500)
+
+
+class BankIntegrationEnableView(APIView):
+    """
+    Enable bank integration for a specific bank
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Enable bank integration"""
+        try:
+            from transactions.models import UserBankConfig, UserGmailPermission
+            
+            bank_code = request.data.get('bank_code')
+            if not bank_code:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Bank code is required'
+                }, status=400)
+            
+            # Check if Gmail permission exists
+            try:
+                gmail_permission = UserGmailPermission.objects.get(user=request.user)
+                if not gmail_permission.has_gmail_permission:
+                    return JsonResponse({
+                        'success': False,
+                        'error': 'Gmail permission required'
+                    }, status=403)
+            except UserGmailPermission.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Gmail permission required'
+                }, status=403)
+            
+            # Get or create bank configuration
+            bank_config, created = UserBankConfig.objects.get_or_create(
+                user=request.user,
+                bank_code=bank_code,
+                defaults={
+                    'is_enabled': True,
+                }
+            )
+            
+            if not created:
+                # Enable existing configuration
+                bank_config.enable_integration()
+            else:
+                # Set up new configuration
+                bank_config.enable_integration()
+            
+            logger.info(f"Bank integration enabled: {bank_code} for user {request.user.email}")
+            
+            return JsonResponse({
+                'success': True,
+                'message': f'{bank_code.upper()} integration enabled successfully',
+                'last_sync': bank_config.last_sync_at.isoformat() if bank_config.last_sync_at else None,
+            })
+            
+        except Exception as e:
+            logger.error(f"Bank integration enable error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Failed to enable bank integration'
+            }, status=500)
+
+
+class BankIntegrationDisableView(APIView):
+    """
+    Disable bank integration for a specific bank
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Disable bank integration"""
+        try:
+            from transactions.models import UserBankConfig
+            
+            bank_code = request.data.get('bank_code')
+            if not bank_code:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Bank code is required'
+                }, status=400)
+            
+            # Get bank configuration
+            try:
+                bank_config = UserBankConfig.objects.get(
+                    user=request.user,
+                    bank_code=bank_code
+                )
+                bank_config.disable_integration()
+                
+                logger.info(f"Bank integration disabled: {bank_code} for user {request.user.email}")
+                
+                return JsonResponse({
+                    'success': True,
+                    'message': f'{bank_code.upper()} integration disabled'
+                })
+                
+            except UserBankConfig.DoesNotExist:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Bank configuration not found'
+                }, status=404)
+            
+        except Exception as e:
+            logger.error(f"Bank integration disable error: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Failed to disable bank integration'
+            }, status=500)
+
+
+class GmailPermissionStatusView(APIView):
+    """
+    Check Gmail permission status for current user
+    """
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Check if user has Gmail permission"""
+        try:
+            from transactions.models import UserGmailPermission
+            
+            try:
+                gmail_permission = UserGmailPermission.objects.get(user=request.user)
+                
+                # Try to refresh token if expired
+                token_valid = gmail_permission.refresh_token_if_needed()
+                
+                has_permission = (
+                    gmail_permission.has_gmail_permission and 
+                    token_valid
+                )
+                
+                return JsonResponse({
+                    'has_permission': has_permission,
+                    'granted_at': gmail_permission.permission_granted_at.isoformat() if gmail_permission.permission_granted_at else None,
+                    'last_used': gmail_permission.permission_last_used.isoformat() if gmail_permission.permission_last_used else None,
+                    'token_expired': gmail_permission.is_token_expired(),
+                })
+                
+            except UserGmailPermission.DoesNotExist:
+                return JsonResponse({
+                    'has_permission': False,
+                    'granted_at': None,
+                    'last_used': None,
+                    'token_expired': True,
+                })
+            
+        except Exception as e:
+            logger.error(f"Gmail permission status error: {str(e)}")
+            return JsonResponse({
+                'has_permission': False,
+                'error': 'Failed to check Gmail permission status'
+            }, status=500) 

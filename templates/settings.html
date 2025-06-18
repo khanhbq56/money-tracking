@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans 'Settings' %} - Money Tracker{% endblock %}
+
+{% block content %}
+<style>
+    /* Hide logout button on settings page */
+    #logout-btn-fallback {
+        display: none !important;
+    }
+</style>
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Back Navigation -->
+        <div class="mb-6">
+            <button onclick="window.location.href='/'" 
+                    class="flex items-center text-purple-600 hover:text-purple-800 transition-colors">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>{% trans 'Back to Dashboard' %}</span>
+            </button>
+        </div>
+
+        <!-- Settings Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                ⚙️ {% trans 'Settings' %}
+            </h1>
+            <p class="text-gray-600">
+                {% trans 'Manage your account preferences and integrations' %}
+            </p>
+        </div>
+
+        <!-- Settings Navigation -->
+        <div class="settings-nav mb-8">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8">
+                    <a href="#profile" 
+                       class="nav-item border-b-2 border-purple-500 text-purple-600 py-4 px-1 text-sm font-medium" 
+                       onclick="showSettingsTab('profile')">
+                        👤 {% trans 'Profile' %}
+                    </a>
+                    <a href="#bank-integration" 
+                       class="nav-item border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium" 
+                       onclick="showSettingsTab('bank-integration')">
+                        🏦 {% trans 'Bank Integration' %}
+                    </a>
+                    <a href="#notifications" 
+                       class="nav-item border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 py-4 px-1 text-sm font-medium" 
+                       onclick="showSettingsTab('notifications')">
+                        🔔 {% trans 'Notifications' %}
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="settings-tab">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-semibold mb-4">👤 {% trans 'Profile Information' %}</h2>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture }}" alt="Profile" class="w-16 h-16 rounded-full">
+                            {% else %}
+                                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <span class="text-purple-600 text-xl font-semibold">
+                                        {{ user.get_short_name|first|upper }}
+                                    </span>
+                                </div>
+                            {% endif %}
+                            
+                            <div>
+                                <h3 class="text-lg font-medium">{{ user.get_full_name|default:user.get_short_name }}</h3>
+                                <p class="text-gray-600">{{ user.email }}</p>
+                                {% if user.is_demo_user %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        🎭 {% trans 'Demo Account' %}
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bank Integration Tab -->
+            <div id="bank-integration-tab" class="settings-tab hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-semibold mb-4">🏦 {% trans 'Bank Email Integration' %}</h2>
+                    
+                    {% if user.is_demo_user %}
+                        <!-- Demo Account Restriction -->
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-yellow-800">
+                                        {% trans 'Demo Account Limitation' %}
+                                    </h3>
+                                    <div class="mt-2 text-sm text-yellow-700">
+                                        <p>{% trans 'Bank integration is not available for demo accounts. To use this feature:' %}</p>
+                                        <ul class="mt-2 list-disc list-inside">
+                                            <li>{% trans 'Create a regular account with your Google account' %}</li>
+                                            <li>{% trans 'Grant Gmail permission for email reading' %}</li>
+                                            <li>{% trans 'Configure your preferred banks' %}</li>
+                                        </ul>
+                                    </div>
+                                    <div class="mt-4">
+                                        <button onclick="performLogout()" 
+                                                class="bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors">
+                                            {% trans 'Logout and Login with Gmail' %}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- Regular Account Bank Integration -->
+                        <p class="text-gray-600 mb-6">
+                            {% trans 'Automatically import transactions from your bank emails. We only request Gmail permission when you enable a bank.' %}
+                        </p>
+                        
+                        <!-- Gmail Permission Status -->
+                        <div class="permission-card bg-gray-50 rounded-lg p-4 mb-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <h3 class="text-lg font-medium">📧 {% trans 'Gmail Permission' %}</h3>
+                                    <p class="text-sm text-gray-600">
+                                        {% trans 'Required to read bank transaction emails' %}
+                                    </p>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="gmail-permission-status">
+                                        <!-- Status will be loaded by JavaScript -->
+                                        <span class="badge warning">⚠️ {% trans 'Not Connected' %}</span>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" 
+                                               id="gmail-permission-toggle" 
+                                               class="sr-only peer"
+                                               onchange="bankIntegrationManager.toggleGmailPermission()">
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Supported Banks -->
+                        <div class="banks-section">
+                            <h3 class="text-lg font-medium mb-4">{% trans 'Supported Banks' %}</h3>
+                            <div class="banks-grid space-y-4" id="supported-banks-list">
+                                <!-- TPBank Card -->
+                                <div class="bank-card border rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="bank-info">
+                                            <h4 class="font-medium">🏦 TPBank</h4>
+                                            <p class="text-sm text-gray-600">tpbank@tpb.com.vn</p>
+                                        </div>
+                                        <div class="bank-toggle">
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input type="checkbox" 
+                                                       id="bank-toggle-tpbank" 
+                                                       class="sr-only peer"
+                                                       onchange="bankIntegrationManager.toggleBankIntegration('tpbank')">
+                                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="tpbank-details" class="bank-details mt-4 hidden">
+                                        <div class="text-sm text-gray-600 space-y-2">
+                                            <p><strong>{% trans 'Status' %}:</strong> <span class="text-green-600">✅ {% trans 'Enabled' %}</span></p>
+                                            <p><strong>{% trans 'Last Sync' %}:</strong> <span id="tpbank-last-sync">{% trans 'Never' %}</span></p>
+                                            <div class="flex space-x-2 mt-2">
+                                                <button class="btn btn-sm bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700" 
+                                                        onclick="bankIntegrationManager.manualSync('tpbank')">
+                                                    {% trans 'Sync Now' %}
+                                                </button>
+                                                <button class="btn btn-sm bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-300" 
+                                                        onclick="bankIntegrationManager.showSyncHistory('tpbank')">
+                                                    {% trans 'View History' %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- More banks placeholder -->
+                                <div class="bank-card border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                                    <p class="text-gray-500">
+                                        🚧 {% trans 'More banks coming soon' %} (VCB, Techcombank, BIDV...)
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div id="notifications-tab" class="settings-tab hidden">
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h2 class="text-xl font-semibold mb-4">🔔 {% trans 'Notifications' %}</h2>
+                    <p class="text-gray-600">
+                        {% trans 'Notification preferences will be available soon.' %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Settings Tab Management
+function showSettingsTab(tabName) {
+    showSettingsTabProgrammatically(tabName);
+    
+    // Add active styling to clicked nav item
+    if (typeof event !== 'undefined' && event.target) {
+        event.target.classList.add('border-purple-500', 'text-purple-600');
+        event.target.classList.remove('border-transparent', 'text-gray-500');
+    }
+}
+
+function showSettingsTabProgrammatically(tabName) {
+    // Hide all tabs
+    document.querySelectorAll('.settings-tab').forEach(tab => {
+        tab.classList.add('hidden');
+    });
+    
+    // Remove active styling from all nav items
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('border-purple-500', 'text-purple-600');
+        item.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab
+    document.getElementById(tabName + '-tab').classList.remove('hidden');
+    
+    // Find and activate the correct nav item manually
+    const navItem = document.querySelector(`a[href="#${tabName}"]`);
+    if (navItem) {
+        navItem.classList.add('border-purple-500', 'text-purple-600');
+        navItem.classList.remove('border-transparent', 'text-gray-500');
+    }
+}
+
+// Logout function (for demo account button)
+async function performLogout() {
+    try {
+        const response = await fetch('/auth/logout/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCSRFToken(),
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        if (response.ok) {
+            // Logout successful, redirect to login
+            window.location.href = '/';
+        } else {
+            console.error('Logout failed:', response.status);
+            alert('Logout failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Logout error:', error);
+        alert('Logout failed. Please try again.');
+    }
+}
+
+// Check URL hash on load and handle bank auto-enable
+document.addEventListener('DOMContentLoaded', () => {
+    const hash = window.location.hash.substring(1);
+    if (hash && ['profile', 'bank-integration', 'notifications'].includes(hash)) {
+        showSettingsTabProgrammatically(hash);
+    } else {
+        showSettingsTabProgrammatically('bank-integration'); // Default to bank integration tab
+    }
+    
+    // Check for pending bank enable after OAuth callback via URL parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const pendingBank = urlParams.get('enable_bank');
+
+    if (pendingBank) {
+        // Remove URL parameter
+        urlParams.delete('enable_bank');
+        const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '') + window.location.hash;
+        history.replaceState(null, '', newUrl);
+        
+        // Wait for bank integration manager to be ready
+        const checkManagerAndEnable = () => {
+            if (window.bankIntegrationManager) {
+                window.bankIntegrationManager.enableBankIntegration(pendingBank)
+                    .catch(error => {
+                        console.log('Auto-enable failed, user can try manually:', error);
+                    });
+            } else {
+                setTimeout(checkManagerAndEnable, 200);
+            }
+        };
+        
+        setTimeout(checkManagerAndEnable, 500);
+    }
+});
+</script>
+{% endblock %} 

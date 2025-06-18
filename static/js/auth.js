@@ -763,12 +763,6 @@ function showUserProfile() {
 }
 
 function showSettings() {
-    if (typeof showAlertDialog === 'function') {
-        showAlertDialog(window.i18n.t('feature_coming_soon'), { 
-            type: 'info',
-            title: window.i18n.t('settings')
-        });
-    } else {
-        alert('Settings feature coming soon!');
-    }
+    // Navigate to settings page
+    window.location.href = '/settings/';
 } 

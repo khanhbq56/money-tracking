@@ -418,46 +418,70 @@ def logout_view(request):
 # Legal Compliance Views
 def privacy_policy_view(request):
     """Display privacy policy page"""
-    # Handle language switching
     from django.utils import translation
-    from django.conf import settings
+    from django.shortcuts import render
     
+    # Handle language switching
     lang = request.GET.get('lang')
     if lang in ['vi', 'en']:
         translation.activate(lang)
-        # Use the correct session key
         request.session['django_language'] = lang
     else:
-        # Check if there's a language preference in session
-        session_lang = request.session.get('django_language', 'vi')
-        translation.activate(session_lang)
+        # Check if there's a language preference in session or cookie
+        session_lang = request.session.get('django_language')
+        cookie_lang = request.COOKIES.get('django_language')
+        preferred_lang = session_lang or cookie_lang or 'vi'
+        
+        if preferred_lang in ['vi', 'en']:
+            translation.activate(preferred_lang)
+        else:
+            translation.activate('vi')
     
     context = {
         'last_updated': '2024-01-15'
     }
-    return render(request, 'legal/privacy_policy.html', context)
+    
+    response = render(request, 'legal/privacy_policy.html', context)
+    
+    # Set language cookie if changed
+    if lang in ['vi', 'en']:
+        response.set_cookie('django_language', lang, max_age=365*24*60*60)
+    
+    return response
 
 
 def terms_of_service_view(request):
     """Display terms of service page"""
-    # Handle language switching
     from django.utils import translation
-    from django.conf import settings
+    from django.shortcuts import render
     
+    # Handle language switching
     lang = request.GET.get('lang')
     if lang in ['vi', 'en']:
         translation.activate(lang)
-        # Use the correct session key
         request.session['django_language'] = lang
     else:
-        # Check if there's a language preference in session
-        session_lang = request.session.get('django_language', 'vi')
-        translation.activate(session_lang)
+        # Check if there's a language preference in session or cookie
+        session_lang = request.session.get('django_language')
+        cookie_lang = request.COOKIES.get('django_language')
+        preferred_lang = session_lang or cookie_lang or 'vi'
+        
+        if preferred_lang in ['vi', 'en']:
+            translation.activate(preferred_lang)
+        else:
+            translation.activate('vi')
     
     context = {
         'last_updated': '2024-01-15'
     }
-    return render(request, 'legal/terms_of_service.html', context)
+    
+    response = render(request, 'legal/terms_of_service.html', context)
+    
+    # Set language cookie if changed
+    if lang in ['vi', 'en']:
+        response.set_cookie('django_language', lang, max_age=365*24*60*60)
+    
+    return response
 
 
 @require_http_methods(["GET"])

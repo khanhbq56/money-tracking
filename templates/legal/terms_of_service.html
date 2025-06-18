@@ -10,13 +10,13 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between py-3">
             <!-- Back to App Button -->
-            <a href="/" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-sm rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-700 hover:shadow-xl transition-all duration-300 transform hover:scale-105 back-to-app-btn">
+            <a href="#" onclick="goBackToApp()" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold text-sm rounded-lg shadow-lg hover:from-purple-700 hover:to-pink-700 hover:shadow-xl transition-all duration-300 transform hover:scale-105 back-to-app-btn">
                 <i class="fas fa-arrow-left mr-2"></i>
                 <span>{% trans "back_to_app" %}</span>
             </a>
             
             <!-- Language Switcher -->
-            {% include 'includes/_language_switcher.html' with switcher_type='link' %}
+            {% include 'includes/_language_switcher.html' with switcher_type='js' %}
         </div>
     </div>
 </div>
@@ -281,6 +281,18 @@
 </div>
 {% endblock %}
 
+{% block extra_js %}
+    <!-- JavaScript translations -->
+    <script src="{% static 'js/translations/vi.js' %}"></script>
+    <script src="{% static 'js/translations/en.js' %}"></script>
+    
+    <!-- I18n module -->
+    <script src="{% static 'js/i18n.js' %}"></script>
+    
+    <!-- UI Components -->
+    <script src="{% static 'js/ui-components.js' %}"></script>
+{% endblock %}
+
 <script>
 // Add scroll effect for sticky navigation
 window.addEventListener('scroll', function() {
@@ -291,4 +303,34 @@ window.addEventListener('scroll', function() {
         nav.classList.remove('scrolled');
     }
 });
+
+// Go back to app with language sync
+function goBackToApp() {
+    try {
+        // Get current language from i18n or cookie
+        let currentLang = 'vi'; // default fallback
+        
+        if (window.i18n && typeof window.i18n.getCurrentLanguage === 'function') {
+            currentLang = window.i18n.getCurrentLanguage();
+        } else {
+            // Fallback: read from cookie
+            const cookieValue = document.cookie
+                .split('; ')
+                .find(row => row.startsWith('django_language='));
+            if (cookieValue) {
+                const extractedLang = cookieValue.split('=')[1];
+                if (extractedLang && ['vi', 'en'].includes(extractedLang)) {
+                    currentLang = extractedLang;
+                }
+            }
+        }
+        
+        // Redirect to home with language parameter
+        window.location.href = `/?lang=${currentLang}`;
+    } catch (error) {
+        console.error('Error in goBackToApp:', error);
+        // Safe fallback - go to home without language parameter
+        window.location.href = '/';
+    }
+}
 </script> 

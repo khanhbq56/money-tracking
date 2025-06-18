@@ -8,6 +8,27 @@ class I18n {
         this.translations = {};
         this.loadTranslations();
         this.initLanguageSwitcher();
+        
+        // Sync flag with multiple fallbacks to ensure it works
+        this.ensureFlagSync();
+    }
+    
+    /**
+     * Ensure flag synchronization with multiple fallbacks
+     */
+    ensureFlagSync() {
+        // Try immediately if DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.syncFlagWithLanguage());
+        } else {
+            this.syncFlagWithLanguage();
+        }
+        
+        // Additional fallback with slight delay
+        setTimeout(() => this.syncFlagWithLanguage(), 100);
+        
+        // Final fallback on window load
+        window.addEventListener('load', () => this.syncFlagWithLanguage());
     }
     
     /**
@@ -69,8 +90,16 @@ class I18n {
             this.updatePageTexts();
         } catch (error) {
             console.error('Error loading translations:', error);
-            // Fallback to Vietnamese
-            this.translations = this.getLocalTranslations('vi');
+            // Fallback to Vietnamese if something goes wrong
+            try {
+                this.translations = this.getLocalTranslations('vi');
+                this.currentLang = 'vi';
+                this.updatePageTexts();
+            } catch (fallbackError) {
+                console.error('Critical error: fallback translations failed:', fallbackError);
+                // Use empty object to prevent further errors
+                this.translations = {};
+            }
         }
     }
     
@@ -149,6 +178,18 @@ class I18n {
             }
         }
         
+        // Check if we're on a legal page and need to reload
+        const isLegalPage = window.location.pathname.includes('/auth/privacy/') || 
+                           window.location.pathname.includes('/auth/terms/');
+        
+        if (isLegalPage) {
+            // For legal pages, reload with new language parameter
+            const url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            window.location.href = url.toString();
+            return;
+        }
+        
         // Reload translations
         await this.loadTranslations();
         
@@ -208,8 +249,40 @@ class I18n {
         if (document.title.includes('Expense Tracker') || document.title.includes('Theo Dõi Chi Tiêu')) {
             document.title = this.t('expense_tracker') + ' - ' + this.t('ai_assistant');
         }
+        
+        // Ensure flag is synced whenever page texts are updated
+        this.syncFlagWithLanguage();
     }
     
+    /**
+     * Sync flag display with current language
+     * This ensures flag matches the actual language on page load
+     */
+    syncFlagWithLanguage() {
+        try {
+            const currentFlag = document.getElementById('current-flag');
+            if (!currentFlag) return;
+            
+            const flagImg = currentFlag.querySelector('img');
+            if (!flagImg) return;
+            
+            // Extract the current flag country code from src
+            const currentSrc = flagImg.src;
+            const flagMatch = currentSrc.match(/\/([a-z]{2})\.svg$/);
+            const currentFlagLang = flagMatch ? flagMatch[1] : null;
+            
+            // Update flag if it doesn't match current language
+            if (currentFlagLang && currentFlagLang !== this.currentLang) {
+                const newSrc = currentSrc.replace(/\/[a-z]{2}\.svg$/, `/${this.currentLang}.svg`);
+                flagImg.src = newSrc;
+                flagImg.alt = this.currentLang;
+            }
+        } catch (error) {
+            // Silently handle errors to avoid breaking the app
+            console.warn('Flag sync failed:', error.message);
+        }
+    }
+
     /**
      * Initialize language switcher dropdown
      */

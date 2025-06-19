@@ -48,11 +48,20 @@ class AuthManager {
             let errorMessage = window.i18n.t('login_error');
             
             switch (error) {
+                case 'oauth_scope_mismatch':
+                    errorMessage = window.i18n.t('oauth_scope_mismatch_error');
+                    break;
                 case 'oauth_state_mismatch':
                     errorMessage = window.i18n.t('oauth_state_mismatch_error');
                     break;
                 case 'oauth_callback_failed':
                     errorMessage = window.i18n.t('oauth_callback_error');
+                    break;
+                case 'oauth_client_error':
+                    errorMessage = window.i18n.t('oauth_client_error');
+                    break;
+                case 'oauth_redirect_mismatch':
+                    errorMessage = window.i18n.t('oauth_redirect_mismatch_error');
                     break;
                 case 'oauth_not_configured':
                     errorMessage = window.i18n.t('oauth_not_configured_notice');

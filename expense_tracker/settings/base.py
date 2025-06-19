@@ -175,7 +175,7 @@ GOOGLE_OAUTH2_SCOPES = [
 # OAuth redirect URIs
 GOOGLE_OAUTH2_REDIRECT_URI = config(
     'GOOGLE_OAUTH2_REDIRECT_URI', 
-    default='http://localhost:8000/auth/google/callback/'
+    default='http://localhost:8000/auth/oauth/google/callback/'
 )
 
 # Bank Integration Gmail OAuth Settings (reuse same credentials with different scopes)

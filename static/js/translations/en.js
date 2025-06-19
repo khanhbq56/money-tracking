@@ -246,8 +246,11 @@ const enTranslations = {
     'login_error': 'Login error. Please try again.',
     'demo_expires_in': 'Demo account expires in {time}',
     'demo_session_expired': 'Demo session has expired. Please login again.',
+    'oauth_scope_mismatch_error': 'Permission scope mismatch detected. This is usually safe - please try again.',
     'oauth_state_mismatch_error': 'OAuth security error. Please try again.',
     'oauth_callback_error': 'OAuth authentication error. Please try again.',
+    'oauth_client_error': 'OAuth client configuration error. Please contact administrator.',
+    'oauth_redirect_mismatch_error': 'OAuth redirect URL mismatch. Please contact administrator.',
     'session_expired': 'Session has expired',
     'network_error': 'Network error. Please check your connection.',
     

@@ -28,4 +28,5 @@ urlpatterns = [
     path('gmail-oauth/initiate/', views.GmailOAuthInitiateView.as_view(), name='gmail_oauth_initiate'),
     path('gmail-oauth/callback/', views.GmailOAuthCallbackView.as_view(), name='gmail_oauth_callback'),
     path('gmail-oauth/revoke/', views.GmailPermissionRevokeView.as_view(), name='gmail_permission_revoke'),
+
 ] 

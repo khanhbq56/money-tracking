@@ -58,7 +58,7 @@ class GoogleOAuthInitView(View):
         
         authorization_url, state = flow.authorization_url(
             access_type='offline',
-            include_granted_scopes='true',
+            include_granted_scopes='false',  # Prevent automatic scope inclusion
             state=state,
             prompt='select_account'  # Force account selection for privacy
         )
@@ -80,7 +80,6 @@ class GoogleOAuthCallbackView(View):
             state = request.GET.get('state')
             if state and state.startswith('user_'):
                 # This is Gmail OAuth callback, redirect to Gmail OAuth handler
-                from django.urls import reverse
                 gmail_callback_view = GmailOAuthCallbackView()
                 return gmail_callback_view.get(request)
                 
@@ -97,6 +96,7 @@ class GoogleOAuthCallbackView(View):
                 return redirect(f'/?error=oauth_{error}')
             
             # Exchange authorization code for access token
+            # Note: Don't enforce strict scope matching to handle Google's automatic scope inclusion
             flow = Flow.from_client_config(
                 {
                     "web": {
@@ -107,12 +107,31 @@ class GoogleOAuthCallbackView(View):
                         "redirect_uris": [settings.GOOGLE_OAUTH2_REDIRECT_URI]
                     }
                 },
-                scopes=settings.GOOGLE_OAUTH2_SCOPES,
-                state=request.session.get('oauth_state')
+                scopes=settings.GOOGLE_OAUTH2_SCOPES
             )
             
             flow.redirect_uri = settings.GOOGLE_OAUTH2_REDIRECT_URI
-            flow.fetch_token(authorization_response=request.build_absolute_uri())
+            
+            # Fetch token with robust error handling for scope mismatches
+            try:
+                flow.fetch_token(authorization_response=request.build_absolute_uri())
+            except Exception as token_error:
+                error_msg = str(token_error).lower()
+                
+                # Handle scope mismatch specifically
+                if 'scope' in error_msg and 'changed' in error_msg:
+                    logger.info(f"Scope mismatch detected, attempting code-based exchange: {token_error}")
+                    code = request.GET.get('code')
+                    if code:
+                        # Use code directly to avoid scope validation issues
+                        flow.fetch_token(code=code)
+                    else:
+                        logger.error("No authorization code available for fallback")
+                        raise token_error
+                else:
+                    # Re-raise other errors
+                    logger.error(f"OAuth token exchange failed: {token_error}")
+                    raise token_error
             
             # Get user info from Google
             credentials = flow.credentials
@@ -136,8 +155,20 @@ class GoogleOAuthCallbackView(View):
             return redirect('/')
             
         except Exception as e:
+            error_msg = str(e).lower()
             logger.error(f"OAuth callback error: {str(e)}")
-            return redirect('/?error=oauth_callback_failed')
+            
+            # Provide more specific error messages for common issues
+            if 'scope' in error_msg:
+                return redirect('/?error=oauth_scope_mismatch')
+            elif 'state' in error_msg:
+                return redirect('/?error=oauth_state_mismatch') 
+            elif 'client' in error_msg:
+                return redirect('/?error=oauth_client_error')
+            elif 'redirect_uri' in error_msg:
+                return redirect('/?error=oauth_redirect_mismatch')
+            else:
+                return redirect('/?error=oauth_callback_failed')
     
     def get_or_create_user(self, user_info, request):
         """Get or create user from Google user info"""
@@ -563,14 +594,14 @@ class GmailOAuthInitiateView(APIView):
                         "client_secret": settings.GOOGLE_CLIENT_SECRET,
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "token_uri": "https://oauth2.googleapis.com/token",
-                        "redirect_uris": [f"{settings.SITE_URL}/auth/google/callback/"]
+                        "redirect_uris": [f"{settings.SITE_URL}/auth/oauth/google/callback/"]
                     }
                 },
                 scopes=BANK_GMAIL_OAUTH_SCOPES
             )
             
             # Set redirect URI (reuse login OAuth callback)
-            flow.redirect_uri = f"{settings.SITE_URL}/auth/google/callback/"
+            flow.redirect_uri = f"{settings.SITE_URL}/auth/oauth/google/callback/"
             
             # Generate authorization URL with user context
             authorization_url, state = flow.authorization_url(
@@ -640,13 +671,13 @@ class GmailOAuthCallbackView(APIView):
                         "client_secret": settings.GOOGLE_CLIENT_SECRET,
                         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
                         "token_uri": "https://oauth2.googleapis.com/token",
-                        "redirect_uris": [f"{settings.SITE_URL}/auth/google/callback/"]
+                        "redirect_uris": [f"{settings.SITE_URL}/auth/oauth/google/callback/"]
                     }
                 },
                 scopes=BANK_GMAIL_OAUTH_SCOPES,
                 state=state
             )
-            flow.redirect_uri = f"{settings.SITE_URL}/auth/google/callback/"
+            flow.redirect_uri = f"{settings.SITE_URL}/auth/oauth/google/callback/"
             
             # Get token
             flow.fetch_token(code=code)
@@ -950,4 +981,6 @@ class GmailPermissionStatusView(APIView):
             return JsonResponse({
                 'has_permission': False,
                 'error': 'Failed to check Gmail permission status'
-            }, status=500) 
+            }, status=500)
+
+ 

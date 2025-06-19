@@ -114,29 +114,29 @@ class MonthlyTotalSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthlyTotal
         fields = [
-            'year', 'month', 'total_expense', 'total_saving',
-            'total_investment', 'net_total', 'last_updated',
+            'year', 'month', 'expense_amount', 'saving_amount',
+            'investment_amount', 'total_amount', 'transaction_count', 'updated_at',
             'formatted_expense', 'formatted_saving',
             'formatted_investment', 'formatted_net_total'
         ]
-        read_only_fields = ['last_updated']
+        read_only_fields = ['updated_at']
     
     def get_formatted_expense(self, obj):
         """Format expense total"""
-        return f"-{obj.total_expense:,.0f}₫"
+        return f"-{obj.expense_amount:,.0f}₫"
     
     def get_formatted_saving(self, obj):
         """Format saving total"""
-        return f"+{obj.total_saving:,.0f}₫"
+        return f"+{obj.saving_amount:,.0f}₫"
     
     def get_formatted_investment(self, obj):
         """Format investment total"""
-        return f"+{obj.total_investment:,.0f}₫"
+        return f"+{obj.investment_amount:,.0f}₫"
     
     def get_formatted_net_total(self, obj):
         """Format net total with proper sign"""
-        sign = "+" if obj.net_total >= 0 else ""
-        return f"{sign}{obj.net_total:,.0f}₫"
+        sign = "+" if obj.total_amount >= 0 else ""
+        return f"{sign}{obj.total_amount:,.0f}₫"
 
 
 class CalendarDataSerializer(serializers.Serializer):

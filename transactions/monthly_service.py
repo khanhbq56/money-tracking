@@ -51,19 +51,21 @@ class MonthlyTotalService:
             year=year,
             month=month,
             defaults={
-                'total_expense': expense_total,
-                'total_saving': saving_total,
-                'total_investment': investment_total,
-            'net_total': net_total
-        }
+                'expense_amount': expense_total,
+                'saving_amount': saving_total,
+                'investment_amount': investment_total,
+                'total_amount': net_total,
+                'transaction_count': transactions.count()
+            }
         )
         
         # Update if exists
         if not created:
-            monthly_total.total_expense = expense_total
-            monthly_total.total_saving = saving_total
-            monthly_total.total_investment = investment_total
-            monthly_total.net_total = net_total
+            monthly_total.expense_amount = expense_total
+            monthly_total.saving_amount = saving_total
+            monthly_total.investment_amount = investment_total
+            monthly_total.total_amount = net_total
+            monthly_total.transaction_count = transactions.count()
             monthly_total.save()
         
         return monthly_total
@@ -83,10 +85,10 @@ class MonthlyTotalService:
         monthly_total = MonthlyTotalService.update_monthly_totals(user, now.year, now.month)
         
         return {
-            'expense': monthly_total.total_expense,
-            'saving': monthly_total.total_saving,
-            'investment': monthly_total.total_investment,
-            'net_total': monthly_total.net_total
+            'expense': monthly_total.expense_amount,
+            'saving': monthly_total.saving_amount,
+            'investment': monthly_total.investment_amount,
+            'net_total': monthly_total.total_amount
         }
     
     @staticmethod
@@ -202,8 +204,8 @@ def get_month_totals(user, year, month):
     """Get totals for specific month and user"""
     monthly_total = MonthlyTotalService.update_monthly_totals(user, year, month)
     return {
-        'expense': monthly_total.total_expense,
-        'saving': monthly_total.total_saving,
-        'investment': monthly_total.total_investment,
-        'net_total': monthly_total.net_total
+        'expense': monthly_total.expense_amount,
+        'saving': monthly_total.saving_amount,
+        'investment': monthly_total.investment_amount,
+        'net_total': monthly_total.total_amount
     } 

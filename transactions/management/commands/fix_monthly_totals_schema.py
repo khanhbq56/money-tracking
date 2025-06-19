@@ -18,14 +18,19 @@ class Command(BaseCommand):
         
         # Check current database schema
         with connection.cursor() as cursor:
-            # Check if table exists
-            cursor.execute("""
-                SELECT column_name 
-                FROM information_schema.columns 
-                WHERE table_name = 'transactions_monthlytotal'
-                ORDER BY column_name;
-            """)
-            columns = [row[0] for row in cursor.fetchall()]
+            # Check if table exists (different syntax for SQLite vs PostgreSQL)
+            if connection.vendor == 'sqlite':
+                cursor.execute("PRAGMA table_info(transactions_monthlytotal);")
+                columns = [row[1] for row in cursor.fetchall()]  # Column name is at index 1
+            else:
+                # PostgreSQL
+                cursor.execute("""
+                    SELECT column_name 
+                    FROM information_schema.columns 
+                    WHERE table_name = 'transactions_monthlytotal'
+                    ORDER BY column_name;
+                """)
+                columns = [row[0] for row in cursor.fetchall()]
             
             self.stdout.write(f"📋 Current columns: {', '.join(columns)}")
             

@@ -188,3 +188,101 @@ To prevent similar issues in the future:
 - `35cbc5f` - Fix MonthlyTotal field name mismatch and database schema issues
 - `e4e7035` - Add deployment fix script to resolve production schema issues  
 - `d9cd1af` - Add SQLite support to schema fix command 
+
+## Critical Production Issues Fixed
+
+### 1. ❌ Gmail OAuth Redirect Issue (FIXED)
+
+**Problem**: When deployed, Gmail bank integration redirects to localhost instead of production domain.
+
+**Root Cause**: 
+- `SITE_URL` environment variable missing in production
+- Gmail OAuth uses `SITE_URL` for redirect URI instead of `GOOGLE_OAUTH2_REDIRECT_URI`
+- Default `SITE_URL` is `http://localhost:8000`
+
+**Solution**: 
+1. Add `SITE_URL=https://money-tracking-production.up.railway.app` to Railway environment variables
+2. Update Google Cloud Console OAuth redirect URIs to include both:
+   - `https://money-tracking-production.up.railway.app/auth/oauth/google/callback/` (Login OAuth)
+   - `https://money-tracking-production.up.railway.app/auth/oauth/google/callback/` (Gmail OAuth - same endpoint)
+
+**Files Changed**:
+- `docs/railway-env-fix.txt` - Added `SITE_URL` configuration
+
+### 2. ✅ Monthly Totals Schema Fix (COMPLETED)
+
+**Problem**: Production database missing `user_id` column in `monthly_totals` table.
+
+**Root Cause**: Migration 0003 added `user` field but wasn't applied in production.
+
+**Solution**: 
+1. Created `fix_monthly_totals_schema.py` management command
+2. Added proper error handling and schema validation
+3. Updated `MonthlyTotalSerializer` to handle both old and new schemas
+
+**Files Changed**:
+- `transactions/management/commands/fix_monthly_totals_schema.py` - New management command
+- `transactions/serializers.py` - Backwards compatibility for schemas
+- `transactions/monthly_service.py` - User-aware monthly calculations
+
+### 3. ✅ Multi-User Deployment Scripts (COMPLETED)
+
+**Problem**: Railway deployment scripts not optimized for multi-user production.
+
+**Solution**:
+1. Updated `railway-start.sh` with proper multi-user migration sequence
+2. Created `scripts/deploy_fix.sh` for one-time production fixes
+3. Enhanced error handling and logging
+
+**Files Changed**:
+- `railway-start.sh` - Multi-user deployment sequence
+- `scripts/deploy_fix.sh` - Production fix automation
+- `scripts/start.sh` - Local development improvements
+
+## Next Deployment Steps
+
+### 1. Update Railway Environment Variables
+
+Add this to your Railway project environment variables:
+```
+SITE_URL=https://money-tracking-production.up.railway.app
+```
+
+### 2. Update Google Cloud Console
+
+In your Google Cloud Console OAuth configuration:
+1. Go to "Credentials" → Your OAuth 2.0 Client ID
+2. Add to "Authorized redirect URIs":
+   ```
+   https://money-tracking-production.up.railway.app/auth/oauth/google/callback/
+   ```
+3. Save changes
+
+### 3. Deploy and Test
+
+1. Deploy to Railway with updated environment variables
+2. Test login OAuth (should work as before)  
+3. Test Gmail OAuth for bank integration (should now redirect correctly)
+
+## Testing Checklist
+
+- [ ] User can log in with Google OAuth
+- [ ] Settings page loads correctly
+- [ ] Gmail permission request redirects to production domain (not localhost)
+- [ ] Bank integration enables/disables properly
+- [ ] Monthly totals display correctly for all users
+- [ ] No database schema errors in logs
+
+## Monitoring
+
+Monitor these logs after deployment:
+- Gmail OAuth initiation and callback logs
+- Database schema validation logs
+- User authentication and session logs
+- Bank integration enable/disable logs
+
+---
+
+**Status**: Ready for production deployment
+**Last Updated**: Current deployment
+**Priority**: HIGH - Fixes critical OAuth redirect issue

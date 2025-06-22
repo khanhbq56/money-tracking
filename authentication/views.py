@@ -894,16 +894,18 @@ class BankIntegrationEnableView(APIView):
 
 class BankIntegrationDisableView(APIView):
     """
-    Disable bank integration for a specific bank
+    Disable bank integration for a specific bank or delete custom bank
     """
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        """Disable bank integration"""
+        """Disable bank integration or delete custom bank"""
         try:
             from transactions.models import UserBankConfig
             
             bank_code = request.data.get('bank_code')
+            delete_custom = request.data.get('delete_custom', False)
+            
             if not bank_code:
                 return JsonResponse({
                     'success': False,
@@ -916,14 +918,28 @@ class BankIntegrationDisableView(APIView):
                     user=request.user,
                     bank_code=bank_code
                 )
-                bank_config.disable_integration()
                 
-                logger.info(f"Bank integration disabled: {bank_code} for user {request.user.email}")
-                
-                return JsonResponse({
-                    'success': True,
-                    'message': f'{bank_code.upper()} integration disabled'
-                })
+                if delete_custom and bank_config.is_custom_bank:
+                    # Delete custom bank entirely
+                    bank_name = bank_config.custom_bank_name or bank_code
+                    bank_config.delete()
+                    
+                    logger.info(f"Custom bank deleted: {bank_name} ({bank_code}) for user {request.user.email}")
+                    
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'Custom bank {bank_name} deleted successfully'
+                    })
+                else:
+                    # Just disable integration
+                    bank_config.disable_integration()
+                    
+                    logger.info(f"Bank integration disabled: {bank_code} for user {request.user.email}")
+                    
+                    return JsonResponse({
+                        'success': True,
+                        'message': f'{bank_code.upper()} integration disabled'
+                    })
                 
             except UserBankConfig.DoesNotExist:
                 return JsonResponse({

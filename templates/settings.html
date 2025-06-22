@@ -125,6 +125,27 @@
                             </div>
                         </div>
                     {% else %}
+                        <!-- Debug Console -->
+                        <div class="mb-6 bg-gray-900 rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-3">
+                                <h4 class="text-white font-medium">🔍 Debug Console</h4>
+                                <div class="flex space-x-2">
+                                    <button onclick="debugCheckStatus()" class="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">
+                                        Check Status
+                                    </button>
+                                    <button onclick="forceInitManager()" class="px-3 py-1 bg-green-600 text-white text-sm rounded hover:bg-green-700">
+                                        Init Manager
+                                    </button>
+                                    <button onclick="clearDebugLogs()" class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                        Clear
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="debug-console" class="bg-black rounded p-3 h-40 overflow-y-auto text-green-400 text-sm font-mono">
+                                <div class="text-gray-500">Debug console ready...</div>
+                            </div>
+                        </div>
+
                         <!-- Regular Account Bank Integration -->
                         <p class="text-gray-600 mb-6">
                             {% trans 'Automatically import transactions from your bank emails. We only request Gmail permission when you enable a bank.' %}
@@ -157,7 +178,13 @@
 
                         <!-- Supported Banks -->
                         <div class="banks-section">
-                            <h3 class="text-lg font-medium mb-4">{% trans 'Supported Banks' %}</h3>
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-medium">{% trans "Supported Banks" %}</h3>
+                                <button onclick="bankIntegrationManager.showAddCustomBankModal()" 
+                                        class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-4 py-2 rounded-lg text-sm hover:from-blue-600 hover:to-purple-600 transition-all">
+                                    ➕ {% trans "Add Custom Bank" %}
+                                </button>
+                            </div>
                             <div class="banks-grid space-y-4" id="supported-banks-list">
                                 <!-- TPBank Card -->
                                 <div class="bank-card border rounded-lg p-4">
@@ -177,29 +204,42 @@
                                         </div>
                                     </div>
                                     
-                                    <div id="tpbank-details" class="bank-details mt-4 hidden">
-                                        <div class="text-sm text-gray-600 space-y-2">
-                                            <p><strong>{% trans 'Status' %}:</strong> <span class="text-green-600">✅ {% trans 'Enabled' %}</span></p>
-                                            <p><strong>{% trans 'Last Sync' %}:</strong> <span id="tpbank-last-sync">{% trans 'Never' %}</span></p>
-                                            <div class="flex space-x-2 mt-2">
-                                                <button class="btn btn-sm bg-purple-600 text-white px-3 py-1 rounded text-xs hover:bg-purple-700" 
-                                                        onclick="bankIntegrationManager.manualSync('tpbank')">
-                                                    {% trans 'Sync Now' %}
-                                                </button>
-                                                <button class="btn btn-sm bg-gray-200 text-gray-700 px-3 py-1 rounded text-xs hover:bg-gray-300" 
-                                                        onclick="bankIntegrationManager.showSyncHistory('tpbank')">
-                                                    {% trans 'View History' %}
-                                                </button>
+                                    <!-- TPBank Details (hidden by default) -->
+                                    <div id="tpbank-details" class="tpbank-details mt-4 hidden">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <span class="font-medium text-gray-600">{% trans "Status" %}:</span>
+                                                <span class="ml-1 text-green-600">✅ {% trans "Enabled" %}</span>
                                             </div>
+                                            <div>
+                                                <span class="font-medium text-gray-600">{% trans "Last Sync" %}:</span>
+                                                <span id="tpbank-last-sync" class="ml-1 text-gray-700">{% trans "Never" %}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Action Buttons -->
+                                        <div class="flex space-x-2 mt-3">
+                                            <button onclick="bankIntegrationManager.manualSync('tpbank')" 
+                                                    class="bg-purple-100 text-purple-700 px-3 py-1 rounded text-sm hover:bg-purple-200 transition-colors">
+                                                🔄 {% trans "Sync Now" %}
+                                            </button>
+                                            <button onclick="bankIntegrationManager.showSyncHistory('tpbank')" 
+                                                    class="bg-gray-100 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-200 transition-colors">
+                                                📜 {% trans "View History" %}
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-
-                                <!-- More banks placeholder -->
-                                <div class="bank-card border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-                                    <p class="text-gray-500">
-                                        🚧 {% trans 'More banks coming soon' %} (VCB, Techcombank, BIDV...)
-                                    </p>
+                                
+                                <!-- Custom Banks Container -->
+                                <div id="custom-banks-container">
+                                    <!-- Custom banks will be dynamically loaded here -->
+                                </div>
+                                
+                                <!-- Coming Soon Banks -->
+                                <div class="text-center py-4 text-gray-500 text-sm">
+                                    <p>💡 {% trans "More banks coming soon" %}</p>
+                                    <p class="text-xs mt-1">{% trans "Can't find your bank? Add it as a custom bank!" %}</p>
                                 </div>
                             </div>
                         </div>
@@ -279,13 +319,104 @@ async function performLogout() {
     }
 }
 
+// Debug Console Functions
+function logToConsole(message, type = 'info') {
+    const debugConsole = document.getElementById('debug-console');
+    if (!debugConsole) return;
+    
+    const timestamp = new Date().toLocaleTimeString();
+    const colors = {
+        info: 'text-green-400',
+        success: 'text-blue-400', 
+        warning: 'text-yellow-400',
+        error: 'text-red-400'
+    };
+    
+    const div = document.createElement('div');
+    div.className = colors[type] || colors.info;
+    div.innerHTML = `[${timestamp}] ${message}`;
+    
+    debugConsole.appendChild(div);
+    debugConsole.scrollTop = debugConsole.scrollHeight;
+    
+    // Also log to browser console
+    window.console.log(`[DEBUG] ${message}`);
+}
+
+function clearDebugLogs() {
+    const debugConsole = document.getElementById('debug-console');
+    if (debugConsole) {
+        debugConsole.innerHTML = '<div class="text-gray-500">Debug console cleared...</div>';
+    }
+}
+
+// Force initialize manager
+function forceInitManager() {
+    logToConsole('🔧 Force initializing bank integration manager...', 'info');
+    
+    if (typeof BankIntegrationManager !== 'undefined') {
+        window.bankIntegrationManager = new BankIntegrationManager();
+        logToConsole('✅ Bank integration manager force initialized', 'success');
+    } else {
+        logToConsole('❌ BankIntegrationManager class still not available', 'error');
+        logToConsole('🔄 Check browser console for JS errors', 'warning');
+    }
+}
+
+// Debug status check function
+async function debugCheckStatus() {
+    logToConsole('🔄 Manual status check requested...', 'info');
+    
+    if (window.bankIntegrationManager) {
+        const status = await window.bankIntegrationManager.checkSyncStatus();
+        if (status) {
+            logToConsole(`📊 Sync Status: ${status.sync_status}`, 'success');
+            logToConsole(`🔐 Gmail Permission: ${status.has_gmail_permission}`, status.has_gmail_permission ? 'success' : 'warning');
+            logToConsole(`🏦 Enabled Banks: ${status.enabled_banks.length}`, 'info');
+            logToConsole(`📈 Recent Transactions (30d): ${status.recent_transactions_count}`, 'info');
+            logToConsole(`📊 Total Transactions: ${status.total_transactions_count}`, 'info');
+        } else {
+            logToConsole('❌ Failed to get status', 'error');
+        }
+    } else {
+        logToConsole('❌ Bank integration manager not available', 'error');
+        logToConsole('💡 Try clicking "Init Manager" button', 'info');
+    }
+}
+
 // Check URL hash on load and handle bank auto-enable
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize debug console
+    logToConsole('🚀 Settings page initialized', 'success');
+    
     const hash = window.location.hash.substring(1);
     if (hash && ['profile', 'bank-integration', 'notifications'].includes(hash)) {
         showSettingsTabProgrammatically(hash);
     } else {
         showSettingsTabProgrammatically('bank-integration'); // Default to bank integration tab
+    }
+    
+    // Initialize bank integration manager if not exists
+    if (typeof BankIntegrationManager !== 'undefined' && !window.bankIntegrationManager) {
+        logToConsole('🔧 Initializing bank integration manager...', 'info');
+        window.bankIntegrationManager = new BankIntegrationManager();
+        logToConsole('✅ Bank integration manager initialized', 'success');
+    } else if (window.bankIntegrationManager) {
+        logToConsole('📱 Bank integration manager already exists', 'success');
+    } else {
+        logToConsole('⚠️ BankIntegrationManager class not found', 'warning');
+        logToConsole('🔄 Will retry in 2 seconds...', 'info');
+        
+        // Retry after delay for async JS loading
+        setTimeout(() => {
+            if (typeof BankIntegrationManager !== 'undefined' && !window.bankIntegrationManager) {
+                logToConsole('🔧 Retry: Initializing bank integration manager...', 'info');
+                window.bankIntegrationManager = new BankIntegrationManager();
+                logToConsole('✅ Bank integration manager initialized on retry', 'success');
+            } else {
+                logToConsole('❌ BankIntegrationManager still not available', 'error');
+            }
+        }, 2000);
     }
     
     // Check for pending bank enable after OAuth callback via URL parameter

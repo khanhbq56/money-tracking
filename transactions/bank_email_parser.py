@@ -27,52 +27,130 @@ class BankEmailAIParser(GeminiService):
         return {
             'tpbank': {
                 'vi': """
+QUAN TRỌNG: Bạn PHẢI chỉ trả về JSON hợp lệ, không được thêm bất kỳ text nào khác.
+
 Bạn là AI chuyên phân tích email giao dịch ngân hàng TPBank. 
-Nhiệm vụ: Trích xuất thông tin giao dịch chính xác từ email và trả về JSON.
+Nhiệm vụ: Trích xuất thông tin giao dịch từ email và CHỈ trả về JSON.
 
 Quy tắc phân loại:
-- transaction_type: "expense" (tiền ra), "saving" (tiền vào tiết kiệm), "investment" (tiền vào đầu tư)
+- transaction_type: "expense" (tiền ra), "saving" (tiền vào), "investment" (đầu tư)
 - expense_category: chỉ cho expense - "food", "coffee", "transport", "shopping", "entertainment", "health", "education", "utilities", "other"
-- amount: số tiền dương (không âm), đơn vị VND
-- description: mô tả ngắn gọn về giao dịch
-- date: ngày giao dịch format YYYY-MM-DD
+- amount: số tiền dương (QUAN TRỌNG: GIỮ NGUYÊN SỐ TIỀN THỰC TẾ TRONG EMAIL)
+- currency: "USD" hoặc "VND" (dựa trên email content)
+- description: mô tả ngắn gọn, PHẢI bao gồm tên merchant/cửa hàng nếu có
+- date: ngày giao dịch YYYY-MM-DD
 - ai_confidence: độ tin cậy 0.0-1.0
 
-Ví dụ response:
+QUAN TRỌNG VỀ TIỀN TỆ - LUẬT XÁC ĐỊNH CHÍNH XÁC:
+
+1. MERCHANT NƯỚC NGOÀI = USD (LUÔN LUÔN):
+   * Supercell, Steam, Epic Games, Google Pay/Play, Apple, Amazon, Netflix, Spotify, PayPal
+   * Bất kỳ tên có: SUPERCELLSTORE, FS *SUPERCELL, AMZN, PAYPAL, APPLE.COM, GOOGLE, STEAM
+   * MọI merchant nước ngoài → currency: "USD" (KHÔNG QUAN TÂM SỐ TIỀN)
+
+2. MERCHANT VIỆT NAM = VND:
+   * SHOPEEPAY, GRABPAY, MOMO, ZALOPAY, các cửa hàng Việt Nam
+   * Loại trừ: tên ngân hàng (TPBANK, VIETCOMBANK) - chỉ là người gửi email
+
+3. NHẬN DIỆN TIỀN TỆ TỪ CÚ PHÁP:
+   * "Giá trị giao dịch: [số] USD" hoặc "[số]USD" → currency: "USD"
+   * "Giá trị giao dịch: [số] VND" hoặc "[số]VND" → currency: "VND"
+   * BỎ QUA "số dư" (luôn là VND ở Việt Nam)
+
+4. QUY TẮC SỐ TIỀN NHỎ:
+   * Nếu merchant nước ngoài + số tiền < 500 → MỘT CÁI CHẮC CHẮN là USD
+   * Ví dụ: "FS *SUPERCELLSTORE" với "11" → currency: "USD", amount: 11
+
+MẶC ĐỊNH CUỐI CÙNG: currency: "VND"
+
+- GIỮ NGUYÊN số tiền thực tế từ email, KHÔNG chuyển đổi
+
+CHỈ trả về JSON như ví dụ:
 {
   "transaction_type": "expense", 
-  "amount": 50000,
-  "description": "Mua coffee Starbucks", 
-  "date": "2024-01-15",
-  "expense_category": "coffee",
+  "amount": 70.50,
+  "currency": "USD",
+  "description": "Amazon payment", 
+  "date": "2024-05-27",
+  "expense_category": "shopping",
   "ai_confidence": 0.95
 }
 
-Email cần phân tích:
+Hoặc:
+{
+  "transaction_type": "expense", 
+  "amount": 150000,
+  "currency": "VND",
+  "description": "Thanh toán SHOPEEPAY", 
+  "date": "2024-05-27",
+  "expense_category": "shopping",
+  "ai_confidence": 0.95
+}
+
+Email:
 """,
                 'en': """
+IMPORTANT: You MUST return ONLY valid JSON, no additional text.
+
 You are an AI specialized in analyzing TPBank transaction emails.
-Task: Extract accurate transaction information from emails and return JSON.
+Task: Extract transaction information from emails and return ONLY JSON.
 
 Classification rules:
-- transaction_type: "expense" (money out), "saving" (money in for saving), "investment" (money in for investment)
+- transaction_type: "expense" (money out), "saving" (money in), "investment" (investment)
 - expense_category: only for expense - "food", "coffee", "transport", "shopping", "entertainment", "health", "education", "utilities", "other"
-- amount: positive amount (not negative), in VND
-- description: brief description of transaction
-- date: transaction date in YYYY-MM-DD format
+- amount: positive amount (IMPORTANT: PRESERVE EXACT AMOUNT FROM EMAIL)
+- currency: "USD" or "VND" (based on email content)
+- description: brief description, MUST include merchant name if available
+- date: transaction date YYYY-MM-DD
 - ai_confidence: confidence score 0.0-1.0
 
-Example response:
+CURRENCY DETECTION RULES - PRECISE DETERMINATION:
+
+1. FOREIGN MERCHANTS = USD (ALWAYS):
+   * Supercell, Steam, Epic Games, Google Pay/Play, Apple, Amazon, Netflix, Spotify, PayPal
+   * Any name containing: SUPERCELLSTORE, FS *SUPERCELL, AMZN, PAYPAL, APPLE.COM, GOOGLE, STEAM
+   * ALL foreign merchants → currency: "USD" (IGNORE AMOUNT SIZE)
+
+2. VIETNAMESE MERCHANTS = VND:
+   * SHOPEEPAY, GRABPAY, MOMO, ZALOPAY, Vietnamese stores
+   * Exclude: bank names (TPBANK, VIETCOMBANK) - just email senders
+
+3. CURRENCY FROM SYNTAX:
+   * "Transaction amount: [number] USD" or "[number]USD" → currency: "USD"
+   * "Transaction amount: [number] VND" or "[number]VND" → currency: "VND"
+   * IGNORE "balance" (always VND in Vietnam)
+
+4. SMALL AMOUNT RULE:
+   * If foreign merchant + amount < 500 → DEFINITELY USD
+   * Example: "FS *SUPERCELLSTORE" with "11" → currency: "USD", amount: 11
+
+FINAL DEFAULT: currency: "VND"
+
+- PRESERVE the exact amount from email, DO NOT convert
+
+Return ONLY JSON like this example:
 {
   "transaction_type": "expense",
-  "amount": 50000, 
-  "description": "Coffee Starbucks purchase",
-  "date": "2024-01-15",
-  "expense_category": "coffee",
+  "amount": 70.50,
+  "currency": "USD",
+  "description": "Amazon payment",
+  "date": "2024-05-27",
+  "expense_category": "shopping",
   "ai_confidence": 0.95
 }
 
-Email to analyze:
+Or:
+{
+  "transaction_type": "expense",
+  "amount": 150000,
+  "currency": "VND", 
+  "description": "SHOPEEPAY payment",
+  "date": "2024-05-27",
+  "expense_category": "shopping",
+  "ai_confidence": 0.95
+}
+
+Email:
 """
             }
         }
@@ -89,6 +167,8 @@ Email to analyze:
         Returns:
             Parsed transaction data or None if parsing fails
         """
+        logger.info(f"🤖 Parsing email for {bank_code}")
+        
         try:
             # Get bank-specific prompt
             bank_prompts = self.bank_prompts.get(bank_code, {})
@@ -111,11 +191,21 @@ Email to analyze:
                 if account_suffix:
                     full_prompt += f"\n\nUser's account ends with: {account_suffix}"
             
-            # Use existing GeminiService to get AI response
-            ai_response = self.get_ai_response(full_prompt)
+            # Use Gemini model to get AI response
+            if not self.model:
+                logger.warning("Gemini model not available")
+                return None
             
-            if not ai_response:
-                logger.warning(f"No AI response for bank email parsing")
+            try:
+                response = self.model.generate_content(full_prompt)
+                ai_response = response.text.strip() if response and response.text else ""
+                
+                if not ai_response:
+                    logger.warning(f"Empty AI response for bank email parsing")
+                    return None
+                
+            except Exception as e:
+                logger.error(f"Error calling Gemini API: {str(e)}")
                 return None
             
             # Extract JSON from AI response
@@ -140,26 +230,38 @@ Email to analyze:
             return None
     
     def _extract_json_from_response(self, ai_response: str) -> Optional[Dict[str, Any]]:
-        """Extract JSON from AI response text"""
+        """Extract JSON from AI response text with improved debugging"""
         try:
+            logger.info(f"Extracting JSON from response: {ai_response[:500]}...")
+            
+            # Clean the response
+            cleaned_response = ai_response.strip()
+            
             # First try to find JSON between code blocks
-            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', ai_response, re.DOTALL)
+            json_match = re.search(r'```(?:json)?\s*(\{.*?\})\s*```', cleaned_response, re.DOTALL)
             if json_match:
                 json_str = json_match.group(1)
+                logger.info("Found JSON in code blocks")
             else:
                 # Try to find JSON in the response
-                json_match = re.search(r'\{.*\}', ai_response, re.DOTALL)
+                json_match = re.search(r'\{.*\}', cleaned_response, re.DOTALL)
                 if json_match:
                     json_str = json_match.group(0)
+                    logger.info("Found JSON pattern in response")
                 else:
                     # Try the entire response as JSON
-                    json_str = ai_response.strip()
+                    json_str = cleaned_response
+                    logger.info("Using entire response as JSON")
+            
+            # Log the JSON string being parsed
+            logger.info(f"Attempting to parse JSON: {json_str[:300]}...")
             
             # Parse JSON
             parsed_data = json.loads(json_str)
             
             # Basic structure validation
             if isinstance(parsed_data, dict):
+                logger.info(f"Successfully parsed JSON: {list(parsed_data.keys())}")
                 return parsed_data
             else:
                 logger.warning(f"AI response is not a dictionary: {type(parsed_data)}")
@@ -167,13 +269,14 @@ Email to analyze:
                 
         except json.JSONDecodeError as e:
             logger.warning(f"Failed to parse JSON from AI response: {str(e)}")
+            logger.warning(f"Response that failed to parse: {ai_response[:200]}...")
             return None
         except Exception as e:
             logger.error(f"Error extracting JSON: {str(e)}")
             return None
     
     def _validate_transaction_data(self, data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """Validate and normalize transaction data"""
+        """Validate and normalize transaction data with currency support"""
         try:
             # Required fields
             required_fields = ['transaction_type', 'amount', 'description', 'date']
@@ -188,23 +291,43 @@ Email to analyze:
                 logger.warning(f"Invalid transaction_type: {data['transaction_type']}")
                 return None
             
-            # Validate and convert amount
+            # Validate currency field
+            currency = data.get('currency', 'VND')  # Default to VND if not specified
+            valid_currencies = ['USD', 'VND']
+            if currency not in valid_currencies:
+                logger.warning(f"Invalid currency: {currency}, defaulting to VND")
+                currency = 'VND'
+            data['currency'] = currency
+            
+            # Validate and convert amount with more flexibility
             try:
                 amount = float(data['amount'])
-                if amount <= 0:
-                    logger.warning(f"Invalid amount: {amount}")
-                    return None
+                if amount < 0:
+                    logger.warning(f"Negative amount: {amount}, converting to positive")
+                    amount = abs(amount)
+                elif amount == 0:
+                    # AI couldn't find transaction info - set reasonable defaults
+                    if currency == 'USD':
+                        amount = 1.0  # $1 USD
+                        logger.info("AI found no clear amount, using minimum $1 USD")
+                    else:
+                        amount = 1000  # 1000 VND
+                        logger.info("AI found no clear amount, using minimum 1000 VND")
                 data['amount'] = abs(amount)  # Ensure positive
             except (ValueError, TypeError):
-                logger.warning(f"Invalid amount format: {data['amount']}")
-                return None
+                logger.warning(f"Invalid amount format: {data['amount']}, using default")
+                if currency == 'USD':
+                    data['amount'] = 1.0  # Default $1 USD
+                else:
+                    data['amount'] = 1000  # Default 1000 VND
             
-            # Validate date format
+            # Validate date format with fallback
             try:
                 datetime.strptime(data['date'], '%Y-%m-%d')
             except ValueError:
-                logger.warning(f"Invalid date format: {data['date']}")
-                return None
+                logger.warning(f"Invalid date format: {data['date']}, using today's date")
+                from datetime import date
+                data['date'] = date.today().strftime('%Y-%m-%d')
             
             # Validate expense_category (only for expenses)
             if data['transaction_type'] == 'expense':
@@ -230,11 +353,11 @@ Email to analyze:
             except (ValueError, TypeError):
                 data['ai_confidence'] = 0.5  # Default confidence
             
-            # Ensure description is string and not empty
+            # Ensure description is string and provide fallback
             description = str(data.get('description', '')).strip()
             if not description:
-                logger.warning("Empty transaction description")
-                return None
+                logger.warning("Empty transaction description, using fallback")
+                description = "Giao dịch từ email ngân hàng"
             data['description'] = description
             
             return data

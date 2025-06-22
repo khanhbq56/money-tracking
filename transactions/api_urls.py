@@ -43,6 +43,13 @@ urlpatterns = [
     
     # Bank Sync API (Phase 2)
     path('bank-integration/sync/', views.BankSyncView.as_view(), name='bank-sync'),
+    path('bank-integration/sync-preview/', views.BankSyncPreviewView.as_view(), name='bank-sync-preview'),
+    path('bank-integration/import-selected/', views.ImportSelectedTransactionsView.as_view(), name='import-selected'),
+    path('bank-integration/sync-status/', views.BankSyncStatusView.as_view(), name='bank-sync-status'),
     path('bank-integration/sync-history/', views.BankSyncHistoryView.as_view(), name='bank-sync-history'),
     path('bank-integration/test/', views.BankIntegrationTestView.as_view(), name='bank-integration-test'),
+    
+    # Custom Bank APIs
+    path('bank-integration/custom/create/', views.CustomBankCreateView.as_view(), name='custom_bank_create'),
+    path('bank-integration/configs/', views.BankConfigListView.as_view(), name='bank_config_list'),
 ] 

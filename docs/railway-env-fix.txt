@@ -10,3 +10,4 @@ GOOGLE_OAUTH2_CLIENT_ID=515963526992-q8ga8lhcd59a0s6v2i6voerf0tng5lcd.apps.googl
 GOOGLE_OAUTH2_CLIENT_SECRET=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
 GOOGLE_OAUTH2_REDIRECT_URI=https://money-tracking-production.up.railway.app/auth/oauth/google/callback/ 
 SITE_URL=https://money-tracking-production.up.railway.app 
+EXCHANGERATE_API_KEY=6ecc6c7b04132c0c111d5a40

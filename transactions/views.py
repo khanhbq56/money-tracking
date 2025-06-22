@@ -9,11 +9,15 @@ from rest_framework.views import APIView
 from django.db.models import Sum, Q, Count
 from django.utils.translation import gettext as _
 from django.shortcuts import get_object_or_404
-from datetime import datetime, date
+from datetime import datetime, date, timedelta, timezone
 from collections import defaultdict
 import calendar
+import logging
 
-from .models import Transaction, MonthlyTotal
+# Configure logger for bank integration
+logger = logging.getLogger(__name__)
+
+from .models import Transaction, MonthlyTotal, UserBankConfig, UserGmailPermission, BankEmailTransaction
 from .serializers import (
     TransactionSerializer, TransactionCreateSerializer, TransactionListSerializer,
     MonthlyTotalSerializer, CalendarDataSerializer
@@ -507,29 +511,229 @@ def monthly_analysis(request):
 # Bank integration service - lazy import to avoid circular imports
 BankIntegrationService = None
 
-class BankSyncView(APIView):
-    """Manual bank email sync endpoint"""
+class BankSyncPreviewView(APIView):
+    """Preview bank transactions before importing"""
     permission_classes = [IsAuthenticated]
     
     def post(self, request):
-        """Trigger manual bank sync"""
+        """Get preview of transactions that would be imported"""
+        logger.info(f"🔍 Bank sync preview request from user {request.user.email}")
+        
         try:
             # Lazy import bank integration service
             from .bank_integration_service import BankIntegrationService
+            from .currency_service import CurrencyService
             
-            bank_code = request.data.get('bank_code')  # Optional: specific bank
+            # Get sync parameters
+            bank_code = request.data.get('bank_code')
+            sync_options = {}
             
-            # Initialize bank integration service
+            # Extract sync options (same as BankSyncView)
+            if request.data.get('sync_date'):
+                sync_options['sync_date'] = request.data['sync_date']
+            if request.data.get('sync_year') and request.data.get('sync_month'):
+                sync_options['sync_year'] = request.data['sync_year']
+                sync_options['sync_month'] = request.data['sync_month']
+            if request.data.get('from_date') and request.data.get('to_date'):
+                sync_options['from_date'] = request.data['from_date']
+                sync_options['to_date'] = request.data['to_date']
+            if request.data.get('sync_all'):
+                sync_options['sync_all'] = True
+            if request.data.get('force_refresh'):
+                sync_options['force_refresh'] = True
+                
+            logger.info(f"🔍 Preview sync options: {sync_options}")
+            
+            # Initialize services
+            service = BankIntegrationService(request.user)
+            currency_service = CurrencyService()
+            
+            # Get preview data (similar to sync but without creating transactions)
+            result = service.get_sync_preview(bank_code, **sync_options)
+            
+            if result.get('success'):
+                # Add currency conversion info for each transaction
+                preview_transactions = []
+                for transaction in result.get('transactions', []):
+                    original_amount = transaction['amount']
+                    original_currency = transaction.get('currency', 'VND')
+                    
+                    # Apply currency conversion based on parsed currency
+                    if original_currency == 'USD':
+                        vnd_amount = currency_service.convert_usd_to_vnd(original_amount)
+                        if vnd_amount:
+                            final_amount = vnd_amount
+                            exchange_rate = currency_service.get_usd_to_vnd_rate()
+                            currency_info = {
+                                'original_currency': 'USD',
+                                'final_currency': 'VND',
+                                'conversion_applied': True,
+                                'exchange_rate': exchange_rate,
+                                'original_amount': original_amount,
+                                'converted_amount': final_amount
+                            }
+                        else:
+                            # Fallback conversion
+                            final_amount = original_amount * 24000
+                            currency_info = {
+                                'original_currency': 'USD',
+                                'final_currency': 'VND',
+                                'conversion_applied': True,
+                                'exchange_rate': 24000,
+                                'original_amount': original_amount,
+                                'converted_amount': final_amount
+                            }
+                    else:
+                        # Already in VND
+                        final_amount = original_amount
+                        currency_info = {
+                            'original_currency': 'VND',
+                            'final_currency': 'VND',
+                            'conversion_applied': False,
+                            'original_amount': original_amount,
+                            'converted_amount': original_amount
+                        }
+                    
+                    preview_transactions.append({
+                        **transaction,
+                        'currency_info': currency_info,
+                        'final_amount': final_amount,
+                        'selected': True  # Default to selected
+                    })
+                
+                return Response({
+                    'success': True,
+                    'message': _('Preview generated successfully'),
+                    'transactions': preview_transactions,
+                    'total_count': len(preview_transactions),
+                    'exchange_rate_info': currency_service.get_rate_info()
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'error': result.get('error', 'Preview failed'),
+                    'requires_gmail_auth': result.get('requires_gmail_auth', False)
+                }, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            logger.error(f"Bank sync preview error: {str(e)}")
+            return Response({
+                'success': False,
+                'error': f'Preview failed: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ImportSelectedTransactionsView(APIView):
+    """Import selected transactions from preview"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Import only selected transactions"""
+        logger.info(f"📥 Import selected transactions request from user {request.user.email}")
+        
+        try:
+            # Lazy import
+            from .bank_integration_service import BankIntegrationService
+            
+            selected_transactions = request.data.get('selected_transactions', [])
+            
+            if not selected_transactions:
+                return Response({
+                    'success': False,
+                    'error': _('No transactions selected for import')
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             service = BankIntegrationService(request.user)
             
-            # Perform sync
-            result = service.sync_user_bank_emails(bank_code)
+            # Import selected transactions
+            result = service.import_selected_transactions(selected_transactions)
             
             if result.get('success'):
                 return Response({
                     'success': True,
+                    'message': _('Selected transactions imported successfully'),
+                    'imported_count': result.get('imported_count', 0),
+                    'skipped_count': result.get('skipped_count', 0),
+                    'details': result.get('details', [])
+                })
+            else:
+                return Response({
+                    'success': False,
+                    'error': result.get('error', 'Import failed')
+                }, status=status.HTTP_400_BAD_REQUEST)
+                
+        except Exception as e:
+            logger.error(f"Import selected transactions error: {str(e)}")
+            return Response({
+                'success': False,
+                'error': f'Import failed: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BankSyncView(APIView):
+    """Manual bank email sync endpoint with flexible options"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Trigger manual bank sync with custom options"""
+        logger.info(f"🚀 Bank sync request received from user {request.user.email}")
+        logger.info(f"📊 Request data: {request.data}")
+        
+        try:
+            # Lazy import bank integration service
+            from .bank_integration_service import BankIntegrationService
+            
+            # Get sync parameters
+            bank_code = request.data.get('bank_code')  # Optional: specific bank
+            logger.info(f"🏦 Target bank: {bank_code or 'ALL'}")
+            
+            # Extract sync options
+            sync_options = {}
+            
+            # Date-based sync options
+            if request.data.get('sync_date'):
+                sync_options['sync_date'] = request.data['sync_date']
+            
+            if request.data.get('sync_year') and request.data.get('sync_month'):
+                sync_options['sync_year'] = request.data['sync_year']
+                sync_options['sync_month'] = request.data['sync_month']
+            
+            if request.data.get('from_date') and request.data.get('to_date'):
+                sync_options['from_date'] = request.data['from_date']
+                sync_options['to_date'] = request.data['to_date']
+            
+            if request.data.get('sync_all'):
+                sync_options['sync_all'] = True
+            
+            # Processing options
+            if request.data.get('force_refresh'):
+                sync_options['force_refresh'] = True
+            
+            # Initialize bank integration service
+            logger.info(f"⚙️ Initializing BankIntegrationService for user {request.user.email}")
+            service = BankIntegrationService(request.user)
+            
+            # Perform sync with options
+            logger.info(f"🔄 Starting sync with options: {sync_options}")
+            result = service.sync_user_bank_emails(bank_code, **sync_options)
+            logger.info(f"✅ Sync completed with result: {result.get('success', False)}")
+            
+            if result.get('success'):
+                # Log sync activity
+                sync_summary = {
+                    'bank_code': bank_code,
+                    'options': sync_options,
+                    'total_banks': result.get('total_banks', 0),
+                    'successful_banks': result.get('successful_banks', 0)
+                }
+                
+                logger.info(f"Manual sync completed for user {request.user.email}: {sync_summary}")
+                
+                return Response({
+                    'success': True,
                     'message': _('Bank sync completed successfully'),
-                    'data': result
+                    'data': result['data'],
+                    'summary': sync_summary
                 })
             else:
                 return Response({
@@ -538,7 +742,14 @@ class BankSyncView(APIView):
                     'requires_gmail_auth': result.get('requires_gmail_auth', False)
                 }, status=status.HTTP_400_BAD_REQUEST)
                 
+        except ValueError as e:
+            # Handle date parsing errors
+            return Response({
+                'success': False,
+                'error': f'Invalid date format: {str(e)}'
+            }, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            logger.error(f"Bank sync error for user {request.user.email}: {str(e)}")
             return Response({
                 'success': False,
                 'error': f'Sync failed: {str(e)}'
@@ -597,4 +808,196 @@ class BankIntegrationTestView(APIView):
             return Response({
                 'success': False,
                 'error': str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CustomBankCreateView(APIView):
+    """Create custom bank configuration"""
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        """Create a new custom bank configuration"""
+        try:
+            # Lazy import to avoid circular imports
+            from .models import UserBankConfig, UserGmailPermission
+            
+            # Validate input
+            bank_name = request.data.get('bank_name', '').strip()
+            sender_pattern = request.data.get('sender_pattern', '').strip()
+            account_suffix = request.data.get('account_suffix', '').strip()
+            
+            if not bank_name:
+                return Response({
+                    'success': False,
+                    'error': _('Bank name is required')
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            if not sender_pattern:
+                return Response({
+                    'success': False,
+                    'error': _('Sender email pattern is required')
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Basic email validation
+            if '@' not in sender_pattern or '.' not in sender_pattern:
+                return Response({
+                    'success': False,
+                    'error': _('Invalid email pattern format')
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Check for duplicate bank names for this user
+            existing_bank = UserBankConfig.objects.filter(
+                user=request.user,
+                custom_bank_name__iexact=bank_name
+            ).first()
+            
+            if existing_bank:
+                return Response({
+                    'success': False,
+                    'error': _('A bank with this name already exists')
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Create custom bank
+            custom_bank = UserBankConfig.create_custom_bank(
+                user=request.user,
+                bank_name=bank_name,
+                sender_pattern=sender_pattern,
+                account_suffix=account_suffix or None
+            )
+            
+            logger.info(f"Custom bank created: {bank_name} ({custom_bank.bank_code}) for user {request.user.email}")
+            
+            return Response({
+                'success': True,
+                'message': _('Custom bank created successfully'),
+                'data': {
+                    'bank_code': custom_bank.bank_code,
+                    'bank_name': custom_bank.custom_bank_name,
+                    'sender_pattern': custom_bank.sender_email_pattern,
+                    'account_suffix': custom_bank.account_suffix,
+                    'is_enabled': custom_bank.is_enabled
+                }
+            })
+            
+        except ValueError as e:
+            return Response({
+                'success': False,
+                'error': str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            logger.error(f"Custom bank creation error for user {request.user.email}: {str(e)}")
+            return Response({
+                'success': False,
+                'error': f'Failed to create custom bank: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BankConfigListView(APIView):
+    """List all bank configurations for user (predefined + custom)"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get all bank configurations"""
+        try:
+            from .models import UserBankConfig
+            
+            # Get all user's bank configs
+            bank_configs = UserBankConfig.objects.filter(user=request.user)
+            
+            # Prepare predefined banks that user hasn't configured yet
+            predefined_banks = []
+            existing_codes = set(bank_configs.values_list('bank_code', flat=True))
+            
+            for code, name in UserBankConfig.SUPPORTED_BANKS:
+                if code != 'custom' and code not in existing_codes:
+                    predefined_banks.append({
+                        'bank_code': code,
+                        'bank_name': name,
+                        'is_custom': False,
+                        'is_enabled': False,
+                        'is_available': True
+                    })
+            
+            # Prepare existing configurations
+            configured_banks = []
+            for config in bank_configs:
+                configured_banks.append({
+                    'bank_code': config.bank_code,
+                    'bank_name': config.get_bank_display_name(),
+                    'is_custom': config.is_custom_bank,
+                    'is_enabled': config.is_enabled,
+                    'sender_pattern': config.sender_email_pattern,
+                    'account_suffix': config.account_suffix,
+                    'last_sync': config.last_sync_at.isoformat() if config.last_sync_at else None,
+                    'sync_error_count': config.sync_error_count,
+                    'is_available': True
+                })
+            
+            return Response({
+                'success': True,
+                'data': {
+                    'predefined_banks': predefined_banks,
+                    'configured_banks': configured_banks
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Bank config list error for user {request.user.email}: {str(e)}")
+            return Response({
+                'success': False,
+                'error': f'Failed to load bank configurations: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class BankSyncStatusView(APIView):
+    """Get current sync status and basic stats"""
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        """Get sync status for user"""
+        try:
+            logger.info(f"📊 Bank sync status request from user {request.user.email}")
+            
+            # Check Gmail permission
+            try:
+                gmail_permission = UserGmailPermission.objects.get(user=request.user)
+                has_gmail_permission = gmail_permission.has_gmail_permission
+            except UserGmailPermission.DoesNotExist:
+                has_gmail_permission = False
+            
+            # Get enabled banks
+            enabled_banks = UserBankConfig.objects.filter(
+                user=request.user, 
+                is_enabled=True
+            ).values('bank_code', 'last_sync_at', 'is_custom_bank', 'custom_bank_name')
+            
+            # Get recent transactions count (last 30 days)
+            from django.utils import timezone
+            thirty_days_ago = timezone.now() - timedelta(days=30)
+            recent_transactions = BankEmailTransaction.objects.filter(
+                user=request.user,
+                created_at__gte=thirty_days_ago
+            ).count()
+            
+            # Get total transactions count
+            total_transactions = BankEmailTransaction.objects.filter(
+                user=request.user
+            ).count()
+            
+            return Response({
+                'success': True,
+                'data': {
+                    'has_gmail_permission': has_gmail_permission,
+                    'enabled_banks': list(enabled_banks),
+                    'recent_transactions_count': recent_transactions,
+                    'total_transactions_count': total_transactions,
+                    'sync_status': 'ready' if has_gmail_permission and enabled_banks else 'not_configured'
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Bank sync status error: {str(e)}")
+            return Response(
+                {'success': False, 'error': f'Status check failed: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            ) 

@@ -290,6 +290,7 @@ class UserGmailPermission(models.Model):
 class UserBankConfig(models.Model):
     """
     User's bank integration settings and preferences
+    Supports both predefined banks and custom banks
     """
     SUPPORTED_BANKS = [
         ('tpbank', 'TPBank'),
@@ -299,6 +300,7 @@ class UserBankConfig(models.Model):
         ('mbbank', 'MB Bank'),  # Phase 3
         ('acb', 'ACB'),  # Phase 3
         ('sacombank', 'Sacombank'),  # Phase 3
+        ('custom', 'Custom Bank'),  # For user-defined banks
     ]
     
     user = models.ForeignKey(
@@ -306,7 +308,13 @@ class UserBankConfig(models.Model):
         on_delete=models.CASCADE,
         related_name='bank_configs'
     )
-    bank_code = models.CharField(max_length=20, choices=SUPPORTED_BANKS)
+    bank_code = models.CharField(max_length=50)  # Increased length for custom banks
+    
+    # Custom bank settings (for user-defined banks)
+    custom_bank_name = models.CharField(max_length=100, blank=True, null=True,
+                                       help_text="Custom bank display name")
+    is_custom_bank = models.BooleanField(default=False,
+                                        help_text="Whether this is a user-defined custom bank")
     
     # Integration settings
     is_enabled = models.BooleanField(default=False)
@@ -336,11 +344,25 @@ class UserBankConfig(models.Model):
 
     def __str__(self):
         status = "✅ Enabled" if self.is_enabled else "❌ Disabled"
-        return f"{self.user.get_short_name()} - {self.get_bank_code_display()}: {status}"
+        bank_display = self.get_bank_display_name()
+        return f"{self.user.get_short_name()} - {bank_display}: {status}"
 
     @property
     def bank_name(self):
-        return self.get_bank_code_display()
+        return self.get_bank_display_name()
+
+    def get_bank_display_name(self):
+        """Get display name for the bank (custom or predefined)"""
+        if self.is_custom_bank and self.custom_bank_name:
+            return self.custom_bank_name
+        
+        # Try to get from predefined choices
+        for code, name in self.SUPPORTED_BANKS:
+            if code == self.bank_code:
+                return name
+        
+        # Fallback to bank_code if not found
+        return self.bank_code.upper()
 
     def get_default_sender_pattern(self):
         """Get default email sender pattern for each bank"""
@@ -357,7 +379,12 @@ class UserBankConfig(models.Model):
 
     def enable_integration(self):
         """Enable bank integration with default settings"""
-        if not self.sender_email_pattern:
+        # For custom banks, sender pattern is required
+        if self.is_custom_bank and not self.sender_email_pattern:
+            raise ValueError("Sender email pattern is required for custom banks")
+        
+        # For predefined banks, set default pattern if not specified
+        if not self.is_custom_bank and not self.sender_email_pattern:
             self.sender_email_pattern = self.get_default_sender_pattern()
         
         if not self.sync_start_date:
@@ -373,6 +400,33 @@ class UserBankConfig(models.Model):
         """Disable bank integration"""
         self.is_enabled = False
         self.save()
+
+    @classmethod
+    def create_custom_bank(cls, user, bank_name: str, sender_pattern: str, account_suffix: str = None):
+        """Create a custom bank configuration"""
+        # Generate unique bank_code for custom bank
+        base_code = bank_name.lower().replace(' ', '').replace('-', '')[:20]
+        bank_code = f"custom_{base_code}"
+        
+        # Ensure uniqueness
+        counter = 1
+        original_code = bank_code
+        while cls.objects.filter(user=user, bank_code=bank_code).exists():
+            bank_code = f"{original_code}_{counter}"
+            counter += 1
+        
+        # Create custom bank config
+        bank_config = cls.objects.create(
+            user=user,
+            bank_code=bank_code,
+            custom_bank_name=bank_name,
+            is_custom_bank=True,
+            sender_email_pattern=sender_pattern,
+            account_suffix=account_suffix,
+            is_enabled=False  # User needs to explicitly enable
+        )
+        
+        return bank_config
 
 
 class BankEmailTransaction(models.Model):

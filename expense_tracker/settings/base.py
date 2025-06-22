@@ -152,6 +152,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # API Keys
 GEMINI_API_KEY = config('GEMINI_API_KEY', default='')
+EXCHANGE_RATE_API_KEY = config('EXCHANGERATE_API_KEY', default='6ecc6c7b04132c0c111d5a40')
 
 # Media files
 MEDIA_URL = '/media/'
